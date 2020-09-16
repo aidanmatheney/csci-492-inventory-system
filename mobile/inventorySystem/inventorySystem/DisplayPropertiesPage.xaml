@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="inventorySystem.DisplayPropertiesPage">
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid Margin="20,35,20,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+
+                <Label x:Name="labBar"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="CenterAndExpand"
+                    IsVisible="False" />
+
+                <Label Grid.Row="0" Grid.Column="0" Text="Description/Name:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="0" Grid.Column="1" x:Name="labName"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="1" Grid.Column="0" Text="Category:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="1" Grid.Column="1" x:Name="labCat"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="2" Grid.Column="0" Text="Cost:" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="2" Grid.Column="1" x:Name="labCost"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="3" Grid.Column="0" Text="Building:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="3" Grid.Column="1" x:Name="labBuild"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="4" Grid.Column="0" Text="Floor:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="4" Grid.Column="1" x:Name="labFloor"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="5" Grid.Column="0" Text="Room:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="5" Grid.Column="1" x:Name="labRoom"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="6" Grid.Column="0" Text="Date Acquired:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="6" Grid.Column="1" x:Name="labAcquired"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="7" Grid.Column="0" Text="Date Surplussed:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="7" Grid.Column="1" x:Name="labSurplussed"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="8" Grid.Column="0" Text="Assigned To:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="8" Grid.Column="1" x:Name="labAssigned"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="9" Grid.Column="0" Text="Flag:"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="StartAndExpand" />
+
+                <Label Grid.Row="9" Grid.Column="1" x:Name="labFlag"
+                    Text=""
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="FillAndExpand" />
+            </Grid>
+            
+            <Button x:Name= "flag" Text="Flag" Clicked="flagButton_OnClick" ></Button>
+            <Button x:Name= "unflag" Text="Unflag"  Clicked="unflagButton_OnClick" ></Button>
+            <Button Text="Edit Properties" Clicked="editPropertiesButton_OnClick"></Button>
+            <Button Text="Track Location" Clicked="trackLocationButton_OnClick"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

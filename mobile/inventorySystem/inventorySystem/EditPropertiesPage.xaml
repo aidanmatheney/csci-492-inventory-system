@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="inventorySystem.EditPropertiesPage">
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid Margin="20,35,20,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="0.5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+
+                <Label x:Name="labBar"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                IsVisible="False" />
+
+                <Label x:Name="labFlag"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                IsVisible="False" />
+
+                <Label Grid.Row="0" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Description/Name:" 
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="Start" />
+
+                <Entry Grid.Row="0" Grid.Column="1" x:Name="entName" FontSize="Medium" Text="{Binding itemName}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="1" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Category:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Picker Grid.Row="1" Grid.Column="1" FontSize="Medium" x:Name="Category"
+                SelectedIndexChanged="Category_OnSelectedIndexChanged"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="2" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Cost:" 
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="Start" />
+
+                <Entry Grid.Row="2" Grid.Column="1" FontSize="Medium" x:Name="entCost" Text="{Binding itemCost}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="3" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Building:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Picker Grid.Row="3" Grid.Column="1" FontSize="Medium" x:Name="Building"
+                SelectedIndexChanged="Building_SelectedIndexChanged"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="4" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Floor:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Picker Grid.Row="4" Grid.Column="1" FontSize="Medium" x:Name="Floor"
+                SelectedIndexChanged="Floor_SelectedIndexChanged"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="5" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Room:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Entry Grid.Row="5" Grid.Column="1" FontSize="Medium" x:Name="entRoom" Text="{Binding itemRoom}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="6" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Date Acquired:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Entry Grid.Row="6" Grid.Column="1" FontSize="Medium" x:Name="entAcquired" Text="{Binding itemAcquired}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="7" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Date Surplessed:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Entry Grid.Row="7" Grid.Column="1" FontSize="Medium" x:Name="entSurplussed" Text="{Binding itemSurplussed}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Label Grid.Row="8" Grid.Column="0" FontSize="Medium" FontAttributes="Bold" Text="Assigned To:"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="Start" />
+
+                <Entry Grid.Row="8" Grid.Column="1" FontSize="Medium" x:Name="entAssigned" Text="{Binding itemAssigned}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="FillAndExpand" />
+
+                <Button Grid.Row="9" Grid.Column="0" Text="Flag" Clicked="flagButton_OnClick"></Button>
+                <Button Grid.Row="9" Grid.Column="1" Text="Save Properties" Clicked="savePropertiesButton_OnClick"></Button>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
