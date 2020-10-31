@@ -14,10 +14,12 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 
 import {ToolbarComponent} from './toolbar/toolbar.component';
+import {SignInComponent} from './sign-in/sign-in.component';
 
 @NgModule({
   declarations: [
-    ToolbarComponent
+    ToolbarComponent,
+    SignInComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import {ToolbarComponent} from './toolbar/toolbar.component';
     MatIconModule
   ],
   exports: [
-    ToolbarComponent
+    ToolbarComponent,
+    SignInComponent
   ]
 })
 export class AppComponentsModule { }

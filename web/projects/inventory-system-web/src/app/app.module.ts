@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 
 import {BrowserModule} from '@angular/platform-browser';
-import {AppRoutingModule} from './app-routing.module';
 
+import {AppRoutingModule} from './app-routing.module';
 import {AppComponentsModule} from './component/app-components.module';
 
 import {AppComponent} from './app.component';
@@ -11,8 +11,8 @@ import {AppComponent} from './app.component';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule,
 
+    AppRoutingModule,
     AppComponentsModule
   ],
   providers: [],
