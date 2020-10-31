@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.content-container {
+    flex: 1;
+    padding: .5rem;
+}
