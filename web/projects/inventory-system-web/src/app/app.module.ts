@@ -1,9 +1,12 @@
 import {NgModule} from '@angular/core';
 
 import {BrowserModule} from '@angular/platform-browser';
+import {HttpClientModule} from '@angular/common/http';
 
 import {AppRoutingModule} from './app-routing.module';
-import {AppComponentsModule} from './component/app-components.module';
+import {AppComponentsModule} from './components/app-components.module';
+
+import {Destroyed$} from './services/destroyed$.service';
 
 import {AppComponent} from './app.component';
 
@@ -11,11 +14,14 @@ import {AppComponent} from './app.component';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    HttpClientModule,
 
     AppRoutingModule,
     AppComponentsModule
   ],
-  providers: [],
+  providers: [
+    Destroyed$
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

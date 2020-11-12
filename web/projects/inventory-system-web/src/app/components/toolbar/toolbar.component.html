@@ -4,5 +4,7 @@
     <span>Home</span>
   </a>
 
-  <a mat-button routerLink="/">Page 1</a>
+  <ng-container *ngIf="signedIn$ | async">
+    <a mat-button routerLink="/inventory">Inventory</a>
+  </ng-container>
 </mat-toolbar>

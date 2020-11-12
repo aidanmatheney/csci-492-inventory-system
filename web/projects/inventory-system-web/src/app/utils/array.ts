@@ -14,18 +14,18 @@ export const indexArray = <T>(array: readonly T[]) => {
 
 interface GroupBy {
   <S, K extends keyof any>(
-    source: S[],
+    source: readonly S[],
     keySelector: (element: S) => K
   ): PartialRecord<K, S[]>;
 
   <S, K extends keyof any, V>(
-    source: S[],
+    source: readonly S[],
     keySelector: (element: S) => K,
     valueSelector: (element: S) => V
   ): PartialRecord<K, V[]>;
 }
 export const groupBy: GroupBy = <S, K extends keyof any, V>(
-  source: S[],
+  source: readonly S[],
   keySelector: (element: S) => K,
   valueSelector?: (element: S) => V
 ) => {
@@ -70,18 +70,18 @@ export const groupBy: GroupBy = <S, K extends keyof any, V>(
 
 interface RecordBy {
   <S, K extends keyof any>(
-    source: S[],
+    source: readonly S[],
     keySelector: (element: S) => K
   ): PartialRecord<K, S>;
 
   <S, K extends keyof any, V>(
-    source: S[],
+    source: readonly S[],
     keySelector: (element: S) => K,
     valueSelector: (element: S) => V
   ): PartialRecord<K, V>;
 }
 export const recordBy: RecordBy = <S, K extends keyof any, V>(
-  source: S[],
+  source: readonly S[],
   keySelector: (element: S) => K,
   valueSelector?: (element: S) => V
 ) => {
@@ -106,4 +106,12 @@ export const recordBy: RecordBy = <S, K extends keyof any, V>(
 
     return valueByKey;
   }
+};
+
+export const partialRecordSet = <S extends keyof any>(source: readonly S[]) => {
+  return recordBy(
+    source,
+    element => element,
+    _ => true as const
+  );
 };
