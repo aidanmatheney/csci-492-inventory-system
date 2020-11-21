@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn> <!-- Don't warn for no documentation on public types/members (enabled by GenerateDocumentationFile). -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InventorySystemServer.Data.Services\InventorySystemServer.Data.Services.csproj" />
+    <ProjectReference Include="..\InventorySystemServer.Data.Models\InventorySystemServer.Data.Models.csproj" />
+    <ProjectReference Include="..\InventorySystemServer.Data\InventorySystemServer.Data.csproj" />
+    <ProjectReference Include="..\InventorySystemServer.Services\InventorySystemServer.Services.csproj" />
+    <ProjectReference Include="..\InventorySystemServer.Utils\InventorySystemServer.Utils.csproj" />
+  </ItemGroup>
+
+</Project>

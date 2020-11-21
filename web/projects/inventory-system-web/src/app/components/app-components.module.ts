@@ -13,6 +13,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatMenuModule} from '@angular/material/menu';
 
 import {AppDirectivesModule} from '../directives/app-directives.module';
 
@@ -21,6 +22,7 @@ import {LoadingComponent} from './loading/loading.component';
 import {HomeComponent} from './home/home.component';
 import {LandingComponent} from './landing/landing.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
+import {HelpComponent} from './help/help.component';
 import {InventoryComponent} from './inventory/inventory.component';
 
 @NgModule({
@@ -30,6 +32,7 @@ import {InventoryComponent} from './inventory/inventory.component';
     HomeComponent,
     LandingComponent,
     DashboardComponent,
+    HelpComponent,
     InventoryComponent
   ],
   imports: [
@@ -46,6 +49,7 @@ import {InventoryComponent} from './inventory/inventory.component';
     MatSlideToggleModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatMenuModule,
 
     AppDirectivesModule
   ],

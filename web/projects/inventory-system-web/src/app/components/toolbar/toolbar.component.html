@@ -1,10 +1,37 @@
-<mat-toolbar color="primary">
-  <a mat-button routerLink="/">
-    <mat-icon class="button-icon">home</mat-icon>
-    <span>Home</span>
-  </a>
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  signedIn: signedIn$ | async,
+  currentAppUserEmail: currentAppUserEmail$ | async
+} as vars">
+  <mat-toolbar color="primary">
+    <div class="toolbar-item-groups">
+      <div class="start">
+        <a mat-button routerLink="/">
+          <mat-icon class="button-icon">home</mat-icon>
+          <span>Home</span>
+        </a>
 
-  <ng-container *ngIf="signedIn$ | async">
-    <a mat-button routerLink="/inventory">Inventory</a>
-  </ng-container>
-</mat-toolbar>
+        <ng-container *ngIf="vars.signedIn">
+          <a mat-button routerLink="/inventory">Inventory</a>
+        </ng-container>
+
+        <a mat-button routerLink="/help">Help</a>
+      </div>
+      <div class="end">
+        <button mat-button [matMenuTriggerFor]="accountMenu">
+          <mat-icon class="button-icon">account_circle</mat-icon>
+          <span>{{vars.signedIn ? vars.currentAppUserEmail : 'Account'}}</span>
+        </button>
+        <mat-menu #accountMenu xPosition="before">
+          <ng-container *ngIf="!vars.signedIn; else signedInAccountMenuItems">
+            <button mat-menu-item [disabled]="vars.loading" (click)="signIn()">Sign In</button>
+          </ng-container>
+          <ng-template #signedInAccountMenuItems>
+            <a mat-menu-item [href]="manageAccountUrl">Manage</a>
+            <button mat-menu-item (click)="signOut()">Sign Out</button>
+          </ng-template>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-toolbar>
+</ng-container>

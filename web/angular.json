@@ -25,7 +25,8 @@
             "aot": true,
             "assets": [
               "projects/inventory-system-web/src/favicon.ico",
-              "projects/inventory-system-web/src/assets"
+              "projects/inventory-system-web/src/assets",
+              "projects/inventory-system-web/src/silent-authentication-renew.html"
             ],
             "styles": [
               "projects/inventory-system-web/src/styles.scss"

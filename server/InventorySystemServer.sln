@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventorySystemServer.WebApi", "src\InventorySystemServer.WebApi\InventorySystemServer.WebApi.csproj", "{A1F4AE4E-CA2F-4A98-B656-DED90EC5C005}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventorySystemServer.Utils", "src\InventorySystemServer.Utils\InventorySystemServer.Utils.csproj", "{A22EA272-C5FA-4534-8922-06C419DBFDF1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventorySystemServer.Data.Models", "src\InventorySystemServer.Data.Models\InventorySystemServer.Data.Models.csproj", "{6AB36FE3-ECCC-4339-A90F-BE361805CF51}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{530BB2AE-D5F1-43DB-8AE5-42D7ACF48551}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventorySystemServer.Services", "src\InventorySystemServer.Services\InventorySystemServer.Services.csproj", "{54FEB503-02B7-48DA-9211-8005BE514B8D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventorySystemServer.Data.Services", "src\InventorySystemServer.Data.Services\InventorySystemServer.Data.Services.csproj", "{CDCEFA10-3A1A-4218-9B66-3DDAEF38EFF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InventorySystemServer.Data", "src\InventorySystemServer.Data\InventorySystemServer.Data.csproj", "{34D861C8-76C2-469C-946C-85F506AD9457}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1F4AE4E-CA2F-4A98-B656-DED90EC5C005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F4AE4E-CA2F-4A98-B656-DED90EC5C005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F4AE4E-CA2F-4A98-B656-DED90EC5C005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F4AE4E-CA2F-4A98-B656-DED90EC5C005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22EA272-C5FA-4534-8922-06C419DBFDF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22EA272-C5FA-4534-8922-06C419DBFDF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22EA272-C5FA-4534-8922-06C419DBFDF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22EA272-C5FA-4534-8922-06C419DBFDF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB36FE3-ECCC-4339-A90F-BE361805CF51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB36FE3-ECCC-4339-A90F-BE361805CF51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB36FE3-ECCC-4339-A90F-BE361805CF51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB36FE3-ECCC-4339-A90F-BE361805CF51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54FEB503-02B7-48DA-9211-8005BE514B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54FEB503-02B7-48DA-9211-8005BE514B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54FEB503-02B7-48DA-9211-8005BE514B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54FEB503-02B7-48DA-9211-8005BE514B8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDCEFA10-3A1A-4218-9B66-3DDAEF38EFF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDCEFA10-3A1A-4218-9B66-3DDAEF38EFF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDCEFA10-3A1A-4218-9B66-3DDAEF38EFF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDCEFA10-3A1A-4218-9B66-3DDAEF38EFF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D861C8-76C2-469C-946C-85F506AD9457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D861C8-76C2-469C-946C-85F506AD9457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D861C8-76C2-469C-946C-85F506AD9457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D861C8-76C2-469C-946C-85F506AD9457}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8723B6AB-2851-4512-A2D6-200E38F791B3}
+	EndGlobalSection
+EndGlobal

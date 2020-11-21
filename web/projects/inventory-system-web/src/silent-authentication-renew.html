@@ -1,0 +1,9 @@
+<script>
+  (function () {
+    addEventListener('load', function () {
+      // This is all oidc-client's UserManager.signinSilentCallback does
+      // See oidc-client's IFrameWindow.notifyParent
+      parent.postMessage(location.href, location.protocol + '//' + location.host);
+    });
+  })();
+</script>

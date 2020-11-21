@@ -1,12 +1,14 @@
-import {NgModule} from '@angular/core';
+import {NgModule, Provider} from '@angular/core';
 
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponentsModule} from './components/app-components.module';
 
 import {Destroyed$} from './services/destroyed$.service';
+
+import {AuthenticationInterceptor} from './interceptors/authentication.interceptor';
 
 import {AppComponent} from './app.component';
 
@@ -20,7 +22,11 @@ import {AppComponent} from './app.component';
     AppComponentsModule
   ],
   providers: [
-    Destroyed$
+    Destroyed$,
+
+    ...[
+      AuthenticationInterceptor
+    ].map((interceptor): Provider => ({provide: HTTP_INTERCEPTORS, useClass: interceptor, multi: true}))
   ],
   bootstrap: [AppComponent]
 })

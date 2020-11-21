@@ -1,9 +1,10 @@
-export interface User {
+export interface AppUser {
+  id: string;
   email: string;
   name: string;
 }
 
-export enum UserPermission {
-  Secretary,
-  Administrator
+export enum AppRole {
+  secretary = 'Secretary',
+  administrator = 'Administrator'
 }

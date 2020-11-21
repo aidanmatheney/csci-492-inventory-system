@@ -4,15 +4,15 @@ import {filter} from 'rxjs/operators';
 
 import {firstValueFrom} from '../utils/observable';
 
-import {CurrentUserService} from '../services/current-user.service';
+import {CurrentAppUserService} from '../services/current-app-user.service';
 
 @Injectable({providedIn: 'root'})
-export class CurrentUserResolver implements Resolve<void> {
+export class CurrentAppUserResolver implements Resolve<void> {
   public constructor(
-    private readonly currentUserService: CurrentUserService
+    private readonly currentAppUserService: CurrentAppUserService
   ) { }
 
   public async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    await firstValueFrom(this.currentUserService.loading$.pipe(filter(loading => !loading)));
+    await firstValueFrom(this.currentAppUserService.loading$.pipe(filter(loading => !loading)));
   }
 }

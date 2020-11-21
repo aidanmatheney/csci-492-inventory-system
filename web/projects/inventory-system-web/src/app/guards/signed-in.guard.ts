@@ -3,17 +3,17 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '
 
 import {filterPluckLoaded, firstValueFrom} from '../utils/observable';
 
-import {CurrentUserService} from '../services/current-user.service';
+import {CurrentAppUserService} from '../services/current-app-user.service';
 
 @Injectable({providedIn: 'root'})
-export class AuthenticatedGuard implements CanActivate {
+export class SignedInGuard implements CanActivate {
   public constructor(
     private readonly router: Router,
-    private readonly currentUserService: CurrentUserService
+    private readonly currentAppUserService: CurrentAppUserService
   ) { }
 
   public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const signedIn = await firstValueFrom(this.currentUserService.signedIn$.pipe(filterPluckLoaded('signedIn')));
+    const signedIn = await firstValueFrom(this.currentAppUserService.signedIn$.pipe(filterPluckLoaded('signedIn')));
     if (!signedIn) {
       return this.router.createUrlTree(['/'], {queryParams: {
         returnUrl: state.url
