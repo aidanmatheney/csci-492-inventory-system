@@ -1,10 +1,11 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {map} from 'rxjs/operators';
+
+import {mapLoadable, selectLoading} from "../../utils/loading";
 
 import {AuthenticationService} from '../../services/authentication.service';
 import {CurrentAppUserService} from '../../services/current-app-user.service';
 
-import {environment} from 'projects/inventory-system-web/src/environments/environment';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'inventory-system-toolbar',
@@ -13,13 +14,13 @@ import {environment} from 'projects/inventory-system-web/src/environments/enviro
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarComponent implements OnInit {
-  public readonly loading$ = this.currentAppUserService.loading$;
-  public readonly signedIn$ = this.currentAppUserService.signedIn$.pipe(map(({loading, signedIn}) => {
-    return !loading && signedIn;
-  }));
-  public readonly currentAppUserEmail$ = this.currentAppUserService.appUser$.pipe(map(({loading, appUser}) => {
-    return loading ? undefined : appUser?.email;
-  }));
+  public readonly loading$ = selectLoading(this.currentAppUserService.appUser$);
+  public readonly signedIn$ = this.currentAppUserService.signedIn$.pipe(mapLoadable<boolean>(false));
+  public readonly currentAppUserEmail$ = this.currentAppUserService.appUser$.pipe(
+    mapLoadable(undefined, appUser => appUser?.email)
+  );
+  public readonly isSecretary$ = this.currentAppUserService.isSecretary$.pipe(mapLoadable<boolean>(false));
+  public readonly isAdministrator$ = this.currentAppUserService.isAdministrator$.pipe(mapLoadable<boolean>(false));
 
   public readonly manageAccountUrl = `${environment.serverBaseUrl}/Identity/Account/Manage`;
 

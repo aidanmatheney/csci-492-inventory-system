@@ -1,0 +1,8 @@
+<inventory-system-spinner-button-container [spin]="(processing$ | async)!">
+  <button
+    mat-raised-button
+    [color]="color"
+    [disabled]="!(enabled$ | async)!"
+    (click)="process.emit()"
+  >{{text}}</button>
+</inventory-system-spinner-button-container>

@@ -1,0 +1,12 @@
+.shortcuts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    &:not(:empty) {
+        margin: -.5rem;
+    }
+    & > * {
+        margin: .5rem;
+    }
+}

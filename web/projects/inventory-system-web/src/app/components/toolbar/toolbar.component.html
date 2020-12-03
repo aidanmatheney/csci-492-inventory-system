@@ -1,7 +1,9 @@
 <ng-container *ngLet="{
   loading: loading$ | async,
   signedIn: signedIn$ | async,
-  currentAppUserEmail: currentAppUserEmail$ | async
+  currentAppUserEmail: currentAppUserEmail$ | async,
+  isSecretary: isSecretary$ | async,
+  isAdministrator: isAdministrator$ | async
 } as vars">
   <mat-toolbar color="primary">
     <div class="toolbar-item-groups">
@@ -11,20 +13,25 @@
           <span>Home</span>
         </a>
 
-        <ng-container *ngIf="vars.signedIn">
+        <ng-container *ngIf="vars.isSecretary!">
           <a mat-button routerLink="/inventory">Inventory</a>
+        </ng-container>
+
+        <ng-container *ngIf="vars.isAdministrator!">
+          <a mat-button routerLink="/admin">Admin</a>
         </ng-container>
 
         <a mat-button routerLink="/help">Help</a>
       </div>
+
       <div class="end">
         <button mat-button [matMenuTriggerFor]="accountMenu">
           <mat-icon class="button-icon">account_circle</mat-icon>
-          <span>{{vars.signedIn ? vars.currentAppUserEmail : 'Account'}}</span>
+          <span>{{vars.signedIn! ? vars.currentAppUserEmail! : 'Account'}}</span>
         </button>
         <mat-menu #accountMenu xPosition="before">
-          <ng-container *ngIf="!vars.signedIn; else signedInAccountMenuItems">
-            <button mat-menu-item [disabled]="vars.loading" (click)="signIn()">Sign In</button>
+          <ng-container *ngIf="!vars.signedIn!; else signedInAccountMenuItems">
+            <button mat-menu-item [disabled]="vars.loading!" (click)="signIn()">Sign In</button>
           </ng-container>
           <ng-template #signedInAccountMenuItems>
             <a mat-menu-item [href]="manageAccountUrl">Manage</a>

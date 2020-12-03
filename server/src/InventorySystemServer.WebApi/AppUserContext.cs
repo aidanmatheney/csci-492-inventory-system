@@ -1,9 +1,10 @@
 ﻿namespace InventorySystemServer.WebApi
 {
     using System;
-    using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+
+    using IdentityModel;
 
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Utils;
@@ -80,8 +81,7 @@
 
         private string? LoadAppUserId()
         {
-            var nameClaim = _getClaimsUser().Claims.SingleOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
-            return nameClaim?.Value;
+            return _getClaimsUser().FindFirstValue(JwtClaimTypes.Subject);
         }
 
         private async Task<AppUser?> LoadAppUserAsync()

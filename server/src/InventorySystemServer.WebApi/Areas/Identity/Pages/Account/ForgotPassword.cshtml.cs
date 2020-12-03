@@ -3,29 +3,31 @@
     using System.ComponentModel.DataAnnotations;
     using System.Text;
     using System.Text.Encodings.Web;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Services;
     using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
+    using InventorySystemServer.WebApi.Settings;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
 
-    [AllowAnonymous]
     public sealed class ForgotPasswordModel : AppPageModelBase
     {
         private readonly IEmailSender _emailSender;
+        private readonly ApiClientsSettings _apiClientsSettings;
 
         public ForgotPasswordModel
         (
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
             IEmailSender emailSender,
+            ApiClientsSettings apiClientsSettings,
             ILogger<ForgotPasswordModel> logger
         ) : base
         (
@@ -35,53 +37,83 @@
         )
         {
             Guard.NotNull(emailSender, nameof(emailSender));
+            Guard.NotNull(apiClientsSettings, nameof(apiClientsSettings));
+
             _emailSender = emailSender;
+            _apiClientsSettings = apiClientsSettings;
         }
 
         [BindProperty]
-        public InputModel? Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         public sealed class InputModel
         {
             [Required]
             [EmailAddress]
-            public string? Email { get; set; }
+            public string Email { get; set; } = "";
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public ActionResult OnGet()
         {
-            if (ModelState.IsValid)
+            if (AppUserIsAuthenticated)
             {
-                var user = await UserManager.FindByEmailAsync(Input!.Email);
-                if (user is null || !(await UserManager.IsEmailConfirmedAsync(user)))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
-                }
-
-                // For more information on how to enable account confirmation and password reset please 
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await UserManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page
-                (
-                    "/Account/ResetPassword",
-                    pageHandler: null,
-                    values: new { area = "Identity", code },
-                    protocol: Request.Scheme
-                );
-
-                await _emailSender.SendEmailAsync
-                (
-                    Input!.Email!,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>."
-                );
-
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                return Redirect(_apiClientsSettings.WebAppBaseUrl);
             }
 
             return Page();
+        }
+
+        public async Task<ActionResult> OnPostAsync(CancellationToken cancellationToken)
+        {
+            if (AppUserIsAuthenticated)
+            {
+                return Redirect(_apiClientsSettings.WebAppBaseUrl);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            var appUser = await UserManager.FindByEmailAsync(Input!.Email).ConfigureAwait(false);
+            if (appUser is null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToPage("./ForgotPasswordConfirmation");
+            }
+
+            if (!appUser.EmailConfirmed)
+            {
+                Logger.LogDebug("App user {appUserEmail} attempted to sign in without a confirmed email", appUser.Email);
+                ModelState.AddModelError("", "Unconfirmed email address. Check your email for an invitation link.");
+                return Page();
+            }
+
+            var resetPasswordToken = await UserManager.GeneratePasswordResetTokenAsync(appUser).ConfigureAwait(false);
+            var resetPasswordCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetPasswordToken));
+            var resetPasswordUrl = Url.Page
+            (
+                "/Account/ResetPassword",
+                pageHandler: null,
+                values: new
+                {
+                    area = "Identity",
+                    code = resetPasswordCode
+                },
+                protocol: Request.Scheme
+            );
+
+            await _emailSender.SendEmailAsync
+            (
+                appUser.Email,
+                "Reset Password - Inventory System",
+                $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(resetPasswordUrl)}'>clicking here</a>.",
+                cancellationToken
+            ).ConfigureAwait(false);
+
+            Logger.LogDebug("Sent password reset email to {appUserEmail}", appUser.Email);
+
+            return RedirectToPage("./ForgotPasswordConfirmation");
         }
     }
 }

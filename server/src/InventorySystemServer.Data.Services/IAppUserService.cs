@@ -8,7 +8,11 @@
 
     public interface IAppUserService
     {
+        Task<IReadOnlyList<AppUser>> GetAllAppUsersAsync(CancellationToken cancellationToken = default);
         Task<AppUser?> FindAppUserByIdAsync(string id, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<AppRole>> FindAppUserRolesByIdAsync(string id, CancellationToken cancellationToken = default);
+
+        Task<IReadOnlyList<AppRole>> GetAppUserRolesAsync(AppUser appUser, CancellationToken cancellationToken = default);
+
+        Task DeleteAppUserAsync(AppUser appUser, CancellationToken cancellationToken = default);
     }
 }

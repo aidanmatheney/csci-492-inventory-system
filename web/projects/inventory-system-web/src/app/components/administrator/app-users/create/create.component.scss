@@ -1,0 +1,28 @@
+.fields {
+    margin-bottom: 1rem;
+
+    .row {
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: row;
+
+        > * + * {
+            margin-left: 1rem;
+        }
+
+        .field-m {
+            min-width: 25em;
+        }
+
+        .checkbox-field {
+            .errors {
+                display: flex;
+                flex-direction: column;
+
+                &:not(:empty) {
+                    margin-top: .5rem;
+                }
+            }
+        }
+    }
+}

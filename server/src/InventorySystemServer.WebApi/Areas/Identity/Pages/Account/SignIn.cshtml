@@ -1,0 +1,47 @@
+﻿@page
+@model SignInModel
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+<header>
+    <h1>@ViewData["Title"]</h1>
+    <h4>Sign into your account.</h4>
+</header>
+<hr />
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form method="post">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label asp-for="Input!.Email"></label>
+                <input asp-for="Input!.Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Input!.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input!.Password"></label>
+                <input asp-for="Input!.Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Input!.Password" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="checkbox">
+            <label asp-for="Input!.RememberMe">
+                <input asp-for="Input!.RememberMe" />
+                @Html.DisplayNameFor(m => m.Input!.RememberMe)
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group"><button type="submit" class="btn btn-primary">Sign In</button></div>
+</form>
+
+<p><a asp-page="./ForgotPassword">Forgot your password?</a></p>
+    
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

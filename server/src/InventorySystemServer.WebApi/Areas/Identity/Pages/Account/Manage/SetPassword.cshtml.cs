@@ -7,10 +7,12 @@
     using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
 
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
+    [Authorize]
     public sealed class SetPasswordModel : AppPageModelBase
     {
         private readonly SignInManager<AppUser> _signInManager;
@@ -32,8 +34,10 @@
             _signInManager = signInManager;
         }
 
+        public string? Email { get; set; }
+
         [BindProperty]
-        public InputModel? Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         [TempData]
         public string? StatusMessage { get; set; }
@@ -41,59 +45,60 @@
         public sealed class InputModel
         {
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "{0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
-            public string? NewPassword { get; set; }
+            public string NewPassword { get; set; } = "";
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm new password")]
-            [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
-            public string? ConfirmPassword { get; set; }
+            [Compare(nameof(NewPassword), ErrorMessage = "New password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; } = "";
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<ActionResult> OnGetAsync()
         {
-            var user = await UserManager.GetUserAsync(User);
-            if (user is null)
-            {
-                return NotFound($"Unable to load user with ID '{UserManager.GetUserId(User)}'.");
-            }
+            var appUser = await GetAuthenticatedAppUserAsync().ConfigureAwait(false);
 
-            var hasPassword = await UserManager.HasPasswordAsync(user);
-            if (hasPassword)
+            if (appUser.HasPassword)
             {
                 return RedirectToPage("./ChangePassword");
             }
 
+            Email = appUser.Email;
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<ActionResult> OnPostAsync()
         {
+            var appUser = await GetAuthenticatedAppUserAsync().ConfigureAwait(false);
+
+            if (appUser.HasPassword)
+            {
+                return RedirectToPage("./ChangePassword");
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var user = await UserManager.GetUserAsync(User);
-            if (user is null)
-            {
-                return NotFound($"Unable to load user with ID '{UserManager.GetUserId(User)}'.");
-            }
-
-            var addPasswordResult = await UserManager.AddPasswordAsync(user, Input!.NewPassword);
+            var addPasswordResult = await UserManager.AddPasswordAsync(appUser, Input!.NewPassword).ConfigureAwait(false);
             if (!addPasswordResult.Succeeded)
             {
+                Logger.LogDebug("Failed to add password to app user {appUserEmail}. Result: {result}", appUser.Email, addPasswordResult);
                 foreach (var error in addPasswordResult.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError("", error.Description);
                 }
 
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            await _signInManager.RefreshSignInAsync(appUser).ConfigureAwait(false);
+
+            Logger.LogDebug("App user {appUserEmail} added a password", appUser.Email);
             StatusMessage = "Your password has been set.";
 
             return RedirectToPage();

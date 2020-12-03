@@ -13,7 +13,7 @@ export class SignInCallbackGuard implements CanActivate {
   public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const result = await this.authenticationService.processSignInCallback(state.url);
     if (!result.success) {
-      console.error('SignInCallbackGuard error', {
+      console.error('SignInCallbackGuard error:', {
         route,
         state,
         result

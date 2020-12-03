@@ -1,0 +1,53 @@
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  appUserWithInputtedEmail: appUserWithInputtedEmail$ | async,
+  createState: createState$ | async
+} as vars">
+  <h1>Create User</h1>
+
+  <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
+    <div [formGroup]="form" class="fields">
+      <div class="row">
+        <mat-form-field appearance="fill" class="field-m">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" required>
+          <mat-error *ngIf="form.controls.email.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="form.controls.email.hasError('email')">Invalid email</mat-error>
+          <mat-error *ngIf="form.controls.email.hasError('taken')">Email taken</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="vars.appUserWithInputtedEmail != null" class="row">
+        <a [routerLink]="['../edit', vars.appUserWithInputtedEmail!.id]">
+          Edit {{vars.appUserWithInputtedEmail!.email}}
+        </a>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="fill" class="field-m">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" required>
+          <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
+          <mat-error *ngIf="form.controls.name.hasError('pattern')">No leading or trailing spaces</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <div class="checkbox-field">
+          <mat-checkbox formControlName="isSecretary">Secretary</mat-checkbox>
+        </div>
+        <div class="checkbox-field">
+          <mat-checkbox formControlName="isAdministrator">Administrator</mat-checkbox>
+        </div>
+      </div>
+    </div>
+
+    <inventory-system-save-control
+      [form]="form"
+      [initialFormValue]="initialFormValue"
+      saveText="Create"
+      [saveState]="vars.createState!"
+      (save)="create()"
+    ></inventory-system-save-control>
+  </ng-container></inventory-system-loading-container>
+</ng-container>

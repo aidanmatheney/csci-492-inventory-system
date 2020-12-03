@@ -1,5 +1,8 @@
 namespace InventorySystemServer.WebApi
 {
+    using System;
+    using System.Threading.Tasks;
+
     using InventorySystemServer.Services;
 
     using Microsoft.AspNetCore.Hosting;
@@ -8,11 +11,36 @@ namespace InventorySystemServer.WebApi
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
-    internal static class Program
+    // ReSharper disable once ConvertToStaticClass
+    internal sealed class Program
     {
-        private static void Main(string[] args)
+        private Program() { }
+
+        private static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var serviceScope = host.Services.CreateScope())
+            {
+                var services = serviceScope.ServiceProvider;
+
+                var logger = services.GetRequiredService<ILogger<Program>>();
+
+                logger.LogWarning("InventorySystemServer.WebApi starting on {machineName}", Environment.MachineName);
+
+                var dbSeeder = services.GetRequiredService<DbSeeder>();
+                try
+                {
+                    await dbSeeder.SeedAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogCritical(ex, "Failed to seed the database");
+                    throw;
+                }
+            }
+
+            await host.RunAsync().ConfigureAwait(false);
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)

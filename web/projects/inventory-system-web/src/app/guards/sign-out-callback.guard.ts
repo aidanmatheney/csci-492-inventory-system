@@ -13,7 +13,7 @@ export class SignOutCallbackGuard implements CanActivate {
   public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const result = await this.authenticationService.processSignOutCallback(state.url);
     if (!result.success) {
-      console.error('SignOutCallbackGuard error', {
+      console.error('SignOutCallbackGuard error:', {
         route,
         state,
         result

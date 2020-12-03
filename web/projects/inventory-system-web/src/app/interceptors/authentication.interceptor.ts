@@ -1,9 +1,9 @@
 import {HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Injectable, Injector} from '@angular/core';
-import {switchMap} from 'rxjs/operators';
+import {first, switchMap} from 'rxjs/operators';
 
 import {lazy} from '../utils/lazy';
-import {filterPluckLoaded} from '../utils/observable';
+import {selectLoadedValue} from "../utils/loading";
 
 import {AuthenticationService} from '../services/authentication.service';
 
@@ -24,8 +24,8 @@ export class AuthenticationInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    return this.authenticationService.value.accessToken$.pipe(
-      filterPluckLoaded('accessToken'),
+    return selectLoadedValue(this.authenticationService.value.accessToken$).pipe(
+      first(),
       switchMap(accessToken => {
         if (accessToken == null) {
           console.warn(
@@ -36,11 +36,6 @@ export class AuthenticationInterceptor implements HttpInterceptor {
         }
 
         const authorizedRequest = request.clone({setHeaders: {Authorization: `Bearer ${accessToken}`}});
-        console.warn('AuthenticationInterceptor intercept AUTHENTICATING', {
-          accessToken,
-          request,
-          authorizedRequest
-        }); // TODO: remove
         return next.handle(authorizedRequest);
       })
     );

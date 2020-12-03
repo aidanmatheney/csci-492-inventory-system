@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using InventorySystemServer.Data.Models;
+
+@inject ApiClientsSettings ApiClientsSettings
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
+    string? returnUrl = null;
+    var query = ViewContext.HttpContext.Request.Query;
+    if (query.ContainsKey("returnUrl"))
+    {
+        returnUrl = query["returnUrl"];
+    }
+}
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@User.Identity!.Name</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/SignOut" asp-route-ReturnUrl="@returnUrl">
+                <button type="submit" class="nav-link btn btn-link text-dark">Sign Out</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/SignIn" asp-route-ReturnUrl="@returnUrl">Sign In</a>
+        </li>
+    }
+</ul>

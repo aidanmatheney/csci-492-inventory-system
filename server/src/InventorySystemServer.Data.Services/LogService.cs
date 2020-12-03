@@ -17,7 +17,8 @@
 
         public async Task<IEnumerable<WebApiLogEntry>> GetAllWebApiEntriesAsync(CancellationToken cancellationToken = default)
         {
-            return await DbContext.WebApiLogEntries.ToListAsync(cancellationToken).ConfigureAwait(false);
+            return await DbContext.WebApiLogEntries
+                .ToListAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<WebApiLogEntry?> FindWebApiEntryByIdAsync(int id, CancellationToken cancellationToken = default)

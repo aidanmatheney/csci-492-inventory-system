@@ -14,26 +14,49 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import {AppDirectivesModule} from '../directives/app-directives.module';
+import {AppPipesModule} from '../pipes/app-pipes.module';
 
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {LoadingComponent} from './loading/loading.component';
+import {LoadingContainerComponent} from './loading-container/loading-container.component';
+import {SpinnerButtonContainerComponent} from './spinner-button-container/spinner-button-container.component';
+import {ProcessingControlComponent} from './processing-control/processing-control.component';
+import {SaveControlComponent} from './save-control/save-control.component';
 import {HomeComponent} from './home/home.component';
 import {LandingComponent} from './landing/landing.component';
-import {DashboardComponent} from './dashboard/dashboard.component';
 import {HelpComponent} from './help/help.component';
-import {InventoryComponent} from './inventory/inventory.component';
+import {SecretaryDashboardComponent} from './secretary/dashboard/dashboard.component';
+import {InventoryComponent} from './secretary/inventory/inventory.component';
+import {AdministratorDashboardComponent} from './administrator/dashboard/dashboard.component';
+import {ManageAppUsersComponent} from './administrator/app-users/manage/manage.component';
+import {CreateAppUserComponent} from './administrator/app-users/create/create.component';
+import {AppUserCreatedComponent} from './administrator/app-users/created/created.component';
+import {EditAppUserComponent} from './administrator/app-users/edit/edit.component';
 
 @NgModule({
   declarations: [
     ToolbarComponent,
     LoadingComponent,
+    LoadingContainerComponent,
+    SpinnerButtonContainerComponent,
+    ProcessingControlComponent,
+    SaveControlComponent,
     HomeComponent,
     LandingComponent,
-    DashboardComponent,
     HelpComponent,
-    InventoryComponent
+    SecretaryDashboardComponent,
+    InventoryComponent,
+    AdministratorDashboardComponent,
+    ManageAppUsersComponent,
+    CreateAppUserComponent,
+    AppUserCreatedComponent,
+    EditAppUserComponent
   ],
   imports: [
     CommonModule,
@@ -50,12 +73,17 @@ import {InventoryComponent} from './inventory/inventory.component';
     MatIconModule,
     MatProgressSpinnerModule,
     MatMenuModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatSnackBarModule,
 
-    AppDirectivesModule
+    AppDirectivesModule,
+    AppPipesModule
   ],
   exports: [
     ToolbarComponent,
-    LoadingComponent
+    LoadingContainerComponent
   ]
 })
 export class AppComponentsModule { }

@@ -1,27 +1,43 @@
 ﻿namespace InventorySystemServer.WebApi.Areas.Identity.Pages.Account
 {
     using InventorySystemServer.Data.Models;
+    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
+    using InventorySystemServer.WebApi.Settings;
 
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
-    [AllowAnonymous]
     public sealed class LockoutModel : AppPageModelBase
     {
+        private readonly ApiClientsSettings _apiClientsSettings;
+
         public LockoutModel
         (
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
+            ApiClientsSettings apiClientsSettings,
             ILogger<LockoutModel> logger
         ) : base
         (
             userManager,
             roleManager,
             logger
-        ) { }
+        )
+        {
+            Guard.NotNull(apiClientsSettings, nameof(apiClientsSettings));
+            _apiClientsSettings = apiClientsSettings;
+        }
 
-        public void OnGet() { }
+        public ActionResult OnGet()
+        {
+            if (AppUserIsAuthenticated)
+            {
+                return Redirect(_apiClientsSettings.WebAppBaseUrl);
+            }
+
+            return Page();
+        }
     }
 }

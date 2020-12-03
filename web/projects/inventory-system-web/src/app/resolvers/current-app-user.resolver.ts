@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
-import {filter} from 'rxjs/operators';
 
 import {firstValueFrom} from '../utils/observable';
+import {selectLoadedValue} from "../utils/loading";
 
 import {CurrentAppUserService} from '../services/current-app-user.service';
 
@@ -13,6 +13,6 @@ export class CurrentAppUserResolver implements Resolve<void> {
   ) { }
 
   public async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    await firstValueFrom(this.currentAppUserService.loading$.pipe(filter(loading => !loading)));
+    await firstValueFrom(selectLoadedValue(this.currentAppUserService.appUser$));
   }
 }

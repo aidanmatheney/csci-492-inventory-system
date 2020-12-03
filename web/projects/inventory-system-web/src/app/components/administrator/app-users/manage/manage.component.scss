@@ -1,0 +1,13 @@
+.controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .filter {
+        flex-grow: 1;
+        margin-right: 1rem;
+        max-width: 30em;
+    }
+}

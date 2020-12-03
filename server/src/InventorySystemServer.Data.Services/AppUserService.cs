@@ -15,6 +15,12 @@
     {
         public AppUserService(AppDbContext dbContext, ILogger<AppUserService> logger) : base(dbContext, logger) { }
 
+        public async Task<IReadOnlyList<AppUser>> GetAllAppUsersAsync(CancellationToken cancellationToken = default)
+        {
+            return await DbContext.Users
+                .ToListAsync(cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<AppUser?> FindAppUserByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             Guard.NotNull(id, nameof(id));
@@ -24,12 +30,12 @@
                 .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<AppRole>> FindAppUserRolesByIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<AppRole>> GetAppUserRolesAsync(AppUser appUser, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(id, nameof(id));
+            Guard.NotNull(appUser, nameof(appUser));
 
             return await DbContext.UserRoles
-                .Where(appUserRole => appUserRole.UserId == id)
+                .Where(appUserRole => appUserRole.UserId == appUser.Id)
                 .Join
                 (
                     DbContext.Roles,
@@ -38,6 +44,14 @@
                     (appUserRole, appRole) => appRole
                 )
                 .ToListAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task DeleteAppUserAsync(AppUser appUser, CancellationToken cancellationToken = default)
+        {
+            Guard.NotNull(appUser, nameof(appUser));
+
+            DbContext.Users.Remove(appUser);
+            await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

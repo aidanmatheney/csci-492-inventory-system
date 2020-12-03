@@ -4,11 +4,8 @@
   </div>
 
   <div class="content-container">
-    <ng-container *ngIf="loading$ | async; else loadedContent">
-      <inventory-system-loading></inventory-system-loading>
-    </ng-container>
-    <ng-template #loadedContent>
+    <inventory-system-loading-container [loading]="loading$ | async">
       <router-outlet></router-outlet>
-    </ng-template>
+    </inventory-system-loading-container>
   </div>
 </div>

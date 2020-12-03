@@ -4,11 +4,14 @@ namespace InventorySystemServer.WebApi
     using System.IO;
     using System.Reflection;
 
+    using IdentityServer4.Services;
+
     using InventorySystemServer.Data;
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Data.Services;
     using InventorySystemServer.Services;
     using InventorySystemServer.Utils;
+    using InventorySystemServer.WebApi.Authorization;
     using InventorySystemServer.WebApi.Settings;
 
     using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -16,6 +19,7 @@ namespace InventorySystemServer.WebApi
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc.Abstractions;
     using Microsoft.AspNetCore.Mvc.Controllers;
@@ -67,7 +71,7 @@ namespace InventorySystemServer.WebApi
                     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                     options.User.RequireUniqueEmail = true;
 
-                    options.Password.RequiredLength = 12;
+                    options.Password.RequiredLength = 8;
                     options.Password.RequiredUniqueChars = 4;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireLowercase = true;
@@ -97,6 +101,12 @@ namespace InventorySystemServer.WebApi
                 throw new InvalidOperationException("Authentication.WebAppBaseUrl setting is missing");
             }
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthorizationPolicyName.RequireSecretaryRole, policy => policy.RequireRole(AppRoleName.Secretary));
+                options.AddPolicy(AuthorizationPolicyName.RequireAdministratorRole, policy => policy.RequireRole(AppRoleName.Administrator));
+            });
+
             services
                 .AddIdentityServer()
                 .AddApiAuthorization<AppUser, AppDbContext>(options =>
@@ -115,16 +125,19 @@ namespace InventorySystemServer.WebApi
 
             services.Configure<JwtBearerOptions>(IdentityServerJwtConstants.IdentityServerJwtBearerScheme, options =>
             {
-                // Configure JWT
+                // Don't map JWT claim types (e.g. sub, role) to ASP.NET claim types (XML namespaces)
+                options.MapInboundClaims = false;
             });
+
+            services.AddScoped<IProfileService, AppClaimsProfileService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
 
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = "/Identity/Account/Login";
-                options.LogoutPath = "/Identity/Account/Logout";
+                options.LoginPath = "/Identity/Account/SignIn";
+                options.LogoutPath = "/Identity/Account/SignOut";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
@@ -136,7 +149,8 @@ namespace InventorySystemServer.WebApi
                 options.AddPolicy(WebAppCorsPolicyName, policy =>
                 {
                     policy.WithOrigins(webAppBaseUrl);
-                    policy.WithHeaders(HeaderNames.Authorization);
+                    policy.WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType);
+                    policy.WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Delete);
                 });
             });
 
@@ -166,10 +180,14 @@ namespace InventorySystemServer.WebApi
             services.AddSingleton(apiClientsSettings!);
 
             services.AddScoped<IAppUserService, AppUserService>();
+            services.AddScoped<IAppRoleService, AppRoleService>();
 
             services.AddScoped<ILogService, LogService>();
 
             services.AddScoped<IEmailSender, ToLogEmailSender>();
+
+            services.AddSingleton(Configuration.GetSection("DbSeeder").Get<DbSeederSettings>());
+            services.AddTransient<DbSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

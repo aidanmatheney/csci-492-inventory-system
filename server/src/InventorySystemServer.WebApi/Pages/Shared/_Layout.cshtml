@@ -1,18 +1,13 @@
-﻿@using Microsoft.AspNetCore.Hosting
-@using Microsoft.AspNetCore.Mvc.ViewEngines
-
-@model AppPageModelBase
+﻿@model AppPageModelBase
 
 @inject ApiClientsSettings ApiClientsSettings
-@inject IWebHostEnvironment Environment
-@inject ICompositeViewEngine Engine
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - InventorySystemServer.WebApi</title>
+    <title>@ViewData["Title"] - Inventory System</title>
     <link rel="stylesheet" href="~/Identity/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/Identity/css/site.css" />
 </head>
@@ -21,12 +16,13 @@
         <nav class="navbar navbar-expand-sm navbar-light navbar-toggleable-sm bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" href="@ApiClientsSettings.WebAppBaseUrl">Inventory System</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <button
+                    class="navbar-toggler" type="button"
+                    data-toggle="collapse" data-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                ><span class="navbar-toggler-icon"></span></button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
+                    <partial name="_AccountNavPartial" />
                 </div>
             </div>
         </nav>
@@ -37,11 +33,13 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="footer border-top text-muted">
+
+    <footer class="footer border-top text-muted" style="overflow: visible;">
         <div class="container">
-            &copy; 2020 - Inventory System - <a asp-area="" asp-page="Privacy">Privacy</a>
+            Inventory System - <a href="@ApiClientsSettings.WebAppBaseUrl/help">Help</a>
         </div>
     </footer>
+
     <script src="~/Identity/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Identity/js/site.js" asp-append-version="true"></script>

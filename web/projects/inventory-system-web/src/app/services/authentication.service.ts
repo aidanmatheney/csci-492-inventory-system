@@ -1,8 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from 'rxjs';
-import {delay, map, retryWhen, switchMap, tap} from 'rxjs/operators';
+import {ActivatedRoute, ActivationStart, NavigationCancel, Router} from '@angular/router';
+import {combineLatest, EMPTY, from, merge, of, race} from 'rxjs';
+import {
+  catchError,
+  delay,
+  filter,
+  first,
+  map,
+  mapTo,
+  retryWhen,
+  startWith,
+  switchMap,
+  switchMapTo
+} from 'rxjs/operators';
 import {
   UserManager as OidcUserManager,
   UserManagerSettings as OidcUserManagerSettings,
@@ -10,7 +21,14 @@ import {
   WebStorageStateStore as OidcWebStorageStateStore
 } from 'oidc-client';
 
-import {cacheUntil, firstValueFrom, loadingValue$} from '../utils/observable';
+import {cacheUntil, firstValueFrom, tapLog} from '../utils/observable';
+import {filterDistinctLoadable, Loadable, mapLoaded} from "../utils/loading";
+import {
+  selectOidcAccessTokenExpired,
+  selectOidcUserLoaded,
+  selectOidcUserSignedOut,
+  selectOidcUserUnloaded
+} from '../utils/oidc';
 
 import {Destroyed$} from './destroyed$.service';
 
@@ -18,7 +36,7 @@ import {environment} from '../../environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
-  private readonly oidcUserManager$ = this.getAppOidcConfiguration().pipe(
+  private readonly oidcUserManager$ = this.httpGetAppOidcConfiguration().pipe(
     map(appOidcConfiguration => {
       const oidcUserManagerSettings: OidcUserManagerSettings = {
         authority: appOidcConfiguration.authority,
@@ -33,62 +51,36 @@ export class AuthenticationService {
         silent_redirect_uri: `${environment.webAppBaseUrl}/silent-authentication-renew.html`
       };
       const oidcUserManager = new OidcUserManager(oidcUserManagerSettings);
-      console.error('AuthenticationService _oidcUserManager$', {
-        appOidcConfiguration,
-        oidcUserManagerSettings,
-        oidcUserManager
-      }); // TODO: remove
       return oidcUserManager;
     }),
     cacheUntil(this.destroyed$)
   );
 
-  private readonly state$ = loadingValue$<{oidcUser: OidcUser | undefined;}>(next => {
-    return this.oidcUserManager$.pipe(
-      switchMap(oidcUserManager => new Observable<OidcUserManager>(subscriber => {
-        oidcUserManager.events.addAccessTokenExpiring((...a) => console.error('userManager.events.addAccessTokenExpiring', a)); // TODO: remove
-        oidcUserManager.events.addSilentRenewError((...a) => console.error('userManager.events.addSilentRenewError', a)); // TODO: remove
-        oidcUserManager.events.addUserSessionChanged((...a) => console.error('userManager.events.addUserSessionChanged', a)); // TODO: remove
+  private readonly oidcUserWasLoadedInSignInCallback$ = this.router.events.pipe(
+    filter((routerEvent): routerEvent is ActivationStart => routerEvent instanceof ActivationStart),
+    first(),
+    switchMap(activationStartEvent => {
+      const firstPathPart = activationStartEvent.snapshot.routeConfig?.path;
+      if (firstPathPart !== 'sign-in-callback') {
+        return of(false);
+      }
 
-        const handleOidcUserLoaded = (oidcUser: OidcUser) => {
-          console.error('OIDC userLoaded', {oidcUser}); // TODO: remove
-          next({loading: false, oidcUser});
-        };
-        oidcUserManager.events.addUserLoaded(handleOidcUserLoaded);
-
-        const handleOidcUserUnloaded = () => {
-          console.error('OIDC userUnloaded'); // TODO: remove
-          next({loading: false, oidcUser: undefined});
-        };
-        oidcUserManager.events.addUserUnloaded(handleOidcUserUnloaded);
-
-        const handleOidcUserSignedOut = () => {
-          console.error('OIDC userSignedOut'); // TODO: remove
-          oidcUserManager.removeUser();
-        };
-        oidcUserManager.events.addUserSignedOut(handleOidcUserSignedOut);
-
-        const handleOidcAccessTokenExpired = () => {
-          console.error('OIDC accessTokenExpired'); // TODO: remove
-          oidcUserManager.removeUser();
-        };
-        oidcUserManager.events.addAccessTokenExpired(handleOidcAccessTokenExpired);
-
-        subscriber.next(oidcUserManager);
-        return () => {
-          oidcUserManager.events.removeUserLoaded(handleOidcUserLoaded);
-          oidcUserManager.events.removeUserUnloaded(handleOidcUserUnloaded);
-          oidcUserManager.events.removeUserSignedOut(handleOidcUserSignedOut);
-          oidcUserManager.events.removeAccessTokenExpired(handleOidcAccessTokenExpired);
-        };
-      })),
-      switchMap(async oidcUserManager => {
-        next({loading: true});
-        return (await oidcUserManager.getUser()) ?? undefined;
-      }),
-      tap(storedOidcUser => next({loading: false, oidcUser: storedOidcUser}))
-    ).subscribe();
-  }).pipe(cacheUntil(this.destroyed$));
+      return race(
+        this.oidcUserManager$.pipe(
+          switchMap(selectOidcUserLoaded),
+          mapTo('oidcUserLoaded' as const)
+        ),
+        this.router.events.pipe(
+          filter(routerEvent => routerEvent instanceof NavigationCancel),
+          mapTo('signInCallbackGuardCompleted' as const)
+        )
+      ).pipe(
+        first(),
+        map(event => event === 'oidcUserLoaded')
+      );
+    }),
+    cacheUntil(this.destroyed$)
+  );
 
   public constructor(
     private readonly http: HttpClient,
@@ -96,14 +88,47 @@ export class AuthenticationService {
     private readonly route: ActivatedRoute,
     private readonly destroyed$: Destroyed$
   ) {
-    this.oidcUser$.subscribe(oidcUser => console.error('AuthenticationService oidcUser:', oidcUser)); // TODO: remove
+    // this.router.events.subscribe(event => console.warn('router:', event)); // TODO: remove
   }
 
-  public readonly loading$ = this.state$.pipe(map(({loading}) => loading));
+  public readonly oidcUser$ = merge(
+    this.oidcUserWasLoadedInSignInCallback$.pipe(
+      filter(oidcUserWasLoadedInSignInCallback => !oidcUserWasLoadedInSignInCallback),
+      switchMapTo(this.oidcUserManager$),
+      switchMap(oidcUserManager => from(oidcUserManager.getUser()).pipe(
+        switchMap(storedOidcUser => {
+          if (storedOidcUser != null) {
+            return of(Loadable.loaded(storedOidcUser));
+          }
 
-  public readonly authenticated$ = this.state$.pipe(map(({loading, oidcUser}) => ({loading, authenticated: oidcUser != null})));
-  public readonly oidcUser$ = this.state$.pipe(map(({loading, oidcUser}) => ({loading, oidcUser})));
-  public readonly accessToken$ = this.state$.pipe(map(({loading, oidcUser}) =>({loading, accessToken: oidcUser?.access_token})));
+          return from(oidcUserManager.signinSilent()).pipe(
+            switchMapTo(EMPTY),
+            catchError(() => of(Loadable.loaded(undefined)))
+          );
+        })
+      ))
+    ),
+    this.oidcUserManager$.pipe(
+      switchMap(oidcUserManager => merge(
+        selectOidcUserLoaded(oidcUserManager).pipe(map(Loadable.loaded)),
+        selectOidcUserUnloaded(oidcUserManager).pipe(mapTo(Loadable.loaded(undefined))),
+        combineLatest([
+          selectOidcUserSignedOut(oidcUserManager),
+          selectOidcAccessTokenExpired(oidcUserManager)
+        ]).pipe(
+          switchMap(() => oidcUserManager.removeUser()),
+          switchMapTo(EMPTY)
+        )
+      ))
+    )
+  ).pipe(
+    startWith<Loadable<OidcUser | undefined>>(Loadable.loading),
+    filterDistinctLoadable(),
+    tapLog('AuthenticationService oidcUser$'), // TODO: remove
+    cacheUntil(this.destroyed$)
+  );
+  public readonly authenticated$ = this.oidcUser$.pipe(mapLoaded(oidcUser => oidcUser != null));
+  public readonly accessToken$ = this.oidcUser$.pipe(mapLoaded(oidcUser => oidcUser?.access_token));
 
   public async signIn() {
     const queryParams = this.route.snapshot.queryParams as {
@@ -173,7 +198,7 @@ export class AuthenticationService {
     }
   }
 
-  private getAppOidcConfiguration() {
+  private httpGetAppOidcConfiguration() {
     const url = `${environment.serverBaseUrl}/_configuration/${environment.oidcClientName}`;
     return this.http.get<{
       authority: string;

@@ -1,13 +1,21 @@
 import {Observable, TeardownLogic} from 'rxjs';
-import {filter, first, map, pluck, shareReplay, takeUntil} from 'rxjs/operators';
-
-import {getNextValueMutable} from './immutable';
+import {filter, first, mapTo, shareReplay, startWith, takeUntil, tap} from 'rxjs/operators';
 
 export const firstValueFrom = <V>(value$: Observable<V>) => {
   return new Promise<V>((resolve, reject) => {
     value$.pipe(first()).subscribe(resolve, reject);
   });
 };
+
+export const startWithVoid = <T>() => startWith<T, void>(undefined);
+export const mapToVoid = <T>() => mapTo<T, void>(undefined);
+
+export const filterNotNull = <T>() => filter((value: T): value is NonNullable<T> => value != null);
+
+export const tapLog = <V>(
+  category: string,
+  location: 'log' | 'warn' | 'error' = 'error'
+) => tap((value: V) => console[location](`${category}:`, value));
 
 export const cacheUntil = <T>(destroy$: Observable<void>) => {
   return (source: Observable<T>) => source.pipe(
@@ -17,61 +25,10 @@ export const cacheUntil = <T>(destroy$: Observable<void>) => {
   );
 };
 
-type WithLoadingState<T> = (
-  | ({loading: true;} & Partial<T>)
-  | ({loading: false;} & T)
-);
-
-export const loadingValue$ = <V>(
-  run: (
-    next: (nextValueOrRecipe: WithLoadingState<V> | ((value: WithLoadingState<V>) => void)) => void
-  ) => TeardownLogic
+export const imperative$ = <V>(
+  run: (next: (value: V) => void) => TeardownLogic
 ) => {
-  return new Observable<WithLoadingState<V>>(valueSubscriber => {
-    let value: WithLoadingState<V> = {loading: true};
-    valueSubscriber.next(value);
-
-    return run(nextValueOrRecipe => {
-      const nextValue = getNextValueMutable(value, nextValueOrRecipe);
-      if (
-        (value.loading && nextValue.loading)
-        || Object.is(value, nextValue)
-      ) {
-        return;
-      }
-
-      value = nextValue;
-      valueSubscriber.next(value);
-    });
+  return new Observable<V>(subscriber => {
+    return run(value => subscriber.next(value));
   });
-};
-
-type Loaded<T extends {loading: boolean;}> = T & {loading: false;};
-
-export const filterLoaded = <T extends {loading: boolean;}>() => {
-  return filter((value: T): value is Loaded<T> => !value.loading);
-};
-
-export const filterMapLoaded = <
-  TOriginal extends {loading: boolean;},
-  TMapped
->(
-  mapLoadedValue: (loadedValue: Loaded<TOriginal>) => TMapped
-) => {
-  return (source: Observable<TOriginal>) => source.pipe(
-    filterLoaded(),
-    map(mapLoadedValue)
-  );
-};
-
-export const filterPluckLoaded = <
-  TOriginal extends {loading: boolean;},
-  TPropertyName extends keyof Loaded<TOriginal>
->(
-  propertyName: TPropertyName
-) => {
-  return (source: Observable<TOriginal>) => source.pipe(
-    filterLoaded(),
-    pluck(propertyName)
-  );
 };

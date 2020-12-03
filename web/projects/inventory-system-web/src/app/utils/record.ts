@@ -16,7 +16,7 @@ export const getOrAdd = <K extends keyof any, V>(
   defaultValue: V
 ) => {
   if (key in source) {
-    return source[key];
+    return source[key] as V;
   }
 
   source[key] = defaultValue;
@@ -29,10 +29,28 @@ export const getOrCreate = <K extends keyof any, V>(
   createValue: (key: K) => V
 ) => {
   if (key in source) {
-    return source[key];
+    return source[key] as V;
   }
 
   const value = createValue(key);
   source[key] = value;
   return value;
+};
+
+export const stringRecordKeys = <K extends string, V>(source: Record<K, V> | PartialRecord<K, V>) => {
+  return Object.keys(source) as K[];
+};
+export const stringRecordEntries = <K extends string, V>(source: Record<K, V> | PartialRecord<K, V>) => {
+  return Object.entries(source) as Array<[K, V]>;
+};
+
+export const numberRecordKeys = <K extends number, V>(source: Record<K, V> | PartialRecord<K, V>) => {
+  return Object.keys(source).map(Number) as K[];
+};
+export const numberRecordEntries = <K extends number, V>(source: Record<K, V> | PartialRecord<K, V>) => {
+  return Object.entries(source).map(([keyString, value]) => [Number(keyString), value] as [K, V]);
+};
+
+export const recordValues = <K extends keyof any, V>(source: Record<K, V> | PartialRecord<K, V>) => {
+  return Object.values(source) as V[];
 };

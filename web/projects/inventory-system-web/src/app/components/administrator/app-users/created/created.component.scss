@@ -1,0 +1,8 @@
+.email-confirmation-url-container {
+    display: flex;
+    flex-direction: column;
+
+    .copy-button {
+        width: min-content;
+    }
+}

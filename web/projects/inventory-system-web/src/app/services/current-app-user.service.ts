@@ -1,88 +1,64 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY} from 'rxjs';
-import {delay, map, retryWhen, switchMap, tap} from 'rxjs/operators';
+import {concat, Observable, of} from 'rxjs';
+import {delay, map, retryWhen} from 'rxjs/operators';
 
-import {PartialRecordSet} from '../utils/record';
 import {partialRecordSet} from '../utils/array';
-import {cacheUntil, loadingValue$} from '../utils/observable';
+import {cacheUntil, filterNotNull, tapLog} from '../utils/observable';
+import {filterDistinctLoadable, Loadable, mapLoaded, selectLoadedValue, switchMapLoadable} from "../utils/loading";
+import {memoize} from '../utils/memo';
 
 import {AuthenticationService} from './authentication.service';
 import {Destroyed$} from './destroyed$.service';
 
 import {environment} from '../../environments/environment';
-import {AppUser, AppRole} from '../models/user';
+import {AppRole, CurrentAppUser, CurrentAppUserDto} from '../models/app-user';
 
 @Injectable({providedIn: 'root'})
 export class CurrentAppUserService {
-  private readonly state$ = loadingValue$<{
-    appUser: AppUser | undefined;
-    appRoles: PartialRecordSet<AppRole> | undefined;
-  }>(next => {
-    return this.authenticationService.authenticated$.pipe(
-      switchMap(({loading: authenticatedLoading, authenticated}) => {
-        if (authenticatedLoading) {
-          next({loading: true});
-          return EMPTY;
-        }
-
-        if (!authenticated) {
-          next({
-            loading: false,
-            appUser: undefined,
-            appRoles: undefined
-          });
-          return EMPTY;
-        }
-
-        next({loading: true});
-        return this.getCurrentAppUserInfo().pipe(
-          tap(({appUser, appRoles}) => next({
-            loading: false,
-            appUser,
-            appRoles: appRoles && partialRecordSet(appRoles)
-          }))
-        );
-      })
-    ).subscribe();
-  }).pipe(cacheUntil(this.destroyed$));
+  private readonly baseUrl = `${environment.serverBaseUrl}/Api/CurrentAppUser`;
 
   public constructor(
     private readonly http: HttpClient,
     private readonly authenticationService: AuthenticationService,
     private readonly destroyed$: Destroyed$
-  ) {
-    this.appUser$.subscribe(appUser => console.error('CurrentAppUserService appUser:', appUser)); // TODO: remove
-  }
+  ) { }
 
-  public readonly loading$ = this.state$.pipe(map(({loading}) => loading));
+  public readonly appUser$ = this.authenticationService.authenticated$.pipe(
+    switchMapLoadable(Loadable.loading, (authenticated): Observable<Loadable<CurrentAppUser | undefined>> => {
+      if (!authenticated) {
+        return of(Loadable.loaded(undefined));
+      }
 
-  public readonly signedIn$ = this.state$.pipe(map(({loading, appUser}) => ({loading, signedIn: appUser != null})));
-  public readonly appUser$ = this.state$.pipe(map(({loading, appUser}) => ({loading, appUser})));
+      return concat(
+        of(Loadable.loading),
+        this.httpGetCurrentAppUser().pipe(
+          map(({id, email, name, appRoles}) => Loadable.loaded({
+            id,
+            email,
+            name,
+            hasAppRoleByName: appRoles && partialRecordSet(appRoles)
+          }))
+        )
+      );
+    }),
+    filterDistinctLoadable(),
+    tapLog('CurrentAppUserService appUser$'), // TODO: remove
+    cacheUntil(this.destroyed$)
+  );
+  public readonly signedIn$ = this.appUser$.pipe(mapLoaded(appUser => appUser != null));
+  public readonly signedInAppUser$ = selectLoadedValue(this.appUser$).pipe(filterNotNull());
 
-  public selectHasAppRole(appRole: AppRole) {
-    return this.state$.pipe(map(({loading, appRoles}) => ({loading, hasAppRole: appRoles?.[appRole] ?? false})));
-  }
+  public readonly selectHasAppRole = memoize((appRole: AppRole) => {
+    return this.appUser$.pipe(mapLoaded(appUser => appUser?.hasAppRoleByName[appRole] ?? false));
+  });
   public readonly isSecretary$ = this.selectHasAppRole(AppRole.secretary);
   public readonly isAdministrator$ = this.selectHasAppRole(AppRole.administrator);
 
-  private getCurrentAppUserInfo() {
-    const url = `${environment.serverBaseUrl}/Api/AppUser/CurrentAppUserInfo`;
-    return this.http.get<{
-      id: string;
-      email: string;
-      name: string;
-      roles: Array<AppRole>;
-    }>(url).pipe(
-      retryWhen(errors => errors.pipe(delay(2500))),
-      map(({id, email, name, roles}) => ({
-        appUser: {
-          id,
-          email,
-          name
-        },
-        appRoles: roles
-      }))
+  private httpGetCurrentAppUser() {
+    const url = this.baseUrl;
+    return this.http.get<CurrentAppUserDto>(url).pipe(
+      retryWhen(errors => errors.pipe(delay(2500)))
     );
   }
 }

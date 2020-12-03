@@ -1,13 +1,10 @@
-<ng-container *ngLet="signedIn$ | async as signedIn">
-  <ng-container *ngIf="signedIn.loading; else loadedContent">
-    <inventory-system-loading></inventory-system-loading>
+<inventory-system-loading-container [loading]="loading$ | async">
+  <ng-container *ngIf="!(signedIn$ | async); else signedInContent">
+    <inventory-system-landing></inventory-system-landing>
   </ng-container>
-  <ng-template #loadedContent>
-    <ng-container *ngIf="!signedIn.signedIn; else signedInContent">
-      <inventory-system-landing></inventory-system-landing>
+  <ng-template #signedInContent>
+    <ng-container *ngIf="isSecretary$ | async">
+      <inventory-system-secretary-dashboard></inventory-system-secretary-dashboard>
     </ng-container>
-    <ng-template #signedInContent>
-      <inventory-system-dashboard></inventory-system-dashboard>
-    </ng-template>
   </ng-template>
-</ng-container>
+</inventory-system-loading-container>
