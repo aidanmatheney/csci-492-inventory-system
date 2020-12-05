@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 
-import {filterPluckLoaded, firstValueFrom} from '../utils/observable';
+import {firstLoadedValueFrom} from '../utils/loading';
 
 import {CurrentAppUserService} from '../services/current-app-user.service';
 
@@ -13,7 +13,7 @@ export class SignedOutGuard implements CanActivate {
   ) { }
 
   public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const signedIn = await firstValueFrom(this.currentAppUserService.signedIn$.pipe(filterPluckLoaded('signedIn')));
+    const signedIn = await firstLoadedValueFrom(this.currentAppUserService.signedIn$);
     if (signedIn) {
       return this.router.parseUrl('/');
     }

@@ -5,7 +5,13 @@ import {delay, map, retryWhen} from 'rxjs/operators';
 
 import {partialRecordSet} from '../utils/array';
 import {cacheUntil, filterNotNull, tapLog} from '../utils/observable';
-import {filterDistinctLoadable, Loadable, mapLoaded, selectLoadedValue, switchMapLoadable} from "../utils/loading";
+import {
+  distinctUntilLoadableChanged,
+  Loadable,
+  mapLoaded,
+  selectLoadedValue,
+  switchMapLoadable
+} from "../utils/loading";
 import {memoize} from '../utils/memo';
 
 import {AuthenticationService} from './authentication.service';
@@ -42,15 +48,21 @@ export class CurrentAppUserService {
         )
       );
     }),
-    filterDistinctLoadable(),
+    distinctUntilLoadableChanged(),
     tapLog('CurrentAppUserService appUser$'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
-  public readonly signedIn$ = this.appUser$.pipe(mapLoaded(appUser => appUser != null));
+  public readonly signedIn$ = this.appUser$.pipe(
+    mapLoaded(appUser => appUser != null),
+    distinctUntilLoadableChanged()
+  );
   public readonly signedInAppUser$ = selectLoadedValue(this.appUser$).pipe(filterNotNull());
 
   public readonly selectHasAppRole = memoize((appRole: AppRole) => {
-    return this.appUser$.pipe(mapLoaded(appUser => appUser?.hasAppRoleByName[appRole] ?? false));
+    return this.appUser$.pipe(
+      mapLoaded(appUser => appUser?.hasAppRoleByName[appRole] ?? false),
+      distinctUntilLoadableChanged()
+    );
   });
   public readonly isSecretary$ = this.selectHasAppRole(AppRole.secretary);
   public readonly isAdministrator$ = this.selectHasAppRole(AppRole.administrator);

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, ActivationStart, NavigationCancel, Router} from '@angular/router';
-import {combineLatest, EMPTY, from, merge, of, race} from 'rxjs';
+import {concat, EMPTY, from, merge, of, race} from 'rxjs';
 import {
   catchError,
   delay,
@@ -22,7 +22,7 @@ import {
 } from 'oidc-client';
 
 import {cacheUntil, firstValueFrom, tapLog} from '../utils/observable';
-import {filterDistinctLoadable, Loadable, mapLoaded} from "../utils/loading";
+import {distinctUntilLoadableChanged, Loadable, mapLoaded} from "../utils/loading";
 import {
   selectOidcAccessTokenExpired,
   selectOidcUserLoaded,
@@ -112,23 +112,35 @@ export class AuthenticationService {
       switchMap(oidcUserManager => merge(
         selectOidcUserLoaded(oidcUserManager).pipe(map(Loadable.loaded)),
         selectOidcUserUnloaded(oidcUserManager).pipe(mapTo(Loadable.loaded(undefined))),
-        combineLatest([
-          selectOidcUserSignedOut(oidcUserManager),
-          selectOidcAccessTokenExpired(oidcUserManager)
-        ]).pipe(
+        selectOidcUserSignedOut(oidcUserManager).pipe(
           switchMap(() => oidcUserManager.removeUser()),
           switchMapTo(EMPTY)
+        ),
+        selectOidcAccessTokenExpired(oidcUserManager).pipe(
+          switchMap(() => concat(
+            of(Loadable.loading),
+            from(oidcUserManager.signinSilent()).pipe(
+              switchMapTo(EMPTY),
+              catchError(() => EMPTY)
+            )
+          ))
         )
       ))
     )
   ).pipe(
     startWith<Loadable<OidcUser | undefined>>(Loadable.loading),
-    filterDistinctLoadable(),
+    distinctUntilLoadableChanged(),
     tapLog('AuthenticationService oidcUser$'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
-  public readonly authenticated$ = this.oidcUser$.pipe(mapLoaded(oidcUser => oidcUser != null));
-  public readonly accessToken$ = this.oidcUser$.pipe(mapLoaded(oidcUser => oidcUser?.access_token));
+  public readonly authenticated$ = this.oidcUser$.pipe(
+    mapLoaded(oidcUser => oidcUser != null),
+    distinctUntilLoadableChanged()
+  );
+  public readonly accessToken$ = this.oidcUser$.pipe(
+    mapLoaded(oidcUser => oidcUser?.access_token),
+    distinctUntilLoadableChanged()
+  );
 
   public async signIn() {
     const queryParams = this.route.snapshot.queryParams as {

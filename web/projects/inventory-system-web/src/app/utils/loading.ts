@@ -1,7 +1,7 @@
 import {Observable, of, OperatorFunction} from 'rxjs';
 import {distinctUntilChanged, filter, map, pluck, switchMap} from 'rxjs/operators';
 
-import {mapToVoid} from './observable';
+import {firstValueFrom, mapToVoid} from './observable';
 
 export interface Loading {
   loading: true;
@@ -29,36 +29,36 @@ export const Loadable: {
 export const mapLoaded = <V, M>(
   project: (value: V) => M
 ) => {
-  return map((result: Loadable<V>): Loadable<M> => {
-    if (result.loading) {
+  return map((loadable: Loadable<V>): Loadable<M> => {
+    if (loadable.loading) {
       return Loadable.loading;
     }
 
-    const mappedValue = project(result.value);
+    const mappedValue = project(loadable.value);
     return Loadable.loaded(mappedValue);
   });
 };
 export const pluckLoaded = <V, K extends keyof V>(
   key: K
 ) => {
-  return map((result: Loadable<V>): Loadable<V[K]> => {
-    if (result.loading) {
+  return map((loadable: Loadable<V>): Loadable<V[K]> => {
+    if (loadable.loading) {
       return Loadable.loading;
     }
 
-    const pluckedValue = result.value[key];
+    const pluckedValue = loadable.value[key];
     return Loadable.loaded(pluckedValue);
   });
 };
 export const switchMapLoaded = <V, M>(
   project: (value: V) => Observable<M>
 ) => {
-  return switchMap((result: Loadable<V>): Observable<Loadable<M>> => {
-    if (result.loading) {
+  return switchMap((loadable: Loadable<V>): Observable<Loadable<M>> => {
+    if (loadable.loading) {
       return of(Loadable.loading);
     }
 
-    const mappedValue$ = project(result.value);
+    const mappedValue$ = project(loadable.value);
     return mappedValue$.pipe(map(Loadable.loaded));
   });
 };
@@ -71,20 +71,20 @@ export const mapLoadable: {
   project?: (value: V) => M
 ) => {
     if (project == null) {
-      return map((result: Loadable<V>): V => {
-        if (result.loading) {
+      return map((loadable: Loadable<V>): V => {
+        if (loadable.loading) {
           return loadingValue as V;
         }
 
-        return result.value;
+        return loadable.value;
       });
     } else {
-      return map((result: Loadable<V>): M => {
-        if (result.loading) {
+      return map((loadable: Loadable<V>): M => {
+        if (loadable.loading) {
           return loadingValue as M;
         }
 
-        const mappedValue = project(result.value);
+        const mappedValue = project(loadable.value);
         return mappedValue;
       });
     }
@@ -93,12 +93,12 @@ export const pluckLoadable = <V, K extends keyof V>(
   loadingValue: V[K],
   key: K
 ) => {
-  return map((result: Loadable<V>): V[K] => {
-    if (result.loading) {
+  return map((loadable: Loadable<V>): V[K] => {
+    if (loadable.loading) {
       return loadingValue;
     }
 
-    const pluckedValue = result.value[key];
+    const pluckedValue = loadable.value[key];
     return pluckedValue;
   });
 };
@@ -106,20 +106,21 @@ export const switchMapLoadable = <V, M>(
   loadingValue: M,
   project: (value: V) => Observable<M>
 ) => {
-  return switchMap((result: Loadable<V>): Observable<M> => {
-    if (result.loading) {
+  return switchMap((loadable: Loadable<V>): Observable<M> => {
+    if (loadable.loading) {
       return of(loadingValue);
     }
 
-    const mappedValue$ = project(result.value);
+    const mappedValue$ = project(loadable.value);
     return mappedValue$;
   });
 };
 
-export const filterDistinctLoadable = <V>() => {
+export const distinctUntilLoadableChanged = <V>(equals?: (value1: V, value2: V) => boolean) => {
+  const effectiveEquals = equals ?? Object.is;
   return distinctUntilChanged((loadable1: Loadable<V>, loadable2: Loadable<V>) => (
     (loadable1.loading && loadable2.loading)
-    || (!loadable1.loading && !loadable2.loading && Object.is(loadable1.value, loadable2.value))
+    || (!loadable1.loading && !loadable2.loading && effectiveEquals(loadable1.value, loadable2.value))
   ));
 };
 
@@ -137,3 +138,5 @@ export const selectLoadedValue = <V>(source: Observable<Loadable<V>>) => source.
   filter(Loadable.isLoaded),
   pluck('value')
 );
+
+export const firstLoadedValueFrom = <V>(source: Observable<Loadable<V>>) => firstValueFrom(selectLoadedValue(source));

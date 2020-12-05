@@ -5,7 +5,7 @@ import {delay, distinctUntilChanged, map, pluck, retryWhen, startWith, switchMap
 
 import {partialRecordSet, recordBy} from '../utils/array';
 import {cacheUntil, firstValueFrom, tapLog,} from '../utils/observable';
-import {filterDistinctLoadable, Loadable, mapLoaded, pluckLoaded} from "../utils/loading";
+import {distinctUntilLoadableChanged, Loadable, mapLoaded, pluckLoaded} from "../utils/loading";
 import {partialRecord} from '../utils/record';
 import {memoize} from '../utils/memo';
 import {produceBehaviorSubjectMutable} from '../utils/immutable';
@@ -51,7 +51,7 @@ export class AppUsersService {
       )
     )),
     startWith<Loadable<OtherAppUser[]>>(Loadable.loading),
-    filterDistinctLoadable(),
+    distinctUntilLoadableChanged(),
     tapLog('AppUsersService appUsers$'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
@@ -63,7 +63,7 @@ export class AppUsersService {
   public readonly selectAppUserById = memoize((id: string) => {
     return this.appUserById$.pipe(
       pluckLoaded(id),
-      distinctUntilChanged()
+      distinctUntilLoadableChanged()
     );
   });
 
@@ -74,7 +74,7 @@ export class AppUsersService {
   public readonly selectAppUserByEmail = memoize((email: string) => {
     return this.appUserByEmail$.pipe(
       pluckLoaded(email),
-      distinctUntilChanged()
+      distinctUntilLoadableChanged()
     );
   });
 

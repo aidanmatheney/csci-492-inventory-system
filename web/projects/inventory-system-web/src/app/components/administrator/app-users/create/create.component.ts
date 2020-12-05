@@ -5,8 +5,7 @@ import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {BehaviorSubject} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
 
-import {firstValueFrom} from '../../../../utils/observable';
-import {selectLoadedValue, selectLoading, selectLoadingBegan} from "../../../../utils/loading";
+import {firstLoadedValueFrom, selectLoadedValue, selectLoading, selectLoadingBegan} from "../../../../utils/loading";
 import {AngularAndCustomFormErrors, AngularFormErrors, fixValidatorType, FormValue} from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
 
@@ -102,7 +101,7 @@ export class CreateAppUserComponent implements OnInit {
   ): Promise<CreateAppUserForm['controls']['email']['errors'] | null> {
     const email = emailFormControl.value;
 
-    const existingAppUser = await firstValueFrom(selectLoadedValue(this.appUsersService.selectAppUserByEmail(email)));
+    const existingAppUser = await firstLoadedValueFrom(this.appUsersService.selectAppUserByEmail(email));
     if (existingAppUser != null) {
       return {taken: true};
     }

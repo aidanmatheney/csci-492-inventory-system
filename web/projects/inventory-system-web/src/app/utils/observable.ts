@@ -17,6 +17,10 @@ export const tapLog = <V>(
   location: 'log' | 'warn' | 'error' = 'error'
 ) => tap((value: V) => console[location](`${category}:`, value));
 
+export const tapDebugger = <V>() => tap((value: V) => {
+  debugger;
+});
+
 export const cacheUntil = <T>(destroy$: Observable<void>) => {
   return (source: Observable<T>) => source.pipe(
     takeUntil(destroy$), // Unsubscribe from source
