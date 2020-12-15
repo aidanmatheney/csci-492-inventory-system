@@ -4,7 +4,8 @@ import {concat, EMPTY, merge, Observable, of, Subject} from 'rxjs';
 import {catchError, delay, filter, first, map, retryWhen, switchMap, switchMapTo} from 'rxjs/operators';
 
 import {partialRecordSet} from '../utils/array';
-import {cacheUntil, filterNotNull, tapLog} from '../utils/observable';
+import {cacheUntil, filterNotNull} from '../utils/observable';
+import {tapLog} from '../utils/debug';
 import {
   distinctUntilLoadableChanged,
   Loadable,
