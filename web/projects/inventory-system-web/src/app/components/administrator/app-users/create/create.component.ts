@@ -12,7 +12,7 @@ import {ProcessingState} from '../../../../utils/processing';
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
-import {AppRole} from '../../../../models/app-user';
+import {AppRole} from '../../../../models/app-role';
 
 type CreateAppUserForm = FormGroup<{
   email: FormControl<string, AngularAndCustomFormErrors<'required' | 'email', 'taken'>>;

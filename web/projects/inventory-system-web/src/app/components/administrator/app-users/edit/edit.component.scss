@@ -1,3 +1,11 @@
+.container {
+    padding: 1rem;
+}
+
+.header-email {
+    font-weight: 500;
+}
+
 .section {
     & + & {
         margin-top: 1rem;
@@ -8,9 +16,9 @@
     margin-bottom: 1rem;
 
     .row {
-        margin-bottom: 1rem;
         display: flex;
         flex-direction: row;
+        margin-bottom: 1rem;
 
         > * + * {
             margin-left: 1rem;

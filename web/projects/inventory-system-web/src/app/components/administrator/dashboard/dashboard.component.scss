@@ -1,12 +1,26 @@
-.shortcuts {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+.container {
+    padding: 1rem;
+}
 
-    &:not(:empty) {
-        margin: -.5rem;
+.section {
+    & + & {
+        margin-top: 1rem;
     }
-    & > * {
-        margin: .5rem;
+}
+
+.shortcuts-container {
+    overflow: hidden;
+
+    .shortcuts {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        &:not(:empty) {
+            margin: -.5rem;
+        }
+        & > * {
+            margin: .5rem;
+        }
     }
 }

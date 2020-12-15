@@ -1,4 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
+import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {ThemePalette} from '@angular/material/core';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -12,6 +13,8 @@ import {ProcessingState} from '../../utils/processing';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProcessingControlComponent implements OnInit {
+  public static ngAcceptInputType_forceDisable: BooleanInput;
+
   private readonly state$ = new BehaviorSubject<ProcessingState>(undefined!);
   @Input() public set state(value: ProcessingState) {
     this.state$.next(value);
@@ -22,7 +25,7 @@ export class ProcessingControlComponent implements OnInit {
 
   private readonly forceDisable$ = new BehaviorSubject(false);
   @Input() public set forceDisable(value: boolean) {
-    this.forceDisable$.next(value);
+    this.forceDisable$.next(coerceBooleanProperty(value));
   }
 
   @Output() public readonly process = new EventEmitter<void>();

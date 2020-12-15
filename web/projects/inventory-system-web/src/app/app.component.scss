@@ -1,12 +1,15 @@
 .container {
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+}
+
+.navbar-container {
+    z-index: 1;
 }
 
 .content-container {
     flex: 1;
-    padding: 1rem;
     display: flex;
     flex-direction: column;
 }

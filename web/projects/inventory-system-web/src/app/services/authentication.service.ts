@@ -141,6 +141,10 @@ export class AuthenticationService {
     mapLoaded(oidcUser => oidcUser?.access_token),
     distinctUntilLoadableChanged()
   );
+  public readonly userId$ = this.oidcUser$.pipe(
+    mapLoaded(oidcUser => oidcUser?.profile.sub),
+    distinctUntilLoadableChanged()
+  );
 
   public async signIn() {
     const queryParams = this.route.snapshot.queryParams as {

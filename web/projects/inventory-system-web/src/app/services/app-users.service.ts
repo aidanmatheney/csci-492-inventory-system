@@ -14,7 +14,8 @@ import {OngoingOperations} from '../utils/processing';
 import {Destroyed$} from './destroyed$.service';
 
 import {environment} from '../../environments/environment';
-import {AppRole, OtherAppUser, OtherAppUserDto} from '../models/app-user';
+import {OtherAppUser, OtherAppUserDto} from '../models/app-user';
+import {AppRole} from '../models/app-role';
 
 @Injectable({providedIn: 'root'})
 export class AppUsersService {

@@ -3,34 +3,36 @@
   createdAppUser: createdAppUser$ | async,
   createdAppUserEmailConfirmationUrl: createdAppUserEmailConfirmationUrl$ | async
 } as vars">
-  <h1>
+  <inventory-system-page-header>
     <span>User Created</span>
-    <span *ngIf="!vars.loading!">: <b>{{vars.createdAppUser!.email}}</b></span>
-  </h1>
+    <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.createdAppUser!.email}}</span></span>
+  </inventory-system-page-header>
 
-  <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
-    <p>
-      <a [routerLink]="['../../edit', vars.createdAppUser!.id]">
-        Edit {{vars.createdAppUser!.email}}
-      </a>
-    </p>
+  <div class="container">
+    <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
+      <p>
+        <a [routerLink]="['../../edit', vars.createdAppUser!.id]">
+          Edit {{vars.createdAppUser!.email}}
+        </a>
+      </p>
 
-    <p>
-      The new user <b>{{vars.createdAppUser!.email}}</b> has been created. They have been emailed a link to a page where they will confirm their email and create thier password. If you wish to send this manually, you may copy the URL below.
-    </p>
+      <p>
+        The new user <b>{{vars.createdAppUser!.email}}</b> has been created. They have been emailed a link to a page where they will confirm their email and create their password. If you wish to send this manually, you may copy the URL below.
+      </p>
 
-    <div class="email-confirmation-url-container">
-      <mat-form-field appearance="fill">
-        <mat-label>Email confirmation URL</mat-label>
-        <textarea #emailConfirmationUrlTextArea
-          matInput
-          cdkTextareaAutosize
-          readonly
-          (click)="emailConfirmationUrlTextArea.select()"
-        >{{vars.createdAppUserEmailConfirmationUrl!}}</textarea>
-      </mat-form-field>
+      <div class="email-confirmation-url-container">
+        <mat-form-field appearance="fill">
+          <mat-label>Email confirmation URL</mat-label>
+          <textarea #emailConfirmationUrlTextArea
+            matInput
+            cdkTextareaAutosize
+            readonly
+            (click)="emailConfirmationUrlTextArea.select()"
+          >{{vars.createdAppUserEmailConfirmationUrl!}}</textarea>
+        </mat-form-field>
 
-      <button mat-raised-button color="primary" class="copy-button" (click)="copyCreatedAppUserEmailConfirmationUrl()">Copy</button>
-    </div>
-  </ng-container></inventory-system-loading-container>
+        <button mat-raised-button color="primary" class="copy-button" (click)="copyCreatedAppUserEmailConfirmationUrl()">Copy</button>
+      </div>
+    </ng-container></inventory-system-loading-container>
+  </div>
 </ng-container>

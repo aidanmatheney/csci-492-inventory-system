@@ -11,7 +11,8 @@ import {stringRecordKeys} from '../../../../utils/record';
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
-import {appRoleSortCompare, appRoleRankingByName, OtherAppUser} from '../../../../models/app-user';
+import {OtherAppUser} from '../../../../models/app-user';
+import {appRoleSortCompare, appRoleRankingByName} from '../../../../models/app-role';
 
 type ManageAppUsersForm = FormGroup<{
   filter: FormControl<string, {}>;

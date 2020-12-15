@@ -1,0 +1,8 @@
+.radio-group {
+    display: flex;
+    flex-direction: row;
+
+    > * + * {
+        margin-left: 1rem;
+    }
+}

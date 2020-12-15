@@ -3,6 +3,7 @@ import {Routes, RouterModule} from '@angular/router';
 
 import {SignInCallbackGuard} from './guards/sign-in-callback.guard';
 import {SignOutCallbackGuard} from './guards/sign-out-callback.guard';
+import {SignedInGuard} from './guards/signed-in.guard';
 import {SecretaryGuard} from './guards/secretary.guard';
 import {AdministratorGuard} from './guards/administrator.guard';
 
@@ -11,6 +12,9 @@ import {CurrentAppUserResolver} from './resolvers/current-app-user.resolver';
 import {HomeComponent} from './components/home/home.component';
 import {HelpComponent} from './components/help/help.component';
 import {InventoryComponent} from './components/secretary/inventory/inventory.component';
+import {SettingsComponent} from './components/settings/settings.component';
+import {AppearanceSettingsComponent} from './components/settings/appearance/appearance.component';
+import {SecuritySettingsComponent} from './components/settings/security/security.component';
 import {AdministratorDashboardComponent} from './components/administrator/dashboard/dashboard.component';
 import {ManageAppUsersComponent} from './components/administrator/app-users/manage/manage.component';
 import {CreateAppUserComponent} from './components/administrator/app-users/create/create.component';
@@ -43,6 +47,27 @@ const routes: Routes = [
     path: 'inventory',
     canActivate: [SecretaryGuard],
     component: InventoryComponent
+  },
+
+  {
+    path: 'settings',
+    canActivate: [SignedInGuard],
+    component: SettingsComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'appearance'
+      },
+      {
+        path: 'appearance',
+        component: AppearanceSettingsComponent
+      },
+      {
+        path: 'security',
+        component: SecuritySettingsComponent
+      }
+    ]
   },
 
   {

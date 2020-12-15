@@ -1,10 +1,10 @@
 <div class="container">
-  <div class="toolbar-container">
-    <inventory-system-toolbar></inventory-system-toolbar>
+  <div class="navbar-container mat-elevation-z6">
+    <inventory-system-navbar></inventory-system-navbar>
   </div>
 
   <div class="content-container">
-    <inventory-system-loading-container [loading]="loading$ | async">
+    <inventory-system-loading-container [loading]="(loading$ | async)!">
       <router-outlet></router-outlet>
     </inventory-system-loading-container>
   </div>

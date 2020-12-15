@@ -212,6 +212,20 @@ namespace InventorySystemServer.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("InventorySystemServer.Data.Models.AppUserSettings", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Theme")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("AppUserSettings");
+                });
+
             modelBuilder.Entity("InventorySystemServer.Data.Models.WebApiLogEntry", b =>
                 {
                     b.Property<int>("Id")
@@ -361,6 +375,15 @@ namespace InventorySystemServer.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("InventorySystemServer.Data.Models.AppUserSettings", b =>
+                {
+                    b.HasOne("InventorySystemServer.Data.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

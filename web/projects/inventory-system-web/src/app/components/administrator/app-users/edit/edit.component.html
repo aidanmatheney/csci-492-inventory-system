@@ -10,89 +10,91 @@
   resendEmailConfirmationState: resendEmailConfirmationState$ | async,
   removePasswordState: removePasswordState$ | async
 } as vars">
-  <h1>
+  <inventory-system-page-header>
     <span>Edit User</span>
-    <span *ngIf="!vars.loading!">: <b>{{vars.editAppUser!.email}}</b></span>
-  </h1>
+    <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.editAppUser!.email}}</span></span>
+  </inventory-system-page-header>
 
-  <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
-    <div class="section">
-      <div [formGroup]="form" class="fields">
-        <div class="row">
-          <mat-form-field appearance="fill" class="field-m">
-            <mat-label>Name</mat-label>
-            <input matInput formControlName="name" required>
-            <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
-            <mat-error *ngIf="form.controls.name.hasError('pattern')">No leading or trailing spaces</mat-error>
-          </mat-form-field>
-        </div>
+  <div class="container">
+    <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
+      <div class="section">
+        <div [formGroup]="form" class="fields">
+          <div class="row">
+            <mat-form-field appearance="fill" class="field-m">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" required>
+              <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
+              <mat-error *ngIf="form.controls.name.hasError('pattern')">No leading or trailing spaces</mat-error>
+            </mat-form-field>
+          </div>
 
-        <div class="row">
-          <div class="checkbox-field">
-            <mat-checkbox formControlName="lockedOut">Locked out</mat-checkbox>
+          <div class="row">
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="lockedOut">Locked out</mat-checkbox>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="isSecretary">Secretary</mat-checkbox>
+            </div>
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="isAdministrator">Administrator</mat-checkbox>
+            </div>
           </div>
         </div>
 
-        <div class="row">
-          <div class="checkbox-field">
-            <mat-checkbox formControlName="isSecretary">Secretary</mat-checkbox>
-          </div>
-          <div class="checkbox-field">
-            <mat-checkbox formControlName="isAdministrator">Administrator</mat-checkbox>
-          </div>
-        </div>
+        <inventory-system-save-control
+          [form]="form"
+          [initialFormValue]="vars.initialFormValue!"
+
+          [saveState]="vars.saveState!"
+          (save)="save()"
+
+          [showDelete]="true"
+          [forceDisableDelete]="vars.editingCurrentAppUser!"
+          [deleteState]="vars.deleteState!"
+          (delete)="delete()"
+        ></inventory-system-save-control>
       </div>
 
-      <inventory-system-save-control
-        [form]="form"
-        [initialFormValue]="vars.initialFormValue!"
+      <div class="section">
+        <h2>Email Confirmation</h2>
+        <p><b>Email confirmed?</b> {{vars.editAppUser!.emailConfirmed | boolean}}</p>
+        <ng-container *ngIf="!vars.editAppUser!.emailConfirmed">
+          <inventory-system-processing-control
+            [state]="vars.resendEmailConfirmationState!"
+            text="Resend Email Confirmation"
+            (process)="resendEmailConfirmation()"
+          ></inventory-system-processing-control>
 
-        [saveState]="vars.saveState!"
-        (save)="save()"
+          <div *ngIf="vars.editAppUserEmailConfirmationUrl != null" class="email-confirmation-url-container">
+            <mat-form-field appearance="fill">
+              <mat-label>Email confirmation URL</mat-label>
+              <textarea #emailConfirmationUrlTextArea
+                matInput
+                cdkTextareaAutosize
+                readonly
+                (click)="emailConfirmationUrlTextArea.select()"
+              >{{vars.editAppUserEmailConfirmationUrl!}}</textarea>
+            </mat-form-field>
 
-        [showDelete]="true"
-        [forceDisableDelete]="vars.editingCurrentAppUser!"
-        [deleteState]="vars.deleteState!"
-        (delete)="delete()"
-      ></inventory-system-save-control>
-    </div>
+            <button mat-raised-button color="primary" class="copy-button" (click)="copyEmailConfirmationUrl()">Copy</button>
+          </div>
+        </ng-container>
+      </div>
 
-    <div class="section">
-      <h2>Email Confirmation</h2>
-      <p><b>Email confirmed?</b> {{vars.editAppUser!.emailConfirmed | boolean}}</p>
-      <ng-container *ngIf="!vars.editAppUser!.emailConfirmed">
-        <inventory-system-processing-control
-          [state]="vars.resendEmailConfirmationState!"
-          text="Resend Email Confirmation"
-          (process)="resendEmailConfirmation()"
+      <div class="section">
+        <h2>Password</h2>
+        <p><b>Has password?</b> {{vars.editAppUser!.hasPassword | boolean}}</p>
+        <inventory-system-processing-control *ngIf="vars.editAppUser!.hasPassword"
+          [state]="vars.removePasswordState!"
+          text="Remove Password"
+          color="warn"
+          [forceDisable]="vars.editingCurrentAppUser!"
+          (process)="removePassword()"
         ></inventory-system-processing-control>
-
-        <div *ngIf="vars.editAppUserEmailConfirmationUrl != null" class="email-confirmation-url-container">
-          <mat-form-field appearance="fill">
-            <mat-label>Email confirmation URL</mat-label>
-            <textarea #emailConfirmationUrlTextArea
-              matInput
-              cdkTextareaAutosize
-              readonly
-              (click)="emailConfirmationUrlTextArea.select()"
-            >{{vars.editAppUserEmailConfirmationUrl!}}</textarea>
-          </mat-form-field>
-
-          <button mat-raised-button color="primary" class="copy-button" (click)="copyEmailConfirmationUrl()">Copy</button>
-        </div>
-      </ng-container>
-    </div>
-
-    <div class="section">
-      <h2>Password</h2>
-      <p><b>Has password?</b> {{vars.editAppUser!.hasPassword | boolean}}</p>
-      <inventory-system-processing-control *ngIf="vars.editAppUser!.hasPassword"
-        [state]="vars.removePasswordState!"
-        text="Remove Password"
-        color="warn"
-        [forceDisable]="vars.editingCurrentAppUser!"
-        (process)="removePassword()"
-      ></inventory-system-processing-control>
-    </div>
-  </ng-container></inventory-system-loading-container>
+      </div>
+    </ng-container></inventory-system-loading-container>
+  </div>
 </ng-container>

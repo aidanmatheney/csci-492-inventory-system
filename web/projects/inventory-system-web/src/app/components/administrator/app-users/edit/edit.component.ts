@@ -16,7 +16,7 @@ import {CurrentAppUserService} from '../../../../services/current-app-user.servi
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
-import {AppRole} from '../../../../models/app-user';
+import {AppRole} from '../../../../models/app-role';
 
 type EditAppUserForm = FormGroup<{
   name: FormControl<string, AngularFormErrors<'required' | 'pattern'>>;

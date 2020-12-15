@@ -1,5 +1,6 @@
 ﻿namespace InventorySystemServer.WebApi.Areas.Api.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -49,6 +50,45 @@
                 Name = appUser.Email,
                 AppRoles = appRoles.Select(appRole => appRole.Name).ToList()
             };
+        }
+
+        [HttpGet("Settings")]
+        public async Task<CurrentAppUserSettingsDto> GetSettings(CancellationToken cancellationToken)
+        {
+            var appUser = await GetAuthenticatedAppUserAsync().ConfigureAwait(false);
+            var existingSettings = await _appUserService.GetAppUserSettingsAsync(appUser, cancellationToken).ConfigureAwait(false);
+
+            AppUserSettings settings;
+            if (existingSettings == null)
+            {
+                settings = new AppUserSettings
+                {
+                    UserId = appUser.Id,
+                    Theme = AppTheme.Light
+                };
+                await _appUserService.SaveAppUserSettingsAsync(settings, cancellationToken).ConfigureAwait(false);
+            } else
+            {
+                settings = existingSettings;
+            }
+
+            return new CurrentAppUserSettingsDto
+            {
+                Theme = settings.Theme.ToString()
+            };
+        }
+
+        [HttpPut("Settings")]
+        public async Task SaveSettings(CurrentAppUserSettingsDto settingsDto, CancellationToken cancellationToken)
+        {
+            var appUser = await GetAuthenticatedAppUserAsync().ConfigureAwait(false);
+
+            var settings = new AppUserSettings
+            {
+                UserId = appUser.Id,
+                Theme = Enum.Parse<AppTheme>(settingsDto.Theme)
+            };
+            await _appUserService.SaveAppUserSettingsAsync(settings, cancellationToken).ConfigureAwait(false);
         }
     }
 }

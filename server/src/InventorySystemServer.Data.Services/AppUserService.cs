@@ -30,6 +30,14 @@
                 .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task DeleteAppUserAsync(AppUser appUser, CancellationToken cancellationToken = default)
+        {
+            Guard.NotNull(appUser, nameof(appUser));
+
+            DbContext.Users.Remove(appUser);
+            await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+        }
+
         public async Task<IReadOnlyList<AppRole>> GetAppUserRolesAsync(AppUser appUser, CancellationToken cancellationToken = default)
         {
             Guard.NotNull(appUser, nameof(appUser));
@@ -46,11 +54,29 @@
                 .ToListAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task DeleteAppUserAsync(AppUser appUser, CancellationToken cancellationToken = default)
+        public async Task<AppUserSettings?> GetAppUserSettingsAsync(AppUser appUser, CancellationToken cancellationToken = default)
         {
             Guard.NotNull(appUser, nameof(appUser));
 
-            DbContext.Users.Remove(appUser);
+            return await DbContext.AppUserSettings
+                .Where(s => s.UserId == appUser.Id)
+                .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task SaveAppUserSettingsAsync(AppUserSettings settings, CancellationToken cancellationToken = default)
+        {
+            Guard.NotNull(settings, nameof(settings));
+
+            if (await DbContext.AppUserSettings.AnyAsync(s => s.UserId == settings.UserId, cancellationToken).ConfigureAwait(false))
+            {
+                DbContext.AppUserSettings.Update(settings);
+            }
+            else
+            {
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                DbContext.AppUserSettings.Add(settings);
+            }
+
             await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }

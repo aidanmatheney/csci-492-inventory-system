@@ -17,10 +17,6 @@
           <a mat-button routerLink="/inventory">Inventory</a>
         </ng-container>
 
-        <ng-container *ngIf="vars.isAdministrator!">
-          <a mat-button routerLink="/admin">Admin</a>
-        </ng-container>
-
         <a mat-button routerLink="/help">Help</a>
       </div>
 
@@ -34,7 +30,12 @@
             <button mat-menu-item [disabled]="vars.loading!" (click)="signIn()">Sign In</button>
           </ng-container>
           <ng-template #signedInAccountMenuItems>
-            <a mat-menu-item [href]="manageAccountUrl">Manage</a>
+            <a mat-menu-item routerLink="/settings">Settings</a>
+
+            <ng-container *ngIf="vars.isAdministrator!">
+              <a mat-menu-item routerLink="/admin">Admin</a>
+            </ng-container>
+
             <button mat-menu-item (click)="signOut()">Sign Out</button>
           </ng-template>
         </mat-menu>

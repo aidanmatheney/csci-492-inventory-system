@@ -1,0 +1,47 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+
+// Define the theme palettes using the Material Design palettes
+// For each palette, you can optionally specify a default, lighter, and darker hue
+// Available color palettes: https://material.io/design/color/
+$inventory-system-primary: mat-palette($mat-indigo);
+$inventory-system-accent: mat-palette($mat-pink, A200, A100, A400);
+$inventory-system-warn: mat-palette($mat-red);
+
+// Create the theme objects
+// A theme consists of configurations for individual theming systems such as "color" or "typography"
+$inventory-system-light-theme: mat-light-theme((
+  color: (
+    primary: $inventory-system-primary,
+    accent: $inventory-system-accent,
+    warn: $inventory-system-warn
+  )
+));
+$inventory-system-dark-theme: mat-dark-theme((
+  color: (
+    primary: $inventory-system-primary,
+    accent: $inventory-system-accent,
+    warn: $inventory-system-warn
+  )
+));
+
+@mixin inventory-system-light-theme-styles($global: false) {
+  #{if($global, '.inventory-system-light-theme', ':host-context(.inventory-system-light-theme)')} & {
+    @content;
+  }
+}
+@mixin inventory-system-dark-theme-styles($global: false) {
+  #{if($global, '.inventory-system-dark-theme', ':host-context(.inventory-system-dark-theme)')} & {
+    @content;
+  }
+}
+
+@mixin inventory-system-theme-styles($global: false) {
+  @include inventory-system-light-theme-styles($global) {
+    @content(true);
+  }
+  @include inventory-system-dark-theme-styles($global) {
+    @content(false);
+  }
+}

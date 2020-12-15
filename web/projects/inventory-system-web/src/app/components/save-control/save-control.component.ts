@@ -1,5 +1,6 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
 import {FormGroup} from '@ngneat/reactive-forms';
+import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
@@ -13,6 +14,9 @@ import {ProcessingState} from '../../utils/processing';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SaveControlComponent<TFormControls extends object, TFormErrors extends object> implements OnInit {
+  public static ngAcceptInputType_forceDisableSave: BooleanInput;
+  public static ngAcceptInputType_forceDisableDelete: BooleanInput;
+
   private readonly form$ = new BehaviorSubject<FormGroup<TFormControls, TFormErrors>>(undefined!);
   @Input() public set form(value: FormGroup<TFormControls, TFormErrors>) {
     this.form$.next(value);
@@ -25,7 +29,7 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
   @Input() public showSave = true;
   public readonly forceDisableSave$ = new BehaviorSubject(false);
   @Input() public set forceDisableSave(value: boolean) {
-    this.forceDisableSave$.next(value);
+    this.forceDisableSave$.next(coerceBooleanProperty(value));
   }
   @Input() public saveText = 'Save';
   public readonly saveState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);
@@ -36,7 +40,7 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
   @Input() public showDelete = false;
   public readonly forceDisableDelete$ = new BehaviorSubject(false);
   @Input() public set forceDisableDelete(value: boolean) {
-    this.forceDisableDelete$.next(value);
+    this.forceDisableDelete$.next(coerceBooleanProperty(value));
   }
   @Input() public deleteText = 'Delete';
   public readonly deleteState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);

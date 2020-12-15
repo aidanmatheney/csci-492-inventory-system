@@ -1,6 +1,17 @@
-<h1>Users</h1>
+<inventory-system-page-header>Admin Dashboard</inventory-system-page-header>
 
-<div class="shortcuts">
-  <a mat-raised-button color="primary" routerLink="./users">Manage</a>
-  <a mat-raised-button color="primary" routerLink="./users/create">Create</a>
+<div class="container">
+  <div class="section">
+    <h1>Users</h1>
+
+    <div class="shortcuts-container">
+      <div class="shortcuts">
+        <a *ngFor="let shortcut of usersShortcuts"
+          mat-raised-button
+          color="primary"
+          [routerLink]="shortcut.link"
+        >{{shortcut.title}}</a>
+      </div>
+    </div>
+  </div>
 </div>

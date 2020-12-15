@@ -1,19 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ToolbarComponent} from './toolbar.component';
+import {SecuritySettingsComponent} from './security.component';
 
-describe('ToolbarComponent', () => {
-  let component: ToolbarComponent;
-  let fixture: ComponentFixture<ToolbarComponent>;
+describe('SecuritySettingsComponent', () => {
+  let component: SecuritySettingsComponent;
+  let fixture: ComponentFixture<SecuritySettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ToolbarComponent]
+      declarations: [SecuritySettingsComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ToolbarComponent);
+    fixture = TestBed.createComponent(SecuritySettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -12,6 +12,7 @@
 
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using Microsoft.Extensions.Options;
 
     public sealed class AppDbContext : IdentityDbContext<AppUser, AppRole, string>, IPersistedGrantDbContext
@@ -27,6 +28,8 @@
         public DbSet<PersistedGrant> PersistedGrants { get; set; } = null!;
         public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; } = null!;
 
+        public DbSet<AppUserSettings> AppUserSettings { get; set; } = null!;
+
         public DbSet<WebApiLogEntry> WebApiLogEntries { get; set; } = null!;
 
         Task<int> IPersistedGrantDbContext.SaveChangesAsync() => SaveChangesAsync();
@@ -35,6 +38,19 @@
         {
             base.OnModelCreating(builder);
             builder.ConfigurePersistedGrantContext(_operationalStoreOptions.Value);
+
+            builder.Entity<AppUserSettings>(ConfigureAppUserSettings);
+        }
+
+        private static void ConfigureAppUserSettings(EntityTypeBuilder<AppUserSettings> table)
+        {
+            table.HasKey(s => s.UserId);
+            table.HasOne<AppUser>().WithMany()
+                .HasForeignKey(s => s.UserId)
+                .HasPrincipalKey(u => u.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            table.Property(s => s.Theme).HasConversion<string>();
         }
     }
 }

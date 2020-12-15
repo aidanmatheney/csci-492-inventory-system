@@ -1,0 +1,18 @@
+<inventory-system-page-header>Settings</inventory-system-page-header>
+
+<div class="container">
+  <div class="nav-container">
+    <mat-nav-list class="nav-list">
+      <a *ngFor="let page of settingsPages"
+        mat-list-item
+        class="nav-item"
+        [routerLink]="page.link"
+        routerLinkActive="active"
+      >{{page.title}}</a>
+    </mat-nav-list>
+  </div>
+
+  <div class="settings-container">
+    <router-outlet></router-outlet>
+  </div>
+</div>

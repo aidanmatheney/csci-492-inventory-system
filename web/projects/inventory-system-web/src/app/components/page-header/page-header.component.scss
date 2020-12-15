@@ -1,0 +1,12 @@
+@import '../../../theme.scss';
+
+.header {
+    padding: 1.5rem;
+    color: white;
+    background-color: mat-color($inventory-system-primary);
+}
+
+.title {
+    font-size: 1.25em;
+    font-weight: 300;
+}
