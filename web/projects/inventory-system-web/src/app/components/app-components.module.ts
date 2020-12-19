@@ -20,6 +20,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatListModule} from '@angular/material/list';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import {AppDirectivesModule} from '../directives/app-directives.module';
 import {AppPipesModule} from '../pipes/app-pipes.module';
@@ -31,6 +32,7 @@ import {SpinnerButtonContainerComponent} from './spinner-button-container/spinne
 import {ProcessingControlComponent} from './processing-control/processing-control.component';
 import {SaveControlComponent} from './save-control/save-control.component';
 import {PageHeaderComponent} from './page-header/page-header.component';
+import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 import {HomeComponent} from './home/home.component';
 import {LandingComponent} from './landing/landing.component';
 import {HelpComponent} from './help/help.component';
@@ -54,6 +56,7 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
     ProcessingControlComponent,
     SaveControlComponent,
     PageHeaderComponent,
+    ConfirmDialogComponent,
     HomeComponent,
     LandingComponent,
     HelpComponent,
@@ -90,6 +93,7 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
     MatSnackBarModule,
     MatListModule,
     MatRadioModule,
+    MatDialogModule,
 
     AppDirectivesModule,
     AppPipesModule
@@ -97,6 +101,9 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
   exports: [
     NavbarComponent,
     LoadingContainerComponent
+  ],
+  entryComponents: [
+    ConfirmDialogComponent
   ]
 })
 export class AppComponentsModule { }

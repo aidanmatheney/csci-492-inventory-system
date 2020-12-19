@@ -27,12 +27,12 @@ $inventory-system-dark-theme: mat-dark-theme((
 ));
 
 @mixin inventory-system-light-theme-styles($global: false) {
-  #{if($global, '.inventory-system-light-theme', ':host-context(.inventory-system-light-theme)')} & {
+  #{if($global, '.inventory-system-light-theme', ':host-context(.inventory-system-light-theme)')} #{if(&, '&', '')} {
     @content;
   }
 }
 @mixin inventory-system-dark-theme-styles($global: false) {
-  #{if($global, '.inventory-system-dark-theme', ':host-context(.inventory-system-dark-theme)')} & {
+  #{if($global, '.inventory-system-dark-theme', ':host-context(.inventory-system-dark-theme)')} #{if(&, '&', '')} {
     @content;
   }
 }

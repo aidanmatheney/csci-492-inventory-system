@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>{{options?.title || 'Confirm'}}</h2>
+<mat-dialog-content class="content" [formGroup]="form">
+  <div>{{options?.body || 'Are you sure you wish to proceed?'}}</div>
+  <div *ngIf="hasRequiredConfirmationText" class="confirmation-input-container">
+    <div>Enter <span class="confirmation-text-prompt">{{requiredConfirmationText}}</span> to confirm:</div>
+    <mat-form-field appearance="fill">
+      <mat-label>Confirmation</mat-label>
+      <input matInput formControlName="confirmationText" required>
+      <mat-error *ngIf="form.controls.confirmationText.hasError('required')">Required</mat-error>
+      <mat-error *ngIf="form.controls.confirmationText.hasError('invalid')">Invalid confirmation</mat-error>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false">{{options?.cancelButton?.text || 'Cancel'}}</button>
+  <button
+    mat-button
+    [mat-dialog-close]="true"
+    [color]="options?.confirmButton?.color || 'primary'"
+    [disabled]="!(confirmEnabled$ | async)!"
+  >{{options?.confirmButton?.text || 'Confirm'}}</button>
+</mat-dialog-actions>

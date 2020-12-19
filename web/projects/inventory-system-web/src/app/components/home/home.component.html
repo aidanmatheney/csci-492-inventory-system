@@ -1,5 +1,5 @@
 <inventory-system-loading-container [loading]="(loading$ | async)!">
-  <ng-container *ngIf="!(signedIn$ | async); else signedInContent">
+  <ng-container *ngIf="!(signedIn$ | async)!; else signedInContent">
     <inventory-system-landing></inventory-system-landing>
   </ng-container>
   <ng-template #signedInContent>

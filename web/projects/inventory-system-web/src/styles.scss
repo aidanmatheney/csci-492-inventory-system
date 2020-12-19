@@ -33,11 +33,45 @@ body {
 
 a {
   @include inventory-system-theme-styles($global: true) using ($light) {
-    color: color.scale(rgb(138, 180, 248), $lightness: if($light, -15%, 0%))
+    color: color.scale(rgb(138, 180, 248), $lightness: if($light, -15%, 0%));
   }
 }
 
 // `box-sizing: border-box;` causes scrollbars to appear for textareas with matInput and cdkTextareaAutosize
 textarea.mat-input-element.cdk-textarea-autosize {
   box-sizing: content-box;
+}
+
+@include inventory-system-theme-styles($global: true) using ($light) {
+  $color: mat-color($inventory-system-primary, if($light, default, lighter));
+
+  .mat-button.mat-primary {
+    color: $color;
+    &.cdk-keyboard-focused .mat-button-focus-overlay {
+      background-color: $color;
+    }
+  }
+}
+
+@include inventory-system-theme-styles($global: true) using ($light) {
+  $color: mat-color($inventory-system-primary, if($light, darker, lighter));
+  $warn-color: mat-color($inventory-system-warn);
+
+  .mat-form-field {
+    &.mat-focused .mat-form-field-label {
+      color: $color;
+    }
+    & .mat-input-element {
+      caret-color: $color;
+    }
+  }
+
+  .mat-form-field.mat-form-field-invalid {
+    .mat-form-field-label {
+      color: $warn-color;
+    }
+    .mat-input-element {
+      caret-color: $warn-color;
+    }
+  }
 }

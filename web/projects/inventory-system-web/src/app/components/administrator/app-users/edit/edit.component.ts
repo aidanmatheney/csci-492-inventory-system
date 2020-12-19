@@ -8,10 +8,11 @@ import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, pluck, switchMap, takeUntil} from 'rxjs/operators';
 
 import {filterNotNull, firstValueFrom} from '../../../../utils/observable';
-import {selectLoadedValue, selectLoading} from "../../../../utils/loading";
+import {selectInitialLoading, selectLoadedValue} from "../../../../utils/loading";
 import {AngularFormErrors, FormValue} from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
 
+import {DialogService} from '../../../../services/dialog.service';
 import {CurrentAppUserService} from '../../../../services/current-app-user.service';
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
@@ -38,7 +39,7 @@ export class EditAppUserComponent implements OnInit {
     id: string;
   }>).pipe(pluck('id'));
 
-  public readonly loading$ = selectLoading(this.appUsersService.appUsers$);
+  public readonly loading$ = selectInitialLoading(this.appUsersService.appUsers$);
   public readonly editAppUser$ = this.editAppUserId$.pipe(
     switchMap(editAppUserId => selectLoadedValue(this.appUsersService.selectAppUserById(editAppUserId)))
   );
@@ -82,6 +83,7 @@ export class EditAppUserComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly clipboardService: ClipboardService,
     private readonly matSnackBarService: MatSnackBarService,
+    private readonly dialogService: DialogService,
     private readonly currentAppUserService: CurrentAppUserService,
     private readonly appUsersService: AppUsersService,
     private readonly destroyed$: Destroyed$
@@ -132,12 +134,22 @@ export class EditAppUserComponent implements OnInit {
   }
 
   public async delete() {
+    const editAppUser = (await firstValueFrom(this.editAppUser$))!;
+
+    const confirmed = await this.dialogService.confirm({
+      title: 'Confirm User Deletion',
+      body: `Are you sure you wish to delete ${editAppUser.email}? This action is not reversable.`,
+      requireInputToConfirm: editAppUser.email,
+      confirmButton: {text: 'Delete', color: 'warn'}
+    });
+    if (!confirmed) {
+      return;
+    }
+
     this.deleteState$.next(ProcessingState.started);
 
-    const editAppUserId = await firstValueFrom(this.editAppUserId$);
-
     try {
-      await this.appUsersService.delete(editAppUserId);
+      await this.appUsersService.delete(editAppUser.id);
       await this.router.navigate(['../..'], {relativeTo: this.route});
       this.deleteState$.next(ProcessingState.idle);
     } catch (error: unknown) {
@@ -146,9 +158,18 @@ export class EditAppUserComponent implements OnInit {
   }
 
   public async resendEmailConfirmation() {
-    this.resendEmailConfirmationState$.next(ProcessingState.started);
-
     const editAppUser = (await firstValueFrom(this.editAppUser$))!;
+
+    const confirmed = await this.dialogService.confirm({
+      title: 'Confirm Resending Email Confirmation',
+      body: `Are you sure you wish to resend an email confirmation to ${editAppUser.email}?`,
+      confirmButton: {text: 'Resend'}
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.resendEmailConfirmationState$.next(ProcessingState.started);
 
     try {
       await this.appUsersService.resendEmailConfirmation(editAppUser.id);
@@ -176,9 +197,18 @@ export class EditAppUserComponent implements OnInit {
   }
 
   public async removePassword() {
-    this.removePasswordState$.next(ProcessingState.started);
-
     const editAppUser = (await firstValueFrom(this.editAppUser$))!;
+
+    const confirmed = await this.dialogService.confirm({
+      title: 'Confirm Password Removal',
+      body: `Are you sure you wish to remove ${editAppUser.email}'s password?`,
+      confirmButton: {text: 'Remove', color: 'warn'}
+    });
+    if (!confirmed) {
+      return;
+    }
+
+    this.removePasswordState$.next(ProcessingState.started);
 
     try {
       await this.appUsersService.removePassword(editAppUser.id);

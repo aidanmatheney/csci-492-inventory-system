@@ -1,5 +1,5 @@
 import {Observable, of, OperatorFunction} from 'rxjs';
-import {distinctUntilChanged, filter, map, pluck, switchMap} from 'rxjs/operators';
+import {distinctUntilChanged, endWith, filter, map, pluck, switchMap, takeWhile} from 'rxjs/operators';
 
 import {firstValueFrom, mapToVoid} from './observable';
 
@@ -127,6 +127,11 @@ export const distinctUntilLoadableChanged = <V>(equals?: (value1: V, value2: V) 
 export const selectLoading = <V>(source: Observable<Loadable<V>>) => source.pipe(
   map(Loadable.isLoading),
   distinctUntilChanged()
+);
+
+export const selectInitialLoading = <V>(source: Observable<Loadable<V>>) => selectLoading(source).pipe(
+  takeWhile(loading => loading),
+  endWith(false)
 );
 
 export const selectLoadingBegan = <V>(source: Observable<Loadable<V>>) => selectLoading(source).pipe(
