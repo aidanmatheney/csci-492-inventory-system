@@ -4,45 +4,45 @@ import {filter} from 'rxjs/operators';
 import {mapToVoid} from './observable';
 
 export interface IdleProcessingState {
-  state: 'idle';
+  status: 'idle';
 }
 export interface StartedProcessingState {
-  state: 'started';
+  status: 'started';
 }
-export interface CompletedProcessingState {
-  state: 'completed';
+export interface SucceededProcessingState {
+  status: 'succeeded';
 }
-export interface ErroredProcessingState {
-  state: 'errored';
+export interface FailedProcessingState {
+  status: 'failed';
   errors: string[];
 }
 export type ProcessingState = (
   | IdleProcessingState
   | StartedProcessingState
-  | CompletedProcessingState
-  | ErroredProcessingState
+  | SucceededProcessingState
+  | FailedProcessingState
 );
 
 export const ProcessingState: {
   idle: IdleProcessingState;
   started: StartedProcessingState;
-  completed: CompletedProcessingState;
-  errored(firstError: string, ...otherErrors: string[]): ErroredProcessingState;
+  succeeded: SucceededProcessingState;
+  failed(firstError: string, ...otherErrors: string[]): FailedProcessingState;
 
   isIdle(processingState: ProcessingState): processingState is IdleProcessingState;
   isStarted(processingState: ProcessingState): processingState is StartedProcessingState;
-  isCompleted(processingState: ProcessingState): processingState is CompletedProcessingState;
-  isErrored(processingState: ProcessingState): processingState is ErroredProcessingState;
+  isSucceeded(processingState: ProcessingState): processingState is SucceededProcessingState;
+  isFailed(processingState: ProcessingState): processingState is FailedProcessingState;
 } = {
-  idle: ({state: 'idle'}),
-  started: ({state: 'started'}),
-  completed: ({state: 'completed'}),
-  errored: (...errors) => ({state: 'errored', errors}),
+  idle: {status: 'idle'},
+  started: {status: 'started'},
+  succeeded: {status: 'succeeded'},
+  failed: (...errors) => ({status: 'failed', errors}),
 
-  isIdle: (processingState): processingState is IdleProcessingState => processingState.state === 'idle',
-  isStarted: (processingState): processingState is StartedProcessingState => processingState.state === 'started',
-  isCompleted: (processingState): processingState is CompletedProcessingState => processingState.state === 'completed',
-  isErrored: (processingState): processingState is ErroredProcessingState => processingState.state === 'errored'
+  isIdle: (processingState): processingState is IdleProcessingState => processingState.status === 'idle',
+  isStarted: (processingState): processingState is StartedProcessingState => processingState.status === 'started',
+  isSucceeded: (processingState): processingState is SucceededProcessingState => processingState.status === 'succeeded',
+  isFailed: (processingState): processingState is FailedProcessingState => processingState.status === 'failed'
 };
 
 export class OngoingOperations {

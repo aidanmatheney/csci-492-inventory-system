@@ -129,7 +129,7 @@ export class EditAppUserComponent implements OnInit {
       });
       this.saveState$.next(ProcessingState.idle);
     } catch (error: unknown) {
-      this.saveState$.next(ProcessingState.errored(String(error)));
+      this.saveState$.next(ProcessingState.failed(String(error)));
     }
   }
 
@@ -153,7 +153,7 @@ export class EditAppUserComponent implements OnInit {
       await this.router.navigate(['../..'], {relativeTo: this.route});
       this.deleteState$.next(ProcessingState.idle);
     } catch (error: unknown) {
-      this.deleteState$.next(ProcessingState.errored(String(error)));
+      this.deleteState$.next(ProcessingState.failed(String(error)));
     }
   }
 
@@ -182,7 +182,7 @@ export class EditAppUserComponent implements OnInit {
 
       this.resendEmailConfirmationState$.next(ProcessingState.idle);
     } catch (error: unknown) {
-      this.resendEmailConfirmationState$.next(ProcessingState.errored(String(error)));
+      this.resendEmailConfirmationState$.next(ProcessingState.failed(String(error)));
     }
   }
 
@@ -221,7 +221,7 @@ export class EditAppUserComponent implements OnInit {
 
       this.removePasswordState$.next(ProcessingState.idle);
     } catch (error: unknown) {
-      this.removePasswordState$.next(ProcessingState.errored(String(error)));
+      this.removePasswordState$.next(ProcessingState.failed(String(error)));
     }
   }
 

@@ -92,7 +92,7 @@ export class CreateAppUserComponent implements OnInit {
       await this.router.navigate([newAppUserId], {relativeTo: this.route});
       this.createState$.next(ProcessingState.idle);
     } catch (error: unknown) {
-      this.createState$.next(ProcessingState.errored(String(error)));
+      this.createState$.next(ProcessingState.failed(String(error)));
     }
   }
 
