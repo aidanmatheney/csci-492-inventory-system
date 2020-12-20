@@ -16,6 +16,7 @@ import {
 } from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
 
+import {PageTitleService} from '../../../../services/page-title.service';
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
@@ -73,11 +74,14 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
+    private readonly pageTitleService: PageTitleService,
     private readonly appUsersService: AppUsersService,
     private readonly destroyed$: Destroyed$
   ) { }
 
   public ngOnInit() {
+    this.pageTitleService.set('Create User');
+
     selectLoadingBegan(this.appUsersService.appUsers$).pipe(
       takeUntil(this.destroyed$)
     ).subscribe(() => this.form.controls.email.updateValueAndValidity());

@@ -8,6 +8,7 @@ import {takeUntil} from 'rxjs/operators';
 import {selectLoadedValue, selectLoading} from "../../../../utils/loading";
 import {stringRecordKeys} from '../../../../utils/record';
 
+import {PageTitleService} from '../../../../services/page-title.service';
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
@@ -48,6 +49,7 @@ export class ManageAppUsersComponent implements OnInit, AfterViewInit {
 
   public constructor(
     private readonly formBuilder: FormBuilder,
+    private readonly pageTitleService: PageTitleService,
     private readonly appUsersService: AppUsersService,
     private readonly destroyed$: Destroyed$
   ) {
@@ -87,6 +89,8 @@ export class ManageAppUsersComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit() {
+    this.pageTitleService.set('Manage Users');
+
     this.appUsers$.pipe(
       takeUntil(this.destroyed$)
     ).subscribe(appUsers => this.dataSource.data = appUsers);

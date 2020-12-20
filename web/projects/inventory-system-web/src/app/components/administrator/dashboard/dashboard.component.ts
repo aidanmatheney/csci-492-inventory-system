@@ -1,5 +1,7 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
+import {PageTitleService} from '../../../services/page-title.service';
+
 @Component({
   selector: 'inventory-system-administrator-dashboard',
   templateUrl: './dashboard.component.html',
@@ -12,7 +14,11 @@ export class AdministratorDashboardComponent implements OnInit {
     {title: 'Create', link: './users/create'}
   ];
 
-  public constructor() { }
+  public constructor(
+    private readonly pageTitleService: PageTitleService
+  ) { }
 
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.pageTitleService.set('Admin Dashboard');
+  }
 }

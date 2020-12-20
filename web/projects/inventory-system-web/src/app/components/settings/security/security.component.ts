@@ -1,5 +1,7 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
+import {PageTitleService} from '../../../services/page-title.service';
+
 import {environment} from '../../../../environments/environment';
 
 @Component({
@@ -11,7 +13,11 @@ import {environment} from '../../../../environments/environment';
 export class SecuritySettingsComponent implements OnInit {
   public readonly changePasswordUrl = `${environment.serverBaseUrl}/Identity/Account/Manage/ChangePassword`;
 
-  public constructor() { }
+  public constructor(
+    private readonly pageTitleService: PageTitleService
+  ) { }
 
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.pageTitleService.set('Security Settings');
+  }
 }

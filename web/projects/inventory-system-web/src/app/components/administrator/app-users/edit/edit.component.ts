@@ -12,6 +12,7 @@ import {selectInitialLoading, selectLoadedValue} from "../../../../utils/loading
 import {AngularFormErrors, FormValue, selectFormDirty, selectFormValid} from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
 
+import {PageTitleService} from '../../../../services/page-title.service';
 import {DialogService} from '../../../../services/dialog.service';
 import {CurrentAppUserService} from '../../../../services/current-app-user.service';
 import {AppUsersService} from '../../../../services/app-users.service';
@@ -93,6 +94,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
     private readonly formBuilder: FormBuilder,
     private readonly clipboardService: ClipboardService,
     private readonly matSnackBarService: MatSnackBarService,
+    private readonly pageTitleService: PageTitleService,
     private readonly dialogService: DialogService,
     private readonly currentAppUserService: CurrentAppUserService,
     private readonly appUsersService: AppUsersService,
@@ -100,6 +102,12 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
   ) { }
 
   public async ngOnInit() {
+    this.pageTitleService.set('Edit User');
+    this.editAppUser$.pipe(
+      filterNotNull(),
+      takeUntil(this.destroyed$)
+    ).subscribe(editAppUser => this.pageTitleService.set(`Edit User - ${editAppUser.email}`));
+
     combineLatest([
       this.editAppUserId$,
       this.initialFormValue$,
