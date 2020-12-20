@@ -1,14 +1,12 @@
 import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
-import {FormGroup} from '@ngneat/reactive-forms';
 import {BooleanInput, coerceBooleanProperty} from '@angular/cdk/coercion';
 import {BehaviorSubject, combineLatest} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
-import {FormControlsValue, selectFormDirty, selectFormValid} from '../../utils/form';
 import {ProcessingState} from '../../utils/processing';
 
 @Component({
-  selector: 'inventory-system-save-control[form][initialFormValue]',
+  selector: 'inventory-system-save-control[dirty][valid]',
   templateUrl: './save-control.component.html',
   styleUrls: ['./save-control.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,13 +15,13 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
   public static ngAcceptInputType_forceDisableSave: BooleanInput;
   public static ngAcceptInputType_forceDisableDelete: BooleanInput;
 
-  private readonly form$ = new BehaviorSubject<FormGroup<TFormControls, TFormErrors>>(undefined!);
-  @Input() public set form(value: FormGroup<TFormControls, TFormErrors>) {
-    this.form$.next(value);
+  private readonly dirty$ = new BehaviorSubject<boolean>(undefined!);
+  @Input() public set dirty(value: boolean) {
+    this.dirty$.next(value);
   }
-  private readonly initialFormValue$ = new BehaviorSubject<FormControlsValue<TFormControls>>(undefined!);
-  @Input() public set initialFormValue(value: FormControlsValue<TFormControls>) {
-    this.initialFormValue$.next(value);
+  private readonly valid$ = new BehaviorSubject<boolean>(undefined!);
+  @Input() public set valid(value: boolean) {
+    this.valid$.next(value);
   }
 
   @Input() public showSave = true;
@@ -51,9 +49,6 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
   @Output() public readonly save = new EventEmitter<void>();
   @Output() public readonly delete = new EventEmitter<void>();
 
-  public readonly formDirty$ = this.form$.pipe(switchMap(form => selectFormDirty(form, this.initialFormValue$)));
-  public readonly formValid$ = this.form$.pipe(switchMap(form => selectFormValid(form)));
-
   public readonly saveProcessing$ = this.saveState$.pipe(map(ProcessingState.isStarted));
   public readonly deleteProcessing$ = this.deleteState$.pipe(map(ProcessingState.isStarted));
 
@@ -61,15 +56,15 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
     this.forceDisableSave$,
     this.saveProcessing$,
     this.deleteProcessing$,
-    this.formDirty$,
-    this.formValid$
+    this.dirty$,
+    this.valid$
   ]).pipe(
-    map(([forceDisableSave, saveProcessing, deleteProcessing, formDirty, formValid]) => (
+    map(([forceDisableSave, saveProcessing, deleteProcessing, dirty, valid]) => (
       !forceDisableSave
       && !saveProcessing
       && !deleteProcessing
-      && formDirty
-      && formValid
+      && dirty
+      && valid
     ))
   );
   public readonly deleteEnabled$ = combineLatest([

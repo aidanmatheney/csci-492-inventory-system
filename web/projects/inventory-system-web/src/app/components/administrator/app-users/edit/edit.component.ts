@@ -4,12 +4,12 @@ import {Validators} from '@angular/forms';
 import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {Clipboard as ClipboardService} from '@angular/cdk/clipboard';
 import {MatSnackBar as MatSnackBarService} from '@angular/material/snack-bar';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {map, pluck, switchMap, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
 
-import {filterNotNull, firstValueFrom} from '../../../../utils/observable';
+import {cacheUntil, filterNotNull, firstValueFrom} from '../../../../utils/observable';
 import {selectInitialLoading, selectLoadedValue} from "../../../../utils/loading";
-import {AngularFormErrors, FormValue} from '../../../../utils/form';
+import {AngularFormErrors, FormValue, selectFormDirty, selectFormValid} from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
 
 import {DialogService} from '../../../../services/dialog.service';
@@ -18,6 +18,7 @@ import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
 import {AppRole} from '../../../../models/app-role';
+import {SaveablePage} from '../../../../guards/unsaved-changes.guard';
 
 type EditAppUserForm = FormGroup<{
   name: FormControl<string, AngularFormErrors<'required' | 'pattern'>>;
@@ -34,15 +35,18 @@ type EditAppUserFormValue = FormValue<EditAppUserForm>;
   changeDetection: ChangeDetectionStrategy.Default, // OnPush prevents cdkTextareaAutosize's initial resize
   providers: [Destroyed$]
 })
-export class EditAppUserComponent implements OnInit {
+export class EditAppUserComponent implements OnInit, SaveablePage {
   public readonly editAppUserId$ = (this.route.params as Observable<{
     id: string;
   }>).pipe(pluck('id'));
 
-  public readonly loading$ = selectInitialLoading(this.appUsersService.appUsers$);
   public readonly editAppUser$ = this.editAppUserId$.pipe(
     switchMap(editAppUserId => selectLoadedValue(this.appUsersService.selectAppUserById(editAppUserId)))
   );
+  public readonly loading$ = combineLatest([
+    selectInitialLoading(this.appUsersService.appUsers$),
+    this.editAppUser$.pipe(startWith(undefined))
+  ]).pipe(map(([appUsersLoading, editAppUser]) => appUsersLoading || editAppUser == null));
   public readonly editingCurrentAppUser$ = combineLatest([
     this.editAppUser$,
     this.currentAppUserService.signedInAppUser$
@@ -71,6 +75,12 @@ export class EditAppUserComponent implements OnInit {
       isAdministrator: hasAppRoleByName[AppRole.administrator] ?? false
     }))
   );
+  public readonly formDirty$ = selectFormDirty(this.form, this.initialFormValue$).pipe(cacheUntil(this.destroyed$));
+  public readonly formValid$ = selectFormValid(this.form);
+
+  public readonly dirty$ = this.editAppUser$.pipe(
+    switchMap(editAppUser => editAppUser == null ? of(false) : this.formDirty$)
+  );
 
   public readonly saveState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);
   public readonly deleteState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);
@@ -97,7 +107,7 @@ export class EditAppUserComponent implements OnInit {
     ]).pipe(
       takeUntil(this.destroyed$)
     ).subscribe(([editAppUserId, initialFormValue, editingCurrentAppUser]) => {
-      this.resetForm(editAppUserId, initialFormValue, editingCurrentAppUser)
+      this.resetForm(editAppUserId, initialFormValue, editingCurrentAppUser);
     });
 
     const editAppUser = await firstValueFrom(this.editAppUser$);

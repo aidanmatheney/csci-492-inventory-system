@@ -4,7 +4,8 @@
   editAppUser: editAppUser$ | async,
   editingCurrentAppUser: editingCurrentAppUser$ | async,
   editAppUserEmailConfirmationUrl: editAppUserEmailConfirmationUrl$ | async,
-  initialFormValue: initialFormValue$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
   saveState: saveState$ | async,
   deleteState: deleteState$ | async,
   resendEmailConfirmationState: resendEmailConfirmationState$ | async,
@@ -45,8 +46,8 @@
         </div>
 
         <inventory-system-save-control
-          [form]="form"
-          [initialFormValue]="vars.initialFormValue!"
+          [dirty]="vars.formDirty!"
+          [valid]="vars.formValid!"
 
           [saveState]="vars.saveState!"
           (save)="save()"

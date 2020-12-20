@@ -1,8 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
-import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
+import {ActivationStart, NavigationCancel, NavigationEnd, NavigationError, Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {filter, map, switchMap, takeUntil} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, switchMap, takeUntil} from 'rxjs/operators';
 
 import {AppearanceService} from './services/appearance.service';
 import {Destroyed$} from './services/destroyed$.service';
@@ -23,17 +23,18 @@ const appThemeCssClassByName: Record<AppTheme, string> = {
 export class AppComponent implements OnInit {
   public readonly loading$ = this.router.events.pipe(
     filter((event): event is (
-      | NavigationStart
+      | ActivationStart // CanDeactivate guards run after NavigationStart but before ActivationStart
       | NavigationEnd
       | NavigationCancel
       | NavigationError
     ) => (
-      event instanceof NavigationStart
+      event instanceof ActivationStart
       || event instanceof NavigationEnd
       || event instanceof NavigationCancel
       || event instanceof NavigationError
     )),
-    map(event => event instanceof NavigationStart)
+    map(event => event instanceof ActivationStart),
+    distinctUntilChanged()
   );
 
   public constructor(

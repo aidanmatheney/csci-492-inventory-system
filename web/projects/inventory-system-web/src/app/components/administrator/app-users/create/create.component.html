@@ -1,5 +1,7 @@
 <ng-container *ngLet="{
   loading: loading$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
   appUserWithInputtedEmail: appUserWithInputtedEmail$ | async,
   createState: createState$ | async
 } as vars">
@@ -44,8 +46,8 @@
       </div>
 
       <inventory-system-save-control
-        [form]="form"
-        [initialFormValue]="initialFormValue"
+        [dirty]="vars.formDirty!"
+        [valid]="vars.formValid!"
         saveText="Create"
         [saveState]="vars.createState!"
         (save)="create()"
