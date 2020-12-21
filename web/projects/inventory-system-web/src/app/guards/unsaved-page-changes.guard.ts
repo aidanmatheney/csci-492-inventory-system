@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 
 import {firstValueFrom} from '../utils/observable';
 
-import {DialogService} from '../services/dialog.service'
+import {DialogService} from '../services/dialog.service';
 
 export interface SaveablePage {
   readonly dirty$: Observable<boolean>;
@@ -12,7 +12,7 @@ export interface SaveablePage {
 const isSaveablePage = (component: any): component is SaveablePage => 'dirty$' in component;
 
 @Injectable({providedIn: 'root'})
-export class UnsavedChangesGuard implements CanDeactivate<SaveablePage> {
+export class UnsavedPageChangesGuard implements CanDeactivate<SaveablePage> {
   public constructor(
     private readonly dialogService: DialogService
   ) { }

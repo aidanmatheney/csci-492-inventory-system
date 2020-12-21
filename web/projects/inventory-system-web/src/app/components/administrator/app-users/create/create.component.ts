@@ -15,14 +15,15 @@ import {
   selectFormValid
 } from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
+import {cacheUntil} from '../../../../utils/observable';
+import {confirmUnsavedChangesBeforeUnload} from '../../../../utils/confirm';
 
 import {PageTitleService} from '../../../../services/page-title.service';
 import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
 import {AppRole} from '../../../../models/app-role';
-import {SaveablePage} from '../../../../guards/unsaved-changes.guard';
-import {cacheUntil} from '../../../../utils/observable';
+import {SaveablePage} from '../../../../guards/unsaved-page-changes.guard';
 
 type CreateAppUserForm = FormGroup<{
   email: FormControl<string, AngularAndCustomFormErrors<'required' | 'email', 'taken'>>;
@@ -62,7 +63,7 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
   public readonly formDirty$ = selectFormDirty(this.form, of(this.initialFormValue)).pipe(cacheUntil(this.destroyed$));
   public readonly formValid$ = selectFormValid(this.form);
 
-  public readonly dirty$ = this.formDirty$;
+  public readonly dirty$ = this.formDirty$.pipe(cacheUntil(this.destroyed$));
 
   public readonly appUserWithInputtedEmail$ = this.form.select(({email}) => email).pipe(
     switchMap(email => selectLoadedValue(this.appUsersService.selectAppUserByEmail(email)))
@@ -81,6 +82,8 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
 
   public ngOnInit() {
     this.pageTitleService.set('Create User');
+
+    confirmUnsavedChangesBeforeUnload(this.dirty$);
 
     selectLoadingBegan(this.appUsersService.appUsers$).pipe(
       takeUntil(this.destroyed$)

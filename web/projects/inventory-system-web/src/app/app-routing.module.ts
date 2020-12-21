@@ -6,7 +6,7 @@ import {SignOutCallbackGuard} from './guards/sign-out-callback.guard';
 import {SignedInGuard} from './guards/signed-in.guard';
 import {SecretaryGuard} from './guards/secretary.guard';
 import {AdministratorGuard} from './guards/administrator.guard';
-import {UnsavedChangesGuard} from './guards/unsaved-changes.guard';
+import {UnsavedPageChangesGuard} from './guards/unsaved-page-changes.guard';
 
 import {CurrentAppUserResolver} from './resolvers/current-app-user.resolver';
 
@@ -92,7 +92,7 @@ const routes: Routes = [
               {
                 path: '',
                 component: CreateAppUserComponent,
-                canDeactivate: [UnsavedChangesGuard]
+                canDeactivate: [UnsavedPageChangesGuard]
               },
               {
                 path: ':id',
@@ -103,7 +103,7 @@ const routes: Routes = [
           {
             path: 'edit/:id',
             component: EditAppUserComponent,
-            canDeactivate: [UnsavedChangesGuard]
+            canDeactivate: [UnsavedPageChangesGuard]
           }
         ]
       }

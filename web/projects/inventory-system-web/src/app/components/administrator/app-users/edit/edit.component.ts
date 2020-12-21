@@ -11,6 +11,7 @@ import {cacheUntil, filterNotNull, firstValueFrom} from '../../../../utils/obser
 import {selectInitialLoading, selectLoadedValue} from "../../../../utils/loading";
 import {AngularFormErrors, FormValue, selectFormDirty, selectFormValid} from '../../../../utils/form';
 import {ProcessingState} from '../../../../utils/processing';
+import {confirmUnsavedChangesBeforeUnload} from '../../../../utils/confirm';
 
 import {PageTitleService} from '../../../../services/page-title.service';
 import {DialogService} from '../../../../services/dialog.service';
@@ -19,7 +20,7 @@ import {AppUsersService} from '../../../../services/app-users.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
 import {AppRole} from '../../../../models/app-role';
-import {SaveablePage} from '../../../../guards/unsaved-changes.guard';
+import {SaveablePage} from '../../../../guards/unsaved-page-changes.guard';
 
 type EditAppUserForm = FormGroup<{
   name: FormControl<string, AngularFormErrors<'required' | 'pattern'>>;
@@ -80,7 +81,8 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
   public readonly formValid$ = selectFormValid(this.form);
 
   public readonly dirty$ = this.editAppUser$.pipe(
-    switchMap(editAppUser => editAppUser == null ? of(false) : this.formDirty$)
+    switchMap(editAppUser => editAppUser == null ? of(false) : this.formDirty$),
+    cacheUntil(this.destroyed$)
   );
 
   public readonly saveState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);
@@ -107,6 +109,8 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
       filterNotNull(),
       takeUntil(this.destroyed$)
     ).subscribe(editAppUser => this.pageTitleService.set(`Edit User - ${editAppUser.email}`));
+
+    confirmUnsavedChangesBeforeUnload(this.dirty$);
 
     combineLatest([
       this.editAppUserId$,
