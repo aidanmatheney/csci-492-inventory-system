@@ -1,0 +1,89 @@
+<ng-container *ngLet="{
+  routeLoading: routeLoading$ | async,
+  narrowViewport: narrowViewport$ | async,
+  currentAppUserLoading: currentAppUserLoading$ | async,
+  signedIn: signedIn$ | async,
+  currentAppUserEmail: currentAppUserEmail$ | async,
+  sidenavMode: sidenavMode$ | async,
+  sidenavOpened: sidenavOpened$ | async,
+  navListShortcuts: navListShortcuts$ | async,
+  sidenavContainerAutosize: sidenavContainerAutosize$ | async
+} as vars">
+  <mat-toolbar color="primary" class="toolbar mat-elevation-z6">
+    <div>
+      <button mat-icon-button (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <a *ngIf="!vars.narrowViewport!" mat-button routerLink="/">Inventory System</a>
+    </div>
+
+    <div>
+      <button mat-button [matMenuTriggerFor]="accountMenu">
+        <mat-icon class="button-icon">account_circle</mat-icon>
+        <span>{{!vars.signedIn! ? 'Account' : vars.currentAppUserEmail!}}</span>
+      </button>
+      <mat-menu #accountMenu xPosition="before">
+        <ng-container *ngIf="!vars.signedIn!; else signedInAccountMenuItems">
+          <button mat-menu-item [disabled]="vars.currentAppUserLoading!" (click)="signIn()">Sign In</button>
+        </ng-container>
+        <ng-template #signedInAccountMenuItems>
+          <button mat-menu-item (click)="signOut()">Sign Out</button>
+        </ng-template>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+
+  <mat-sidenav-container [autosize]="vars.sidenavContainerAutosize!" class="sidenav-container">
+    <mat-sidenav
+      [mode]="vars.sidenavMode!"
+      [opened]="vars.sidenavOpened!"
+      (openedChange)="nextSidenavOpened$.next($event)"
+    >
+      <a *ngIf="vars.narrowViewport!"
+        class="app-title"
+        routerLink="/"
+        (click)="handleShortcutClicked()"
+      >Inventory System</a>
+
+      <mat-nav-list class="nav-list">
+        <ng-template #shortcutNavItemsTemplate
+          let-shortcuts="shortcuts"
+          let-childLevel="childLevel"
+        >
+          <ng-container *ngFor="let shortcut of shortcuts">
+            <a
+              mat-list-item
+              class="nav-item child-{{childLevel}}"
+              [routerLink]="shortcut.link"
+              [routerLinkActiveOptions]="{exact: shortcut.exact === true}"
+              routerLinkActive="active"
+              #routerLinkActive="routerLinkActive"
+              (click)="handleShortcutClicked()"
+            >
+              <mat-icon class="button-icon">{{shortcut.icon}}</mat-icon>
+              <span>{{shortcut.title}}</span>
+            </a>
+
+            <ng-container *ngIf="routerLinkActive.isActive && shortcut.children != null">
+              <ng-container *ngTemplateOutlet="shortcutNavItemsTemplate; context: {
+                shortcuts: shortcut.children,
+                childLevel: childLevel + 1
+              }"></ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+
+        <ng-container *ngTemplateOutlet="shortcutNavItemsTemplate; context: {
+          shortcuts: vars.navListShortcuts!,
+          childLevel: 0
+        }"></ng-container>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="sidenav-content">
+      <inventory-system-loading-container [loading]="vars.routeLoading!">
+        <router-outlet></router-outlet>
+      </inventory-system-loading-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>

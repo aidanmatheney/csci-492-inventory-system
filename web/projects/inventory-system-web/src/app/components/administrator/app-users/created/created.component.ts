@@ -69,7 +69,7 @@ export class AppUserCreatedComponent implements OnInit {
       return;
     }
     if (createdAppUserEmailConfirmationUrl == null) {
-      await this.router.navigate(['../../edit', createdAppUser.id], {relativeTo: this.route});
+      await this.router.navigate(['../edit'], {relativeTo: this.route});
     }
   }
 

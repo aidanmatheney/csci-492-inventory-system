@@ -12,10 +12,9 @@ import {Destroyed$} from './services/destroyed$.service';
 
 import {AuthenticationInterceptor} from './interceptors/authentication.interceptor';
 
-import {AppComponent} from './app.component';
+import {AppComponent} from './components/app/app.component';
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

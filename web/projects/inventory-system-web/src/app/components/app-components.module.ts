@@ -21,11 +21,12 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatListModule} from '@angular/material/list';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 import {AppDirectivesModule} from '../directives/app-directives.module';
 import {AppPipesModule} from '../pipes/app-pipes.module';
 
-import {NavbarComponent} from './navbar/navbar.component';
+import {AppComponent} from './app/app.component';
 import {LoadingComponent} from './loading/loading.component';
 import {LoadingContainerComponent} from './loading-container/loading-container.component';
 import {SpinnerButtonContainerComponent} from './spinner-button-container/spinner-button-container.component';
@@ -49,7 +50,7 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
 
 @NgModule({
   declarations: [
-    NavbarComponent,
+    AppComponent,
     LoadingComponent,
     LoadingContainerComponent,
     SpinnerButtonContainerComponent,
@@ -94,13 +95,10 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
     MatListModule,
     MatRadioModule,
     MatDialogModule,
+    MatSidenavModule,
 
     AppDirectivesModule,
     AppPipesModule
-  ],
-  exports: [
-    NavbarComponent,
-    LoadingContainerComponent
   ],
   entryComponents: [
     ConfirmDialogComponent

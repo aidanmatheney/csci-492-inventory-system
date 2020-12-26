@@ -21,7 +21,7 @@
         </div>
 
         <div *ngIf="vars.appUserWithInputtedEmail != null" class="row">
-          <a [routerLink]="['../edit', vars.appUserWithInputtedEmail!.id]">
+          <a [routerLink]="['..', vars.appUserWithInputtedEmail!.id, 'edit']">
             Edit {{vars.appUserWithInputtedEmail!.email}}
           </a>
         </div>

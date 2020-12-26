@@ -14,7 +14,7 @@ import {
   switchMapLoadable
 } from "../utils/loading";
 import {memoize} from '../utils/memo';
-import {startFromAndCacheToLocalStorage} from '../utils/storage';
+import {startFromAndSaveToLocalStorage} from '../utils/storage';
 
 import {AuthenticationService} from './authentication.service';
 import {Destroyed$} from './destroyed$.service';
@@ -54,7 +54,7 @@ export class CurrentAppUserService {
       );
     }),
     distinctUntilLoadableChanged(),
-    tapLog('CurrentAppUserService appUser$'), // TODO: remove
+    tapLog('CurrentAppUserService appUser$', 'warn'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
   public readonly signedIn$ = this.appUser$.pipe(
@@ -99,14 +99,14 @@ export class CurrentAppUserService {
       ))
     )
   ).pipe(
-    startFromAndCacheToLocalStorage(
+    startFromAndSaveToLocalStorage(
       'settings',
       settings => settings,
-      settings => settings ?? {
+      settings => of(settings ?? {
         theme: AppTheme.light
-      }
+      })
     ),
-    tapLog('CurrentAppUserService settings$'), // TODO: remove
+    tapLog('CurrentAppUserService settings$', 'warn'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
 

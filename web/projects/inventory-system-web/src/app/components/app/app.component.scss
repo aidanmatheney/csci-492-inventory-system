@@ -1,0 +1,63 @@
+@import '../../../theme.scss';
+
+:host {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar {
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.sidenav-container, .sidenav-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav-container .app-title {
+    display: block;
+    text-align: center;
+    padding: 1em;
+    font-weight: 600;
+    font-size: 1.3em;
+    color: currentColor;
+    text-decoration: none;
+    user-select: none;
+}
+
+.nav-list {
+    padding-top: 0;
+
+    .nav-item {
+        user-select: none;
+
+        &.active {
+            background-color: mat-color($inventory-system-primary, 400, .33);
+
+            @include inventory-system-theme-styles using ($light) {
+                color: mat-color($inventory-system-primary, if($light, A400, A100));
+            }
+        }
+
+        @for $i from 1 through 3 {
+            &.child-#{$i} {
+                height: 36px;
+                font-size: 14px;
+
+                .button-icon {
+                    margin-left: $i * 1rem;
+                }
+            }
+        }
+    }
+}
+
+.button-icon {
+    margin-right: 4px;
+    margin-bottom: 3px;
+}

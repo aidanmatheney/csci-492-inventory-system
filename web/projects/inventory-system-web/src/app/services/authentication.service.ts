@@ -131,7 +131,7 @@ export class AuthenticationService {
   ).pipe(
     startWith<Loadable<OidcUser | undefined>>(Loadable.loading),
     distinctUntilLoadableChanged(),
-    tapLog('AuthenticationService oidcUser$'), // TODO: remove
+    tapLog('AuthenticationService oidcUser$', 'warn'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
   public readonly authenticated$ = this.oidcUser$.pipe(

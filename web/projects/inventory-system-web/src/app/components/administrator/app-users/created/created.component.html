@@ -11,7 +11,7 @@
   <div class="container">
     <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
       <p>
-        <a [routerLink]="['../../edit', vars.createdAppUser!.id]">
+        <a routerLink="../edit">
           Edit {{vars.createdAppUser!.email}}
         </a>
       </p>

@@ -10,8 +10,8 @@ import {PageTitleService} from '../../../services/page-title.service';
 })
 export class AdministratorDashboardComponent implements OnInit {
   public readonly usersShortcuts: ReadonlyArray<{title: string; link: string;}> = [
-    {title: 'Manage', link: './users'},
-    {title: 'Create', link: './users/create'}
+    {title: 'Manage', link: 'users'},
+    {title: 'Create', link: 'users/create'}
   ];
 
   public constructor(

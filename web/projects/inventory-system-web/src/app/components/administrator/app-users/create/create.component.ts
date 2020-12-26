@@ -110,7 +110,7 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
         ].filter((appRole): appRole is AppRole => appRole !== false)
       });
       this.form.setValue(this.initialFormValue);
-      await this.router.navigate([newAppUserId], {relativeTo: this.route});
+      await this.router.navigate(['..', newAppUserId, 'created'], {relativeTo: this.route});
       this.createState$.next(ProcessingState.idle);
     } catch (error: unknown) {
       this.createState$.next(ProcessingState.failed(String(error)));

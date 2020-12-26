@@ -88,22 +88,22 @@ const routes: Routes = [
           },
           {
             path: 'create',
-            children: [
-              {
-                path: '',
-                component: CreateAppUserComponent,
-                canDeactivate: [UnsavedPageChangesGuard]
-              },
-              {
-                path: ':id',
-                component: AppUserCreatedComponent
-              }
-            ]
+            component: CreateAppUserComponent,
+            canDeactivate: [UnsavedPageChangesGuard]
           },
           {
-            path: 'edit/:id',
-            component: EditAppUserComponent,
-            canDeactivate: [UnsavedPageChangesGuard]
+            path: ':id',
+            children: [
+              {
+                path: 'created',
+                component: AppUserCreatedComponent
+              },
+              {
+                path: 'edit',
+                component: EditAppUserComponent,
+                canDeactivate: [UnsavedPageChangesGuard]
+              }
+            ]
           }
         ]
       }

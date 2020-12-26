@@ -8,52 +8,61 @@
         <input matInput formControlName="filter">
       </mat-form-field>
 
-      <a mat-raised-button color="primary" routerLink="./create">Create</a>
+      <a mat-raised-button color="primary" routerLink="create">Create</a>
     </div>
 
-    <table mat-table [dataSource]="dataSource" matSort matSortActive="hasAppRoleByName" matSortDirection="desc">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let appUser">
-          <a [routerLink]="['./edit', appUser.id]">{{appUser.id}}</a>
-        </td>
-      </ng-container>
+    <div class="table-container">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        matSortActive="hasAppRoleByName"
+        matSortDirection="desc"
+        class="table"
+      >
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let appUser">
+            <a [routerLink]="[appUser.id, 'edit']">{{appUser.id}}</a>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-        <td mat-cell *matCellDef="let appUser">{{appUser.email}}</td>
-      </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let appUser">{{appUser.email}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let appUser">{{appUser.name}}</td>
-      </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let appUser">{{appUser.name}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="emailConfirmed">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email Confirmed</th>
-        <td mat-cell *matCellDef="let appUser">{{appUser.emailConfirmed | boolean}}</td>
-      </ng-container>
+        <ng-container matColumnDef="emailConfirmed">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email Confirmed</th>
+          <td mat-cell *matCellDef="let appUser">{{appUser.emailConfirmed | boolean}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="lockedOut">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Locked Out</th>
-        <td mat-cell *matCellDef="let appUser">{{appUser.lockedOut | boolean}}</td>
-      </ng-container>
+        <ng-container matColumnDef="lockedOut">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Locked Out</th>
+          <td mat-cell *matCellDef="let appUser">{{appUser.lockedOut | boolean}}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="hasAppRoleByName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Roles</th>
-        <td mat-cell *matCellDef="let appUser">{{stringifyAppRoles(appUser)}}</td>
-      </ng-container>
+        <ng-container matColumnDef="hasAppRoleByName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Roles</th>
+          <td mat-cell *matCellDef="let appUser">{{stringifyAppRoles(appUser)}}</td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columns"></tr>
-      <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
 
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="columns.length">
-          <span>No users</span>
-          <span *ngIf="form.value.filter !== ''"> matching the filter "{{form.value.filter}}"</span>
-        </td>
-      </tr>
-    </table>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="columns.length">
+            <span>No users</span>
+            <span *ngIf="form.value.filter !== ''"> matching the filter "{{form.value.filter}}"</span>
+          </td>
+        </tr>
+      </table>
+    </div>
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
   </inventory-system-loading-container>

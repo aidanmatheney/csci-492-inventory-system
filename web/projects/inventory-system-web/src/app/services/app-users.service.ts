@@ -54,7 +54,7 @@ export class AppUsersService {
     )),
     startWith<Loadable<OtherAppUser[]>>(Loadable.loading),
     distinctUntilLoadableChanged(),
-    tapLog('AppUsersService appUsers$'), // TODO: remove
+    tapLog('AppUsersService appUsers$', 'warn'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
 
