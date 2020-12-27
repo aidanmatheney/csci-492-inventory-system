@@ -1,6 +1,6 @@
 <ng-container *ngIf="loading$ | async; else loadedContent">
-  <div class="loading-container">
-    <inventory-system-loading></inventory-system-loading>
+  <div class="loading-spinner-container">
+    <inventory-system-loading-spinner></inventory-system-loading-spinner>
   </div>
 </ng-container>
 <ng-template #loadedContent>

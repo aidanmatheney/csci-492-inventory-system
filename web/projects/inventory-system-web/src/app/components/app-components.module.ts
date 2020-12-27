@@ -27,7 +27,7 @@ import {AppDirectivesModule} from '../directives/app-directives.module';
 import {AppPipesModule} from '../pipes/app-pipes.module';
 
 import {AppComponent} from './app/app.component';
-import {LoadingComponent} from './loading/loading.component';
+import {LoadingSpinnerComponent} from './loading-spinner/loading-spinner.component';
 import {LoadingContainerComponent} from './loading-container/loading-container.component';
 import {SpinnerButtonContainerComponent} from './spinner-button-container/spinner-button-container.component';
 import {ProcessingControlComponent} from './processing-control/processing-control.component';
@@ -51,7 +51,7 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
 @NgModule({
   declarations: [
     AppComponent,
-    LoadingComponent,
+    LoadingSpinnerComponent,
     LoadingContainerComponent,
     SpinnerButtonContainerComponent,
     ProcessingControlComponent,
