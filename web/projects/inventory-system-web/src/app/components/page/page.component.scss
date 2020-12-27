@@ -1,0 +1,65 @@
+@import '../../../theme.scss';
+
+:host {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    min-height: 48px;
+    padding: 6px;
+
+    color: white;
+    background-color: mat-color($inventory-system-primary);
+
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    align-items: center;
+}
+
+.back-button {
+    grid-column: 1;
+    justify-self: start;
+
+    padding-left: 8px;
+    padding-right: 8px;
+
+    .contents {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .icon {
+            margin-right: 4px;
+            margin-bottom: 3px;
+        }
+
+        .text {
+            line-height: 20px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+
+            text-align: start;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+    }
+}
+
+.title {
+    grid-column: 2;
+
+    text-align: center;
+    overflow-wrap: anywhere;
+    font-weight: 500;
+}
+
+main {
+    flex-grow: 1;
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: column;
+}

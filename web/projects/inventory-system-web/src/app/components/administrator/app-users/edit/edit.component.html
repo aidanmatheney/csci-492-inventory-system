@@ -11,12 +11,11 @@
   resendEmailConfirmationState: resendEmailConfirmationState$ | async,
   removePasswordState: removePasswordState$ | async
 } as vars">
-  <inventory-system-page-header>
+  <ng-template #pageTitle>
     <span>Edit User</span>
     <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.editAppUser!.email}}</span></span>
-  </inventory-system-page-header>
-
-  <div class="container">
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink="../.." backText="Users">
     <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
       <div class="section">
         <div [formGroup]="form" class="fields">
@@ -97,5 +96,5 @@
         ></inventory-system-processing-control>
       </div>
     </ng-container></inventory-system-loading-container>
-  </div>
+  </inventory-system-page>
 </ng-container>

@@ -32,7 +32,7 @@ import {LoadingContainerComponent} from './loading-container/loading-container.c
 import {SpinnerButtonContainerComponent} from './spinner-button-container/spinner-button-container.component';
 import {ProcessingControlComponent} from './processing-control/processing-control.component';
 import {SaveControlComponent} from './save-control/save-control.component';
-import {PageHeaderComponent} from './page-header/page-header.component';
+import {PageComponent} from './page/page.component';
 import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 import {HomeComponent} from './home/home.component';
 import {LandingComponent} from './landing/landing.component';
@@ -56,7 +56,7 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
     SpinnerButtonContainerComponent,
     ProcessingControlComponent,
     SaveControlComponent,
-    PageHeaderComponent,
+    PageComponent,
     ConfirmDialogComponent,
     HomeComponent,
     LandingComponent,

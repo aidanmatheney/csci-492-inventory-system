@@ -1,6 +1,4 @@
-<inventory-system-page-header>Manage Users</inventory-system-page-header>
-
-<div class="container">
+<inventory-system-page title="Users" backLink=".." backText="Admin Dashboard">
   <inventory-system-loading-container [loading]="(loading$ | async)!">
     <div [formGroup]="form" class="controls">
       <mat-form-field class="filter">
@@ -66,4 +64,4 @@
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
   </inventory-system-loading-container>
-</div>
+</inventory-system-page>

@@ -53,12 +53,10 @@ const routes: Routes = [
   {
     path: 'settings',
     canActivate: [SignedInGuard],
-    component: SettingsComponent,
     children: [
       {
         path: '',
-        pathMatch: 'full',
-        redirectTo: 'appearance'
+        component: SettingsComponent
       },
       {
         path: 'appearance',

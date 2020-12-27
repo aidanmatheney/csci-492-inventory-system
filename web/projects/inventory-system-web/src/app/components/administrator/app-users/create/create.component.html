@@ -5,9 +5,7 @@
   appUserWithInputtedEmail: appUserWithInputtedEmail$ | async,
   createState: createState$ | async
 } as vars">
-  <inventory-system-page-header>Create User</inventory-system-page-header>
-
-  <div class="container">
+  <inventory-system-page title="Create User" backLink=".." backText="Users">
     <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
       <div [formGroup]="form" class="fields">
         <div class="row">
@@ -53,5 +51,5 @@
         (save)="create()"
       ></inventory-system-save-control>
     </ng-container></inventory-system-loading-container>
-  </div>
+  </inventory-system-page>
 </ng-container>

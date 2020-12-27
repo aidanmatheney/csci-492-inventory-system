@@ -1,0 +1,19 @@
+<header>
+  <a *ngIf="backLink != null"
+    mat-button
+    class="back-button"
+    [routerLink]="backLink"
+  >
+    <div class="contents">
+      <mat-icon class="icon">arrow_back_ios</mat-icon>
+      <span class="text">{{backText || 'Back'}}</span>
+    </div>
+  </a>
+
+  <div class="title">
+    <ng-container *ngIf="titleAsString != null">{{titleAsString!}}</ng-container>
+    <ng-container *ngIf="titleAsTemplate != null"><ng-container *ngTemplateOutlet="titleAsTemplate!"></ng-container></ng-container>
+  </div>
+</header>
+
+<main><ng-content></ng-content></main>

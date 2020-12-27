@@ -2,6 +2,8 @@ import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import {PageTitleService} from '../../../services/page-title.service';
 
+import {MatIconName} from '../../../models/mat-icon';
+
 @Component({
   selector: 'inventory-system-administrator-dashboard',
   templateUrl: './dashboard.component.html',
@@ -9,9 +11,13 @@ import {PageTitleService} from '../../../services/page-title.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdministratorDashboardComponent implements OnInit {
-  public readonly usersShortcuts: ReadonlyArray<{title: string; link: string;}> = [
-    {title: 'Manage', link: 'users'},
-    {title: 'Create', link: 'users/create'}
+  public readonly usersShortcuts: ReadonlyArray<{
+    title: string;
+    icon: MatIconName;
+    link: string;
+  }> = [
+    {title: 'Users', icon: 'people', link: 'users'},
+    {title: 'Create User', icon: 'person_add', link: 'users/create'}
   ];
 
   public constructor(

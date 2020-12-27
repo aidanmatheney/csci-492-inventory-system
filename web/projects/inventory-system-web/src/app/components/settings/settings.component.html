@@ -1,18 +1,14 @@
-<inventory-system-page-header>Settings</inventory-system-page-header>
-
-<div class="container">
-  <div class="nav-container">
-    <mat-nav-list class="nav-list">
-      <a *ngFor="let page of settingsPages"
-        mat-list-item
-        class="nav-item"
-        [routerLink]="page.link"
-        routerLinkActive="active"
-      >{{page.title}}</a>
-    </mat-nav-list>
+<inventory-system-page title="Settings">
+  <div class="shortcuts-container">
+    <div class="shortcuts">
+      <a *ngFor="let shortcut of shortcuts"
+        mat-raised-button
+        color="primary"
+        [routerLink]="shortcut.link"
+      >
+        <mat-icon class="button-icon">{{shortcut.icon}}</mat-icon>
+        <span>{{shortcut.title}}</span>
+      </a>
+    </div>
   </div>
-
-  <div class="settings-container">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+</inventory-system-page>

@@ -3,12 +3,11 @@
   createdAppUser: createdAppUser$ | async,
   createdAppUserEmailConfirmationUrl: createdAppUserEmailConfirmationUrl$ | async
 } as vars">
-  <inventory-system-page-header>
+  <ng-template #pageTitle>
     <span>User Created</span>
     <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.createdAppUser!.email}}</span></span>
-  </inventory-system-page-header>
-
-  <div class="container">
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink="../.." backText="Users">
     <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
       <p>
         <a routerLink="../edit">
@@ -34,5 +33,5 @@
         <button mat-raised-button color="primary" class="copy-button" (click)="copyCreatedAppUserEmailConfirmationUrl()">Copy</button>
       </div>
     </ng-container></inventory-system-loading-container>
-  </div>
+  </inventory-system-page>
 </ng-container>
