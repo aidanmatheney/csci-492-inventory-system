@@ -33,20 +33,22 @@ import {SpinnerButtonContainerComponent} from './spinner-button-container/spinne
 import {ProcessingControlComponent} from './processing-control/processing-control.component';
 import {SaveControlComponent} from './save-control/save-control.component';
 import {PageComponent} from './page/page.component';
-import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
-import {HomeComponent} from './home/home.component';
-import {LandingComponent} from './landing/landing.component';
-import {HelpComponent} from './help/help.component';
-import {SecretaryDashboardComponent} from './secretary/dashboard/dashboard.component';
-import {InventoryComponent} from './secretary/inventory/inventory.component';
-import {SettingsComponent} from './settings/settings.component';
-import {AppearanceSettingsComponent} from './settings/appearance/appearance.component';
-import {SecuritySettingsComponent} from './settings/security/security.component';
-import {AdministratorDashboardComponent} from './administrator/dashboard/dashboard.component';
-import {ManageAppUsersComponent} from './administrator/app-users/manage/manage.component';
-import {CreateAppUserComponent} from './administrator/app-users/create/create.component';
-import {AppUserCreatedComponent} from './administrator/app-users/created/created.component';
-import {EditAppUserComponent} from './administrator/app-users/edit/edit.component';
+
+import {ConfirmDialogComponent} from './dialogs/confirm/confirm-dialog.component';
+
+import {HomeComponent} from './pages/home/home.component';
+import {LandingComponent} from './pages/landing/landing.component';
+import {HelpComponent} from './pages/help/help.component';
+import {SecretaryDashboardComponent} from './pages/secretary/dashboard/dashboard.component';
+import {InventoryComponent} from './pages/secretary/inventory/inventory.component';
+import {SettingsComponent} from './pages/settings/settings.component';
+import {AppearanceSettingsComponent} from './pages/settings/appearance/appearance.component';
+import {SecuritySettingsComponent} from './pages/settings/security/security.component';
+import {AdministratorDashboardComponent} from './pages/administrator/dashboard/dashboard.component';
+import {ManageAppUsersComponent} from './pages/administrator/app-users/manage/manage.component';
+import {CreateAppUserComponent} from './pages/administrator/app-users/create/create.component';
+import {AppUserCreatedComponent} from './pages/administrator/app-users/created/created.component';
+import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import {EditAppUserComponent} from './administrator/app-users/edit/edit.componen
     ProcessingControlComponent,
     SaveControlComponent,
     PageComponent,
+
     ConfirmDialogComponent,
+
     HomeComponent,
     LandingComponent,
     HelpComponent,

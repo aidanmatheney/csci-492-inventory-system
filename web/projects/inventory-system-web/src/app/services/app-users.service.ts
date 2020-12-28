@@ -6,7 +6,7 @@ import {delay, distinctUntilChanged, map, pluck, retryWhen, startWith, switchMap
 import {partialRecordSet, recordBy} from '../utils/array';
 import {cacheUntil, firstValueFrom} from '../utils/observable';
 import {tapLog} from '../utils/debug';
-import {distinctUntilLoadableChanged, Loadable, mapLoaded, pluckLoaded} from "../utils/loading";
+import {distinctUntilLoadableChanged, Loadable, mapLoaded, pluckLoaded} from '../utils/loading';
 import {partialRecord} from '../utils/record';
 import {memoize} from '../utils/memo';
 import {produceBehaviorSubjectMutable} from '../utils/immutable';

@@ -23,7 +23,7 @@ import {
 
 import {cacheUntil, firstValueFrom} from '../utils/observable';
 import {tapLog} from '../utils/debug';
-import {distinctUntilLoadableChanged, Loadable, mapLoaded} from "../utils/loading";
+import {distinctUntilLoadableChanged, Loadable, mapLoaded} from '../utils/loading';
 import {
   selectOidcAccessTokenExpired,
   selectOidcUserLoaded,

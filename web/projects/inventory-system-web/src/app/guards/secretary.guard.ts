@@ -3,7 +3,7 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '
 import {combineLatest} from 'rxjs';
 
 import {firstValueFrom} from '../utils/observable';
-import {selectLoadedValue} from "../utils/loading";
+import {selectLoadedValue} from '../utils/loading';
 
 import {CurrentAppUserService} from '../services/current-app-user.service';
 

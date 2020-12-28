@@ -12,7 +12,7 @@ import {
   mapLoaded,
   selectLoadedValue,
   switchMapLoadable
-} from "../utils/loading";
+} from '../utils/loading';
 import {memoize} from '../utils/memo';
 import {startFromAndSaveToLocalStorage} from '../utils/storage';
 

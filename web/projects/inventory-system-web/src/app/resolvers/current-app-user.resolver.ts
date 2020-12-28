@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 
-import {firstLoadedValueFrom} from "../utils/loading";
+import {firstLoadedValueFrom} from '../utils/loading';
 
 import {CurrentAppUserService} from '../services/current-app-user.service';
 

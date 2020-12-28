@@ -3,7 +3,7 @@ import {Injectable, Injector} from '@angular/core';
 import {first, switchMap} from 'rxjs/operators';
 
 import {lazy} from '../utils/lazy';
-import {selectLoadedValue} from "../utils/loading";
+import {selectLoadedValue} from '../utils/loading';
 
 import {AuthenticationService} from '../services/authentication.service';
 

@@ -1,0 +1,23 @@
+@import '../../../../theme.scss';
+
+.shortcuts-container {
+    overflow: hidden;
+
+    .shortcuts {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        &:not(:empty) {
+            margin: -.5rem;
+        }
+        & > * {
+            margin: .5rem;
+        }
+    }
+}
+
+.button-icon {
+    margin-right: 4px;
+    margin-bottom: 3px;
+}

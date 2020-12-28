@@ -3,8 +3,8 @@ import {MatDialog as MatDialogService} from '@angular/material/dialog';
 
 import {firstValueFrom} from '../utils/observable';
 
-import {ConfirmDialogComponent} from '../components/confirm-dialog/confirm-dialog.component';
-import {ConfirmDialogOptions} from '../components/confirm-dialog/model';
+import {ConfirmDialogComponent} from '../components/dialogs/confirm/confirm-dialog.component';
+import {ConfirmDialogOptions} from '../components/dialogs/confirm/model';
 
 @Injectable({providedIn: 'root'})
 export class DialogService {

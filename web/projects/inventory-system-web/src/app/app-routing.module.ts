@@ -10,17 +10,17 @@ import {UnsavedPageChangesGuard} from './guards/unsaved-page-changes.guard';
 
 import {CurrentAppUserResolver} from './resolvers/current-app-user.resolver';
 
-import {HomeComponent} from './components/home/home.component';
-import {HelpComponent} from './components/help/help.component';
-import {InventoryComponent} from './components/secretary/inventory/inventory.component';
-import {SettingsComponent} from './components/settings/settings.component';
-import {AppearanceSettingsComponent} from './components/settings/appearance/appearance.component';
-import {SecuritySettingsComponent} from './components/settings/security/security.component';
-import {AdministratorDashboardComponent} from './components/administrator/dashboard/dashboard.component';
-import {ManageAppUsersComponent} from './components/administrator/app-users/manage/manage.component';
-import {CreateAppUserComponent} from './components/administrator/app-users/create/create.component';
-import {AppUserCreatedComponent} from './components/administrator/app-users/created/created.component';
-import {EditAppUserComponent} from './components/administrator/app-users/edit/edit.component';
+import {HomeComponent} from './components/pages/home/home.component';
+import {HelpComponent} from './components/pages/help/help.component';
+import {InventoryComponent} from './components/pages/secretary/inventory/inventory.component';
+import {SettingsComponent} from './components/pages/settings/settings.component';
+import {AppearanceSettingsComponent} from './components/pages/settings/appearance/appearance.component';
+import {SecuritySettingsComponent} from './components/pages/settings/security/security.component';
+import {AdministratorDashboardComponent} from './components/pages/administrator/dashboard/dashboard.component';
+import {ManageAppUsersComponent} from './components/pages/administrator/app-users/manage/manage.component';
+import {CreateAppUserComponent} from './components/pages/administrator/app-users/create/create.component';
+import {AppUserCreatedComponent} from './components/pages/administrator/app-users/created/created.component';
+import {EditAppUserComponent} from './components/pages/administrator/app-users/edit/edit.component';
 
 const routes: Routes = [
   {
