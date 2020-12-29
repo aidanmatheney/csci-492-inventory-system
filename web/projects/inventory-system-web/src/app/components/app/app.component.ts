@@ -82,7 +82,17 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       ...(isSecretary ? [
         {title: 'Dashboard', icon: typed<MatIconName>('home'), link: '/', exact: true},
-        {title: 'Inventory', icon: typed<MatIconName>('keyboard'), link: '/inventory'}
+        {title: 'Inventory', icon: typed<MatIconName>('keyboard'), link: '/inventory', children: [
+          {title: 'Create Item', icon: typed<MatIconName>('add_circle'), link: '/inventory/create'},
+          ...(/^\/inventory\/(?!create)[^\/]+$/.test(url) ? [
+            {title: 'View Item', icon: typed<MatIconName>('search'), link: url},
+            {title: 'Edit Item', icon: typed<MatIconName>('edit'), link: `${url}/edit`}
+          ] : []),
+          ...(/^\/inventory\/[^\/]+\/edit$/.test(url) ? [
+            {title: 'View Item', icon: typed<MatIconName>('search'), link: `/inventory/${url.match(/^\/inventory\/([^\/]+)\/edit$/)![1]}`, exact: true},
+            {title: 'Edit Item', icon: typed<MatIconName>('edit'), link: url}
+          ] : [])
+        ]}
       ] : []),
 
       ...(isAdministrator ? [

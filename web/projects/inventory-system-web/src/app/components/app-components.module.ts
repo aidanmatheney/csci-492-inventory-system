@@ -41,6 +41,9 @@ import {LandingComponent} from './pages/landing/landing.component';
 import {HelpComponent} from './pages/help/help.component';
 import {SecretaryDashboardComponent} from './pages/secretary/dashboard/dashboard.component';
 import {InventoryComponent} from './pages/secretary/inventory/inventory.component';
+import {CreateInventoryItemComponent} from './pages/secretary/inventory/create/create.component';
+import {ViewInventoryItemComponent} from './pages/secretary/inventory/view/view.component';
+import {EditInventoryItemComponent} from './pages/secretary/inventory/edit/edit.component';
 import {SettingsComponent} from './pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './pages/settings/security/security.component';
@@ -67,6 +70,9 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
     HelpComponent,
     SecretaryDashboardComponent,
     InventoryComponent,
+    CreateInventoryItemComponent,
+    ViewInventoryItemComponent,
+    EditInventoryItemComponent,
     SettingsComponent,
     AppearanceSettingsComponent,
     SecuritySettingsComponent,

@@ -13,6 +13,9 @@ import {CurrentAppUserResolver} from './resolvers/current-app-user.resolver';
 import {HomeComponent} from './components/pages/home/home.component';
 import {HelpComponent} from './components/pages/help/help.component';
 import {InventoryComponent} from './components/pages/secretary/inventory/inventory.component';
+import {CreateInventoryItemComponent} from './components/pages/secretary/inventory/create/create.component';
+import {ViewInventoryItemComponent} from './components/pages/secretary/inventory/view/view.component';
+import {EditInventoryItemComponent} from './components/pages/secretary/inventory/edit/edit.component';
 import {SettingsComponent} from './components/pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './components/pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './components/pages/settings/security/security.component';
@@ -47,7 +50,29 @@ const routes: Routes = [
   {
     path: 'inventory',
     canActivate: [SecretaryGuard],
-    component: InventoryComponent
+    children: [
+      {
+        path: '',
+        component: InventoryComponent
+      },
+      {
+        path: 'create',
+        component: CreateInventoryItemComponent
+      },
+      {
+        path: ':id',
+        children: [
+          {
+            path: '',
+            component: ViewInventoryItemComponent
+          },
+          {
+            path: 'edit',
+            component: EditInventoryItemComponent
+          }
+        ]
+      }
+    ]
   },
 
   {
