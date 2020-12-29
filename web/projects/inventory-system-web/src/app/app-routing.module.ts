@@ -20,7 +20,7 @@ import {SettingsComponent} from './components/pages/settings/settings.component'
 import {AppearanceSettingsComponent} from './components/pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './components/pages/settings/security/security.component';
 import {AdministratorDashboardComponent} from './components/pages/administrator/dashboard/dashboard.component';
-import {ManageAppUsersComponent} from './components/pages/administrator/app-users/manage/manage.component';
+import {AppUsersComponent} from './components/pages/administrator/app-users/app-users.component';
 import {CreateAppUserComponent} from './components/pages/administrator/app-users/create/create.component';
 import {AppUserCreatedComponent} from './components/pages/administrator/app-users/created/created.component';
 import {EditAppUserComponent} from './components/pages/administrator/app-users/edit/edit.component';
@@ -107,7 +107,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: ManageAppUsersComponent
+            component: AppUsersComponent
           },
           {
             path: 'create',

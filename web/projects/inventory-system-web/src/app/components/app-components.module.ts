@@ -47,7 +47,7 @@ import {SettingsComponent} from './pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './pages/settings/security/security.component';
 import {AdministratorDashboardComponent} from './pages/administrator/dashboard/dashboard.component';
-import {ManageAppUsersComponent} from './pages/administrator/app-users/manage/manage.component';
+import {AppUsersComponent} from './pages/administrator/app-users/app-users.component';
 import {CreateAppUserComponent} from './pages/administrator/app-users/create/create.component';
 import {AppUserCreatedComponent} from './pages/administrator/app-users/created/created.component';
 import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.component';
@@ -75,7 +75,7 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
     AppearanceSettingsComponent,
     SecuritySettingsComponent,
     AdministratorDashboardComponent,
-    ManageAppUsersComponent,
+    AppUsersComponent,
     CreateAppUserComponent,
     AppUserCreatedComponent,
     EditAppUserComponent

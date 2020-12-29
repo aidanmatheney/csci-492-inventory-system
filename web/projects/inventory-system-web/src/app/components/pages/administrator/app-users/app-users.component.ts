@@ -5,35 +5,35 @@ import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {takeUntil} from 'rxjs/operators';
 
-import {selectLoadedValue, selectLoading} from '../../../../../utils/loading';
-import {stringRecordKeys} from '../../../../../utils/record';
+import {selectLoadedValue, selectLoading} from '../../../../utils/loading';
+import {stringRecordKeys} from '../../../../utils/record';
 
-import {PageTitleService} from '../../../../../services/page-title.service';
-import {AppUsersService} from '../../../../../services/app-users.service';
-import {Destroyed$} from '../../../../../services/destroyed$.service';
+import {PageTitleService} from '../../../../services/page-title.service';
+import {AppUsersService} from '../../../../services/app-users.service';
+import {Destroyed$} from '../../../../services/destroyed$.service';
 
-import {OtherAppUser} from '../../../../../models/app-user';
-import {appRoleSortCompare, appRoleRankingByName} from '../../../../../models/app-role';
+import {OtherAppUser} from '../../../../models/app-user';
+import {appRoleSortCompare, appRoleRankingByName} from '../../../../models/app-role';
 
-type ManageAppUsersForm = FormGroup<{
+type AppUsersForm = FormGroup<{
   filter: FormControl<string, {}>;
 }, {}>;
 
 @Component({
-  selector: 'inventory-system-manage-app-users',
-  templateUrl: './manage.component.html',
-  styleUrls: ['./manage.component.scss'],
+  selector: 'inventory-system-app-users',
+  templateUrl: './app-users.component.html',
+  styleUrls: ['./app-users.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [Destroyed$]
 })
-export class ManageAppUsersComponent implements OnInit, AfterViewInit {
+export class AppUsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) private sort!: MatSort;
   @ViewChild(MatPaginator) private paginator!: MatPaginator;
 
   public readonly loading$ = selectLoading(this.appUsersService.appUsers$);
   public readonly appUsers$ = selectLoadedValue(this.appUsersService.appUsers$);
 
-  public readonly form: ManageAppUsersForm = this.formBuilder.group({
+  public readonly form: AppUsersForm = this.formBuilder.group({
     filter: this.formBuilder.control('')
   });
 
@@ -89,7 +89,7 @@ export class ManageAppUsersComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit() {
-    this.pageTitleService.set('Manage Users');
+    this.pageTitleService.set('Users');
 
     this.appUsers$.pipe(
       takeUntil(this.destroyed$)
