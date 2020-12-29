@@ -1,7 +1,7 @@
 <inventory-system-page title="Appearance" backLink=".." backText="Settings">
   <h2>Theme</h2>
 
-  <mat-radio-group [ngModel]="currentAppTheme$ | async" (ngModelChange)="setAppTheme($event)" class="radio-group">
+  <mat-radio-group [ngModel]="(currentAppTheme$ | async)!" (ngModelChange)="setAppTheme($event)" class="radio-group">
     <mat-radio-button [value]="AppTheme.light">Light</mat-radio-button>
     <mat-radio-button [value]="AppTheme.dark">Dark</mat-radio-button>
   </mat-radio-group>

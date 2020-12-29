@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ActivationStart, NavigationCancel, NavigationEnd, NavigationError, Router, UrlTree} from '@angular/router';
-import {distinctUntilChanged, filter, map} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, startWith} from 'rxjs/operators';
 
 import {cacheUntil, startWithVoid} from '../utils/observable';
 
@@ -26,6 +26,7 @@ export class RouteInfoService {
       || event instanceof NavigationError
     )),
     map(event => event instanceof ActivationStart),
+    startWith(true),
     distinctUntilChanged(),
     cacheUntil(this.destroyed$)
   );

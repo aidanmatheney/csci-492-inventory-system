@@ -82,9 +82,7 @@
     </mat-sidenav>
 
     <mat-sidenav-content class="sidenav-content">
-      <inventory-system-loading-container [loading]="vars.routeLoading!">
-        <router-outlet></router-outlet>
-      </inventory-system-loading-container>
+      <router-outlet *inventorySystemSpinWhileLoading="vars.routeLoading!"></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>
 </ng-container>

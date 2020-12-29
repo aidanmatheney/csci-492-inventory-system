@@ -8,7 +8,7 @@
     <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.createdAppUser!.email}}</span></span>
   </ng-template>
   <inventory-system-page [title]="pageTitle" backLink="../.." backText="Users">
-    <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
       <p>
         <a routerLink="../edit">
           Edit {{vars.createdAppUser!.email}}
@@ -32,6 +32,6 @@
 
         <button mat-raised-button color="primary" class="copy-button" (click)="copyCreatedAppUserEmailConfirmationUrl()">Copy</button>
       </div>
-    </ng-container></inventory-system-loading-container>
+    </ng-container>
   </inventory-system-page>
 </ng-container>

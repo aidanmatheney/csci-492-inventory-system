@@ -16,7 +16,7 @@
     <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.editAppUser!.email}}</span></span>
   </ng-template>
   <inventory-system-page [title]="pageTitle" backLink="../.." backText="Users">
-    <inventory-system-loading-container [loading]="vars.loading!"><ng-container *ngIf="!vars.loading!">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
       <div class="section">
         <div [formGroup]="form" class="fields">
           <div class="row">
@@ -95,6 +95,6 @@
           (process)="removePassword()"
         ></inventory-system-processing-control>
       </div>
-    </ng-container></inventory-system-loading-container>
+    </ng-container>
   </inventory-system-page>
 </ng-container>

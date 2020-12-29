@@ -1,5 +1,5 @@
 <inventory-system-page title="Users" backLink=".." backText="Admin Dashboard">
-  <inventory-system-loading-container [loading]="(loading$ | async)!">
+  <ng-container *inventorySystemSpinWhileLoading="(loading$ | async)!">
     <div [formGroup]="form" class="controls">
       <mat-form-field class="filter">
         <mat-label>Filter</mat-label>
@@ -63,5 +63,5 @@
     </div>
 
     <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
-  </inventory-system-loading-container>
+  </ng-container>
 </inventory-system-page>

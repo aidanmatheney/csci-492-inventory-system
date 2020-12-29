@@ -28,7 +28,6 @@ import {AppPipesModule} from '../pipes/app-pipes.module';
 
 import {AppComponent} from './app/app.component';
 import {LoadingSpinnerComponent} from './loading-spinner/loading-spinner.component';
-import {LoadingContainerComponent} from './loading-container/loading-container.component';
 import {SpinnerButtonContainerComponent} from './spinner-button-container/spinner-button-container.component';
 import {ProcessingControlComponent} from './processing-control/processing-control.component';
 import {SaveControlComponent} from './save-control/save-control.component';
@@ -57,7 +56,6 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
   declarations: [
     AppComponent,
     LoadingSpinnerComponent,
-    LoadingContainerComponent,
     SpinnerButtonContainerComponent,
     ProcessingControlComponent,
     SaveControlComponent,
