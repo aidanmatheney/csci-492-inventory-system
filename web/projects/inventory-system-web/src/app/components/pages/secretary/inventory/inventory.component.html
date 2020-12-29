@@ -1,3 +1,47 @@
 <inventory-system-page title="Inventory" backLink="/" backText="Dashboard">
-  <p>inventory works!</p>
+  <ng-container *inventorySystemSpinWhileLoading="(loading$ | async)!">
+    <div class="table-container">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        matSortActive="name"
+        matSortDirection="asc"
+        class="table"
+      >
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let inventoryItem">
+            <a [routerLink]="inventoryItem.id">{{inventoryItem.id}}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let inventoryItem">{{inventoryItem.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
+          <td mat-cell *matCellDef="let inventoryItem">{{inventoryItem.category}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cost">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost</th>
+          <td mat-cell *matCellDef="let inventoryItem">{{inventoryItem.cost}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="columns.length">
+            <span>No items</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
+  </ng-container>
 </inventory-system-page>
