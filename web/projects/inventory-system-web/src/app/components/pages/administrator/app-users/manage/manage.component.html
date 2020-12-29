@@ -50,7 +50,7 @@
           <td mat-cell *matCellDef="let appUser">{{stringifyAppRoles(appUser)}}</td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: columns;"></tr>
 
         <tr class="mat-row" *matNoDataRow>

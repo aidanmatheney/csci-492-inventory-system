@@ -1,14 +1,17 @@
 @import '../../../theme.scss';
+@import '../../../breakpoints.scss';
 
 :host {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
 header {
-    min-height: 48px;
-    padding: 6px;
+    flex-shrink: 0;
+    min-height: 40px;
+    padding: 4px;
 
     color: white;
     background-color: mat-color($inventory-system-primary);
@@ -23,8 +26,8 @@ header {
     grid-column: 1;
     justify-self: start;
 
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
 
     .contents {
         display: flex;
@@ -38,8 +41,8 @@ header {
 
         .text {
             line-height: 20px;
-            padding-top: 8px;
-            padding-bottom: 8px;
+            padding-top: 6px;
+            padding-bottom: 6px;
 
             text-align: start;
             white-space: normal;
@@ -62,4 +65,9 @@ main {
 
     display: flex;
     flex-direction: column;
+    overflow: auto;
+
+    @media (max-width: $narrow-viewport-max-width) {
+        padding: .5rem;
+    }
 }
