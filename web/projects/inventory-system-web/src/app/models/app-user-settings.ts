@@ -4,9 +4,9 @@ export enum AppTheme {
 }
 
 export interface CurrentAppUserSettingsDto {
-  theme: AppTheme;
+  theme: AppTheme | null;
 }
 
 export interface CurrentAppUserSettings {
-  theme: AppTheme;
+  theme: AppTheme | undefined;
 }

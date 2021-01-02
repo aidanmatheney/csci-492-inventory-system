@@ -2,6 +2,6 @@
 {
     public sealed class CurrentAppUserSettingsDto
     {
-        public string Theme { get; set; } = null!;
+        public string? Theme { get; set; } = null!;
     }
 }

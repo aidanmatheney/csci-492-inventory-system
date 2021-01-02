@@ -22,7 +22,7 @@ import {Destroyed$} from './destroyed$.service';
 import {environment} from '../../environments/environment';
 import {CurrentAppUser, CurrentAppUserDto} from '../models/app-user';
 import {AppRole} from '../models/app-role';
-import {AppTheme, CurrentAppUserSettings, CurrentAppUserSettingsDto} from '../models/app-user-settings';
+import {CurrentAppUserSettings, CurrentAppUserSettingsDto} from '../models/app-user-settings';
 
 @Injectable({providedIn: 'root'})
 export class CurrentAppUserService {
@@ -78,7 +78,7 @@ export class CurrentAppUserService {
       filterNotNull(),
       switchMapTo(this.httpGetCurrentAppUserSettings()),
       map(({theme}): CurrentAppUserSettings => ({
-        theme
+        theme: theme ?? undefined
       }))
     ),
     this.nextSettings$.pipe(
@@ -88,7 +88,7 @@ export class CurrentAppUserService {
           filter(signedIn => signedIn),
           first(),
           switchMapTo(this.httpSetCurrentAppUserSettings({
-            theme: nextSettings.theme
+            theme: nextSettings.theme ?? null
           })),
           switchMapTo(EMPTY),
           catchError(error => {
@@ -103,7 +103,7 @@ export class CurrentAppUserService {
       'settings',
       settings => settings,
       settings => of(settings ?? {
-        theme: AppTheme.light
+        theme: undefined
       })
     ),
     tapLog('CurrentAppUserService settings$', 'warn'), // TODO: remove

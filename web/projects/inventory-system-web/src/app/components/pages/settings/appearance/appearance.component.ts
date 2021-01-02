@@ -25,7 +25,7 @@ export class AppearanceSettingsComponent implements OnInit {
     this.pageTitleService.set('Appearance Settings');
   }
 
-  public setAppTheme(theme: AppTheme) {
+  public setAppTheme(theme: AppTheme | undefined) {
     this.appearanceService.setAppTheme(theme);
   }
 }

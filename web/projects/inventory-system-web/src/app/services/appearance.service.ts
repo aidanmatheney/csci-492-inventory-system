@@ -21,7 +21,7 @@ export class AppearanceService {
     cacheUntil(this.destroyed$)
   );
 
-  public async setAppTheme(theme: AppTheme) {
+  public async setAppTheme(theme: AppTheme | undefined) {
     const settings = await firstValueFrom(this.currentAppUserService.settings$);
     this.currentAppUserService.setSettings({...settings, theme});
   }

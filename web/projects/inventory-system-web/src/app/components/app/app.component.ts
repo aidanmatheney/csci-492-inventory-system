@@ -10,7 +10,7 @@ import {mapLoadable, selectLoading} from '../../utils/loading';
 import {SubType, typed} from '../../utils/type';
 
 import {RouteInfoService} from '../../services/route-info.service';
-import {ViewportService} from '../../services/viewport.service';
+import {DeviceInfoService} from '../../services/device-info.service';
 import {AppearanceService} from '../../services/appearance.service';
 import {AuthenticationService} from '../../services/authentication.service';
 import {CurrentAppUserService} from '../../services/current-app-user.service';
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   public readonly routeLoading$ = this.routeInfoService.loading$;
 
-  public readonly narrowViewport$ = this.viewportService.narrow$;
+  public readonly narrowViewport$ = this.deviceInfoService.hasNarrowViewport$;
 
   public readonly currentAppUserLoading$ = selectLoading(this.currentAppUserService.appUser$);
   public readonly signedIn$ = this.currentAppUserService.signedIn$.pipe(mapLoadable<boolean>(false));
@@ -55,7 +55,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public readonly isAdministrator$ = this.currentAppUserService.isAdministrator$.pipe(mapLoadable<boolean>(false));
 
   public readonly sidenavMode$ = this.narrowViewport$.pipe(
-    map((narrowViewPort): SubType<MatDrawerMode, 'over' | 'side'> => narrowViewPort ? 'over' : 'side')
+    map((narrowViewport): SubType<MatDrawerMode, 'over' | 'side'> => narrowViewport ? 'over' : 'side')
   );
 
   public readonly nextSidenavOpened$ = new Subject<boolean>();
@@ -143,7 +143,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   public constructor(
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly routeInfoService: RouteInfoService,
-    private readonly viewportService: ViewportService,
+    private readonly deviceInfoService: DeviceInfoService,
     private readonly appearanceService: AppearanceService,
     private readonly authenticationService: AuthenticationService,
     private readonly currentAppUserService: CurrentAppUserService,
@@ -151,9 +151,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) { }
 
   public ngOnInit() {
-    this.appearanceService.appTheme$.pipe(
-      switchMap(appTheme => new Observable<void>(() => {
-        const cssClass = appThemeCssClassByName[appTheme];
+    combineLatest([
+      this.appearanceService.appTheme$,
+      this.deviceInfoService.prefersLightColorScheme$
+    ]).pipe(
+      switchMap(([appTheme, prefersLightColorScheme]) => new Observable<void>(() => {
+        const effectiveAppTheme = appTheme ?? (prefersLightColorScheme ? AppTheme.light : AppTheme.dark);
+        const cssClass = appThemeCssClassByName[effectiveAppTheme];
         this.document.body.classList.add(cssClass);
         return () => this.document.body.classList.remove(cssClass);
       })),

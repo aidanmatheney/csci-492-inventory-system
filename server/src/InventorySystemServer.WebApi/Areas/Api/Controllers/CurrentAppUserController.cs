@@ -64,17 +64,18 @@
                 settings = new AppUserSettings
                 {
                     UserId = appUser.Id,
-                    Theme = AppTheme.Light
+                    Theme = null
                 };
                 await _appUserService.SaveAppUserSettingsAsync(settings, cancellationToken).ConfigureAwait(false);
-            } else
+            }
+            else
             {
                 settings = existingSettings;
             }
 
             return new CurrentAppUserSettingsDto
             {
-                Theme = settings.Theme.ToString()
+                Theme = settings.Theme?.ToString()
             };
         }
 
@@ -86,7 +87,7 @@
             var settings = new AppUserSettings
             {
                 UserId = appUser.Id,
-                Theme = Enum.Parse<AppTheme>(settingsDto.Theme)
+                Theme = settingsDto.Theme == null ? null : Enum.Parse<AppTheme>(settingsDto.Theme)
             };
             await _appUserService.SaveAppUserSettingsAsync(settings, cancellationToken).ConfigureAwait(false);
         }

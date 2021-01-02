@@ -50,7 +50,7 @@
                 .HasPrincipalKey(u => u.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            table.Property(s => s.Theme).HasConversion<string>();
+            table.Property(s => s.Theme).HasConversion<string?>();
         }
     }
 }
