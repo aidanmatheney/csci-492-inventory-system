@@ -59,7 +59,7 @@
             var existingSettings = await _appUserService.GetAppUserSettingsAsync(appUser, cancellationToken).ConfigureAwait(false);
 
             AppUserSettings settings;
-            if (existingSettings == null)
+            if (existingSettings is null)
             {
                 settings = new AppUserSettings
                 {
@@ -87,7 +87,7 @@
             var settings = new AppUserSettings
             {
                 UserId = appUser.Id,
-                Theme = settingsDto.Theme == null ? null : Enum.Parse<AppTheme>(settingsDto.Theme)
+                Theme = settingsDto.Theme is null ? null : Enum.Parse<AppTheme>(settingsDto.Theme)
             };
             await _appUserService.SaveAppUserSettingsAsync(settings, cancellationToken).ConfigureAwait(false);
         }

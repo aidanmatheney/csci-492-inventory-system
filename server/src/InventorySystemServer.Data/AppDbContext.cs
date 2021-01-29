@@ -12,7 +12,6 @@
 
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using Microsoft.Extensions.Options;
 
     public sealed class AppDbContext : IdentityDbContext<AppUser, AppRole, string>, IPersistedGrantDbContext
@@ -30,27 +29,22 @@
 
         public DbSet<AppUserSettings> AppUserSettings { get; set; } = null!;
 
+        public DbSet<InventoryItem> InventoryItems { get; set; } = null!;
+        public DbSet<InventoryItemChange> InventoryItemChanges { get; set; } = null!;
+        public DbSet<InventoryItemSnapshot> InventoryItemSnapshots { get; set; } = null!;
+        public DbSet<InventoryAssignee> InventoryAssignees { get; set; } = null!;
+        public DbSet<InventoryAssigneeChange> InventoryAssigneeChanges { get; set; } = null!;
+        public DbSet<InventoryAssigneeSnapshot> InventoryAssigneeSnapshots { get; set; } = null!;
+
         public DbSet<WebApiLogEntry> WebApiLogEntries { get; set; } = null!;
 
         Task<int> IPersistedGrantDbContext.SaveChangesAsync() => SaveChangesAsync();
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder model)
         {
-            base.OnModelCreating(builder);
-            builder.ConfigurePersistedGrantContext(_operationalStoreOptions.Value);
-
-            builder.Entity<AppUserSettings>(ConfigureAppUserSettings);
-        }
-
-        private static void ConfigureAppUserSettings(EntityTypeBuilder<AppUserSettings> table)
-        {
-            table.HasKey(s => s.UserId);
-            table.HasOne<AppUser>().WithMany()
-                .HasForeignKey(s => s.UserId)
-                .HasPrincipalKey(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            table.Property(s => s.Theme).HasConversion<string?>();
+            base.OnModelCreating(model);
+            model.ConfigurePersistedGrantContext(_operationalStoreOptions.Value);
+            model.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }

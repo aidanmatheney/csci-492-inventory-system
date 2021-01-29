@@ -91,7 +91,7 @@
             foreach (var desiredAppRoleName in request.AppRoles)
             {
                 var desiredAppRole = await _appRoleService.FindAppRoleByNameAsync(desiredAppRoleName, cancellationToken).ConfigureAwait(false);
-                if (desiredAppRole == null)
+                if (desiredAppRole is null)
                 {
                     return BadRequest($"Role {desiredAppRole} not found");
                 }
@@ -146,7 +146,7 @@
         public async Task<ActionResult> Update(string appUserId, UpdateRequest request, CancellationToken cancellationToken)
         {
             var editAppUser = await _appUserService.FindAppUserByIdAsync(appUserId, cancellationToken).ConfigureAwait(false);
-            if (editAppUser == null)
+            if (editAppUser is null)
             {
                 return NotFound($"User {appUserId} not found");
             }
@@ -155,7 +155,7 @@
             foreach (var desiredAppRoleName in desiredEditAppUserAppRoleNames)
             {
                 var desiredAppRole = await _appRoleService.FindAppRoleByNameAsync(desiredAppRoleName, cancellationToken).ConfigureAwait(false);
-                if (desiredAppRole == null)
+                if (desiredAppRole is null)
                 {
                     return BadRequest($"Role {desiredAppRole} not found");
                 }
@@ -221,7 +221,7 @@
         public async Task<ActionResult> Delete(string appUserId, CancellationToken cancellationToken)
         {
             var editAppUser = await _appUserService.FindAppUserByIdAsync(appUserId, cancellationToken).ConfigureAwait(false);
-            if (editAppUser == null)
+            if (editAppUser is null)
             {
                 return NotFound($"User {appUserId} not found");
             }
@@ -248,7 +248,7 @@
         public async Task<ActionResult<ResendEmailConfirmationResponse>> ResendEmailConfirmation(string appUserId, CancellationToken cancellationToken)
         {
             var appUser = await _appUserService.FindAppUserByIdAsync(appUserId, cancellationToken).ConfigureAwait(false);
-            if (appUser == null)
+            if (appUser is null)
             {
                 return NotFound($"User {appUserId} not found");
             }
@@ -273,7 +273,7 @@
         public async Task<ActionResult> RemovePassword(string appUserId, CancellationToken cancellationToken)
         {
             var editAppUser = await _appUserService.FindAppUserByIdAsync(appUserId, cancellationToken).ConfigureAwait(false);
-            if (editAppUser == null)
+            if (editAppUser is null)
             {
                 return NotFound($"User {appUserId} not found");
             }
