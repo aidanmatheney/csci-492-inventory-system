@@ -1,0 +1,65 @@
+<inventory-system-page title="Assignees" backLink="/" backText="Dashboard">
+  <ng-container *inventorySystemSpinWhileLoading="(loading$ | async)!">
+    <h2>Existing Assignees</h2>
+    <div class="table-container">
+      <table mat-table
+             [dataSource]="dataSource"
+             matSort
+             matSortActive="name"
+             matSortDirection="asc"
+             class="table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let assignee">
+            <a [routerLink]="assignee.id">{{assignee.id}}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let assignee">{{assignee.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let assignee">{{assignee.email}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="columns.length">
+            <span>No items</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
+
+    <h2>New Assignee</h2>
+    <div class="fields">
+      <div class="row">
+        <mat-form-field appearance="fill" class="field-m">
+          <mat-label>ID</mat-label>
+          <input matInput formControlName="email" required>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="fill" class="field-m">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="email" required>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="fill" class="field-m">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" required>
+        </mat-form-field>
+      </div>
+      <a mat-raised-button color="primary" >Create</a>
+    </div>
+    
+  </ng-container>
+</inventory-system-page>
