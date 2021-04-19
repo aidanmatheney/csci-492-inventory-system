@@ -53,6 +53,7 @@ import {AppUsersComponent} from './pages/administrator/app-users/app-users.compo
 import {CreateAppUserComponent} from './pages/administrator/app-users/create/create.component';
 import {AppUserCreatedComponent} from './pages/administrator/app-users/created/created.component';
 import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.component';
+import { AssigneesComponent } from './pages/secretary/inventory/assignees/assignees.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +81,8 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
     AppUsersComponent,
     CreateAppUserComponent,
     AppUserCreatedComponent,
-    EditAppUserComponent
+    EditAppUserComponent,
+    AssigneesComponent
   ],
   imports: [
     CommonModule,

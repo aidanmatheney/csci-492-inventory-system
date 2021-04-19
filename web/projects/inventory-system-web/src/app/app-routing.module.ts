@@ -16,6 +16,7 @@ import {InventoryComponent} from './components/pages/secretary/inventory/invento
 import {CreateInventoryItemComponent} from './components/pages/secretary/inventory/create/create.component';
 import {ViewInventoryItemComponent} from './components/pages/secretary/inventory/view/view.component';
 import {EditInventoryItemComponent} from './components/pages/secretary/inventory/edit/edit.component';
+import { AssigneesComponent } from './components/pages/secretary/inventory/assignees/assignees.component';
 import {SettingsComponent} from './components/pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './components/pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './components/pages/settings/security/security.component';
@@ -59,6 +60,10 @@ const routes: Routes = [
         path: 'create',
         component: CreateInventoryItemComponent,
         canDeactivate: [UnsavedPageChangesGuard]
+      },
+      {
+        path: 'assignees',
+        component: AssigneesComponent
       },
       {
         path: ':id',
