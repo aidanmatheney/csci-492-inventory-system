@@ -13,14 +13,14 @@
 } as vars">
   <ng-template #pageTitle>
     <span>Edit User</span>
-    <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.editAppUser!.email}}</span></span>
+    <span *ngIf="!vars.loading!">: <strong>{{vars.editAppUser!.email}}</strong></span>
   </ng-template>
   <inventory-system-page [title]="pageTitle" backLink="../.." backText="Users">
     <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
       <div class="section">
         <div [formGroup]="form" class="fields">
           <div class="row">
-            <mat-form-field appearance="fill" class="field-m">
+            <mat-form-field appearance="fill" class="field md">
               <mat-label>Name</mat-label>
               <input matInput formControlName="name" required>
               <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
@@ -29,16 +29,16 @@
           </div>
 
           <div class="row">
-            <div class="checkbox-field">
+            <div class="field">
               <mat-checkbox formControlName="lockedOut">Locked out</mat-checkbox>
             </div>
           </div>
 
           <div class="row">
-            <div class="checkbox-field">
+            <div class="field">
               <mat-checkbox formControlName="isSecretary">Secretary</mat-checkbox>
             </div>
-            <div class="checkbox-field">
+            <div class="field">
               <mat-checkbox formControlName="isAdministrator">Administrator</mat-checkbox>
             </div>
           </div>
@@ -76,7 +76,7 @@
                 cdkTextareaAutosize
                 readonly
                 (click)="emailConfirmationUrlTextArea.select()"
-              >{{vars.editAppUserEmailConfirmationUrl!}}</textarea>
+              >{{vars.editAppUserEmailConfirmationUrl}}</textarea>
             </mat-form-field>
 
             <button mat-raised-button color="primary" class="copy-button" (click)="copyEmailConfirmationUrl()">Copy</button>

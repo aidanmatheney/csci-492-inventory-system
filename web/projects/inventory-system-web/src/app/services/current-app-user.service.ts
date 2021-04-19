@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {concat, EMPTY, merge, Observable, of, Subject} from 'rxjs';
-import {catchError, delay, filter, first, map, retryWhen, switchMap, switchMapTo} from 'rxjs/operators';
+import {EMPTY, merge, Observable, of, Subject} from 'rxjs';
+import {catchError, delay, filter, first, map, retryWhen, startWith, switchMap, switchMapTo} from 'rxjs/operators';
 
 import {partialRecordSet} from '../utils/array';
-import {cacheUntil, filterNotNull} from '../utils/observable';
+import {cacheUntil} from '../utils/observable';
 import {tapLog} from '../utils/debug';
 import {
   distinctUntilLoadableChanged,
@@ -15,6 +15,7 @@ import {
 } from '../utils/loading';
 import {memoize} from '../utils/memo';
 import {startFromAndSaveToLocalStorage} from '../utils/storage';
+import {isNotNull} from '../utils/filter';
 
 import {AuthenticationService} from './authentication.service';
 import {Destroyed$} from './destroyed$.service';
@@ -41,16 +42,14 @@ export class CurrentAppUserService {
         return of(Loadable.loaded(undefined));
       }
 
-      return concat(
-        of(Loadable.loading),
-        this.httpGetCurrentAppUser().pipe(
-          map(({id, email, name, appRoles}) => Loadable.loaded({
-            id,
-            email,
-            name,
-            hasAppRoleByName: appRoles && partialRecordSet(appRoles)
-          }))
-        )
+      return this.httpGetCurrentAppUser().pipe(
+        map(({id, email, name, appRoles}) => Loadable.loaded({
+          id,
+          email,
+          name,
+          hasAppRoleByName: appRoles && partialRecordSet(appRoles)
+        })),
+        startWith(Loadable.loading)
       );
     }),
     distinctUntilLoadableChanged(),
@@ -61,7 +60,7 @@ export class CurrentAppUserService {
     mapLoaded(appUser => appUser != null),
     distinctUntilLoadableChanged()
   );
-  public readonly signedInAppUser$ = selectLoadedValue(this.appUser$).pipe(filterNotNull());
+  public readonly signedInAppUser$ = selectLoadedValue(this.appUser$).pipe(filter(isNotNull));
 
   public readonly selectHasAppRole = memoize((appRole: AppRole) => {
     return this.appUser$.pipe(
@@ -75,27 +74,25 @@ export class CurrentAppUserService {
   private readonly nextSettings$ = new Subject<CurrentAppUserSettings>();
   public readonly settings$ = merge(
     selectLoadedValue(this.appUser$).pipe(
-      filterNotNull(),
+      filter(isNotNull),
       switchMapTo(this.httpGetCurrentAppUserSettings()),
       map(({theme}): CurrentAppUserSettings => ({
         theme: theme ?? undefined
       }))
     ),
     this.nextSettings$.pipe(
-      switchMap(nextSettings => concat(
-        of(nextSettings),
-        selectLoadedValue(this.signedIn$).pipe(
-          filter(signedIn => signedIn),
-          first(),
-          switchMapTo(this.httpSetCurrentAppUserSettings({
-            theme: nextSettings.theme ?? null
-          })),
-          switchMapTo(EMPTY),
-          catchError(error => {
-            console.error('Error saving app user settings', error);
-            return EMPTY;
-          })
-        )
+      switchMap(nextSettings => selectLoadedValue(this.signedIn$).pipe(
+        filter(signedIn => signedIn),
+        first(),
+        switchMapTo(this.httpSetCurrentAppUserSettings({
+          theme: nextSettings.theme ?? null
+        })),
+        switchMapTo(EMPTY),
+        catchError(error => {
+          console.error('Error saving app user settings', error);
+          return EMPTY;
+        }),
+        startWith(nextSettings)
       ))
     )
   ).pipe(

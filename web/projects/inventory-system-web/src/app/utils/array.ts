@@ -12,6 +12,8 @@ export const indexArray = <T>(array: readonly T[]) => {
   return array.map((value, index) => [value, index] as const);
 };
 
+export type SortCompare<T> = NonNullable<Parameters<T[]['sort']>[0]>;
+
 interface GroupBy {
   <S, K extends keyof any>(
     source: readonly S[],

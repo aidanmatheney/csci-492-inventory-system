@@ -67,8 +67,13 @@
             public InventoryItemSnapshot Snapshot { get; set; } = null!;
         }
 
+        public sealed class CreateItemResponse
+        {
+            public int NewItemId { get; set; }
+        }
+
         [HttpPost("Items")]
-        public async Task CreateItem(CreateItemRequest request, CancellationToken cancellationToken)
+        public async Task<CreateItemResponse> CreateItem(CreateItemRequest request, CancellationToken cancellationToken)
         {
             var change = new InventoryItemChange
             {
@@ -77,6 +82,10 @@
             };
 
             await _inventoryService.CreateItemAsync(request.Item, change, request.Snapshot, cancellationToken).ConfigureAwait(false);
+            return new CreateItemResponse
+            {
+                NewItemId = request.Item.Id
+            };
         }
 
         public sealed class UpdateItemRequest
@@ -171,8 +180,13 @@
             public InventoryAssigneeSnapshot Snapshot { get; set; } = null!;
         }
 
+        public sealed class CreateAssigneeResponse
+        {
+            public int NewAssigneeId { get; set; }
+        }
+
         [HttpPost("Assignees")]
-        public async Task CreateAssignee(CreateAssigneeRequest request, CancellationToken cancellationToken)
+        public async Task<CreateAssigneeResponse> CreateAssignee(CreateAssigneeRequest request, CancellationToken cancellationToken)
         {
             var change = new InventoryAssigneeChange
             {
@@ -181,6 +195,10 @@
             };
 
             await _inventoryService.CreateAssigneeAsync(request.Assignee, change, request.Snapshot, cancellationToken).ConfigureAwait(false);
+            return new CreateAssigneeResponse
+            {
+                NewAssigneeId = request.Assignee.Id
+            };
         }
 
         public sealed class UpdateAssigneeRequest

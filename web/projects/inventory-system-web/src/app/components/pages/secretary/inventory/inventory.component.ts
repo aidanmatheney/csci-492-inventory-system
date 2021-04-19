@@ -1,19 +1,24 @@
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, AfterViewInit, ViewChildren, QueryList} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
-import {of} from 'rxjs';
-import {delay, startWith, takeUntil} from 'rxjs/operators';
+import {map, takeUntil} from 'rxjs/operators';
+
+import {selectLoadedValue, selectLoading} from '../../../../utils/loading';
+import {isNotFalse} from '../../../../utils/filter';
+import {wireUpTable} from '../../../../utils/table';
+import {ElementOf} from '../../../../utils/type';
 
 import {PageTitleService} from '../../../../services/page-title.service';
+import {InventoryService} from '../../../../services/inventory.service';
 import {Destroyed$} from '../../../../services/destroyed$.service';
 
-interface InventoryItem {
-  id: string;
-  name: string;
-  category: string;
-  cost: number;
-}
+import {InventoryItemHistory} from '../../../../models/inventory';
+
+type InventoryForm = FormGroup<{
+  filter: FormControl<string, {}>;
+}, {}>;
 
 @Component({
   selector: 'inventory-system-inventory',
@@ -23,39 +28,81 @@ interface InventoryItem {
   providers: [Destroyed$]
 })
 export class InventoryComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSort) private sort!: MatSort;
-  @ViewChild(MatPaginator) private paginator!: MatPaginator;
+  // Use ViewChildren since these are inside an ngIf
+  @ViewChildren(MatSort) private sort!: QueryList<MatSort>;
+  @ViewChildren(MatPaginator) private paginator!: QueryList<MatPaginator>;
 
-  public readonly loading$ = of(false).pipe(delay(1000), startWith(true));
-  public readonly inventoryItems$ = of<InventoryItem[]>([
-    {id: 'aaa', name: 'Dell keyboard', category: 'Electronics', cost: 30},
-    {id: 'aab', name: 'Dell mouse', category: 'Electronics', cost: 20},
-    {id: 'aac', name: 'Dell monitor', category: 'Electronics', cost: 150}
-  ]);
+  public readonly loading$ = selectLoading(this.inventoryService.itemHistories$);
+  public readonly itemHistories$ = selectLoadedValue(this.inventoryService.itemHistories$).pipe(
+    map(itemHistories => itemHistories.filter(({currentSnapshot}) => currentSnapshot != null))
+  );
 
-  public readonly dataSource = new MatTableDataSource<InventoryItem>();
-  public readonly columns: ReadonlyArray<keyof InventoryItem> = [
+  public readonly form: InventoryForm = this.formBuilder.group({
+    filter: this.formBuilder.control('')
+  });
+
+  public readonly dataSource = new MatTableDataSource<InventoryItemHistory>();
+  public readonly columns = [
     'id',
+    'barcode',
     'name',
     'category',
-    'cost'
-  ];
+    'cost',
+    'flagged'
+  ] as const;
 
   public constructor(
+    private readonly formBuilder: FormBuilder,
     private readonly pageTitleService: PageTitleService,
+    private readonly inventoryService: InventoryService,
     private readonly destroyed$: Destroyed$
-  ) { }
+  ) {
+    this.dataSource.sortingDataAccessor = ({item, lastUndeletedSnapshot}, sortHeaderId) => {
+      const column = sortHeaderId as ElementOf<InventoryComponent['columns']>;
+
+      if (column === 'id' || column === 'barcode') {
+        return item[column];
+      }
+
+      if (column === 'flagged') {
+        return lastUndeletedSnapshot.flaggedReason != null ? 1 : 0;
+      }
+
+      return lastUndeletedSnapshot[column] ?? '';
+    };
+
+    this.dataSource.filterPredicate = ({item, lastUndeletedSnapshot}, filter) => {
+      const lowercaseFields = [
+        String(item.id),
+        item.barcode,
+        lastUndeletedSnapshot.name,
+        lastUndeletedSnapshot.category != null && lastUndeletedSnapshot.category,
+        lastUndeletedSnapshot.cost != null && String(lastUndeletedSnapshot.cost)
+      ].filter(isNotFalse).map(field => field.toLowerCase());
+
+      const lowercaseFilter = filter.toLowerCase();
+
+      return lowercaseFields.some(field => field.includes(lowercaseFilter));
+    };
+  }
 
   public ngOnInit() {
     this.pageTitleService.set('Inventory');
 
-    this.inventoryItems$.pipe(
+    this.itemHistories$.pipe(
       takeUntil(this.destroyed$)
-    ).subscribe(inventoryItems => this.dataSource.data = inventoryItems);
+    ).subscribe(itemHistories => this.dataSource.data = itemHistories);
+
+    this.form.select(({filter}) => filter).pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(filter => this.dataSource.filter = filter);
   }
 
   public ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    wireUpTable({
+      dataSource: this.dataSource,
+      sort: this.sort,
+      paginator: this.paginator
+    });
   }
 }

@@ -1,7 +1,7 @@
 import {BehaviorSubject, Observable} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {filter, mapTo} from 'rxjs/operators';
 
-import {mapToVoid} from './observable';
+import {VOID} from './type';
 
 export interface IdleProcessingState {
   status: 'idle';
@@ -51,7 +51,7 @@ export class OngoingOperations {
   public readonly count$: Observable<number> = this._count$;
   public readonly none$ = this.count$.pipe(
     filter(count => count === 0),
-    mapToVoid()
+    mapTo(VOID)
   );
 
   public async incrementWhile<T>(operation: () => Promise<T>) {

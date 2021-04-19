@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject, concat, of} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {delay, distinctUntilChanged, map, pluck, retryWhen, startWith, switchMapTo} from 'rxjs/operators';
 
 import {partialRecordSet, recordBy} from '../utils/array';
@@ -30,29 +30,27 @@ export class AppUsersService {
   ) { }
 
   public readonly appUsers$ = this.ongoingModifications.none$.pipe(
-    switchMapTo(concat(
-      of(Loadable.loading),
-      this.httpGetAll().pipe(
-        map(otherAppUserDtos => Loadable.loaded(otherAppUserDtos.map(({
-          id,
-          email,
-          name,
-          emailConfirmed,
-          hasPassword,
-          lockedOut,
-          appRoles
-        }) => ({
-          id,
-          email,
-          name,
-          emailConfirmed,
-          hasPassword,
-          lockedOut,
-          hasAppRoleByName: appRoles && partialRecordSet(appRoles)
-        }))))
-      )
+    switchMapTo(this.httpGetAll().pipe(
+      map(otherAppUserDtos => Loadable.loaded(otherAppUserDtos.map(({
+        id,
+        email,
+        name,
+        emailConfirmed,
+        hasPassword,
+        lockedOut,
+        appRoles
+      }): OtherAppUser => ({
+        id,
+        email,
+        name,
+        emailConfirmed,
+        hasPassword,
+        lockedOut,
+        hasAppRoleByName: appRoles && partialRecordSet(appRoles)
+      })))),
+      startWith(Loadable.loading)
     )),
-    startWith<Loadable<OtherAppUser[]>>(Loadable.loading),
+    startWith(Loadable.loading),
     distinctUntilLoadableChanged(),
     tapLog('AppUsersService appUsers$', 'warn'), // TODO: remove
     cacheUntil(this.destroyed$)

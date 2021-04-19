@@ -1,3 +1,109 @@
-<inventory-system-page title="Edit Item" backLink=".." backText="View Item">
-  <p>edit-inventory-item works!</p>
-</inventory-system-page>
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  editItemHistory: editItemHistory$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
+  saveState: saveState$ | async,
+  deleteState: deleteState$ | async
+} as vars">
+  <ng-template #pageTitle>
+    <span>Edit Item</span>
+    <span *ngIf="!vars.loading!">: <strong>{{vars.editItemHistory!.lastUndeletedSnapshot.name}}</strong></span>
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink=".." backText="View Item">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
+      <div [formGroup]="form" class="fields">
+        <div class="row">
+          <span><strong>Barcode:</strong> {{vars.editItemHistory!.item.barcode}}</span>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required>
+            <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="category">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Cost</mat-label>
+            <input matInput type="number" formControlName="cost">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Building</mat-label>
+            <input matInput formControlName="building">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Floor</mat-label>
+            <input matInput formControlName="floor">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Room</mat-label>
+            <input matInput formControlName="room">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Acquired Date</mat-label>
+
+            <input matInput [matDatepicker]="acquiredDatePicker" formControlName="acquiredDate">
+            <mat-datepicker-toggle *ngIf="form.controls.acquiredDate.value != null" matSuffix (click)="form.controls.acquiredDate.setValue(null)">
+              <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker-toggle matSuffix [for]="acquiredDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #acquiredDatePicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Surplussed Date</mat-label>
+            <input matInput [matDatepicker]="surplussedDatePicker" formControlName="surplussedDate">
+            <mat-datepicker-toggle *ngIf="form.controls.surplussedDate.value != null" matSuffix (click)="form.controls.surplussedDate.setValue(null)">
+              <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker-toggle matSuffix [for]="surplussedDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #surplussedDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <mat-checkbox formControlName="flagged">Flagged</mat-checkbox>
+          </div>
+        </div>
+
+        <div *ngIf="form.value.flagged" class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Reason</mat-label>
+            <input matInput formControlName="flaggedReason">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <inventory-system-save-control
+        [dirty]="vars.formDirty!"
+        [valid]="vars.formValid!"
+
+        [saveState]="vars.saveState!"
+        (save)="save()"
+
+        [showDelete]="true"
+        [deleteState]="vars.deleteState!"
+        (delete)="delete()"
+      ></inventory-system-save-control>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

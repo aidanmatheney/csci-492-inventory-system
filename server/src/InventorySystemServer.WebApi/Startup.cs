@@ -182,6 +182,8 @@ namespace InventorySystemServer.WebApi
             services.AddScoped<IAppUserService, AppUserService>();
             services.AddScoped<IAppRoleService, AppRoleService>();
 
+            services.AddScoped<IInventoryService, InventoryService>();
+
             services.AddScoped<ILogService, LogService>();
 
             services.AddScoped<IEmailSender, ToLogEmailSender>();

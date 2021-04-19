@@ -1,5 +1,14 @@
 <inventory-system-page title="Inventory" backLink="/" backText="Dashboard">
   <ng-container *inventorySystemSpinWhileLoading="(loading$ | async)!">
+    <div [formGroup]="form" class="controls">
+      <mat-form-field class="filter">
+        <mat-label>Filter</mat-label>
+        <input matInput formControlName="filter">
+      </mat-form-field>
+
+      <a mat-raised-button color="primary" routerLink="create">Create</a>
+    </div>
+
     <div class="table-container">
       <table
         mat-table
@@ -11,32 +20,43 @@
       >
         <ng-container matColumnDef="id">
           <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let inventoryItem">
-            <a [routerLink]="inventoryItem.id">{{inventoryItem.id}}</a>
+          <td mat-cell *matCellDef="let itemHistory">
+            <a [routerLink]="itemHistory.item.id">{{itemHistory.item.id}}</a>
           </td>
+        </ng-container>
+
+        <ng-container matColumnDef="barcode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Barcode</th>
+          <td mat-cell *matCellDef="let itemHistory">{{itemHistory.item.barcode}}</td>
         </ng-container>
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-          <td mat-cell *matCellDef="let inventoryItem">{{inventoryItem.name}}</td>
+          <td mat-cell *matCellDef="let itemHistory">{{itemHistory.lastUndeletedSnapshot.name}}</td>
         </ng-container>
 
         <ng-container matColumnDef="category">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Category</th>
-          <td mat-cell *matCellDef="let inventoryItem">{{inventoryItem.category}}</td>
+          <td mat-cell *matCellDef="let itemHistory">{{itemHistory.lastUndeletedSnapshot.category}}</td>
         </ng-container>
 
         <ng-container matColumnDef="cost">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Cost</th>
-          <td mat-cell *matCellDef="let inventoryItem">{{inventoryItem.cost}}</td>
+          <td mat-cell *matCellDef="let itemHistory">{{itemHistory.lastUndeletedSnapshot.cost}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="flagged">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Flagged</th>
+          <td mat-cell *matCellDef="let itemHistory">{{itemHistory.lastUndeletedSnapshot.flaggedReason != null | boolean}}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
 
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell" [attr.colspan]="columns.length">
             <span>No items</span>
+            <span *ngIf="form.value.filter !== ''"> matching the filter "{{form.value.filter}}"</span>
           </td>
         </tr>
       </table>

@@ -12,9 +12,6 @@ import {ProcessingState} from '../../utils/processing';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SaveControlComponent<TFormControls extends object, TFormErrors extends object> implements OnInit {
-  public static ngAcceptInputType_forceDisableSave: BooleanInput;
-  public static ngAcceptInputType_forceDisableDelete: BooleanInput;
-
   private readonly dirty$ = new BehaviorSubject<boolean>(undefined!);
   @Input() public set dirty(value: boolean) {
     this.dirty$.next(value);
@@ -26,6 +23,7 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
 
   @Input() public showSave = true;
   public readonly forceDisableSave$ = new BehaviorSubject(false);
+  public static ngAcceptInputType_forceDisableSave: BooleanInput;
   @Input() public set forceDisableSave(value: boolean) {
     this.forceDisableSave$.next(coerceBooleanProperty(value));
   }
@@ -37,6 +35,7 @@ export class SaveControlComponent<TFormControls extends object, TFormErrors exte
 
   @Input() public showDelete = false;
   public readonly forceDisableDelete$ = new BehaviorSubject(false);
+  public static ngAcceptInputType_forceDisableDelete: BooleanInput;
   @Input() public set forceDisableDelete(value: boolean) {
     this.forceDisableDelete$.next(coerceBooleanProperty(value));
   }

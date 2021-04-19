@@ -100,7 +100,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           {title: 'Users', icon: typed<MatIconName>('people'), link: '/admin/users', children: [
             {title: 'Create User', icon: typed<MatIconName>('person_add'), link: '/admin/users/create'},
             ...(/^\/admin\/users\/[^\/]+\/created$/.test(url) ? [
-              {title: 'User Created', icon: typed<MatIconName>('done'), link: url}
+              {title: 'User Created', icon: typed<MatIconName>('done'), link: url},
+              {title: 'Edit User', icon: typed<MatIconName>('edit'), link: `/admin/users/${url.match(/^\/admin\/users\/([^\/]+)\/created$/)![1]}/edit`}
             ] : []),
             ...(/^\/admin\/users\/[^\/]+\/edit$/.test(url) ? [
               {title: 'Edit User', icon: typed<MatIconName>('edit'), link: url}

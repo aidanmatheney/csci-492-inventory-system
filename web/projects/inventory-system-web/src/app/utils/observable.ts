@@ -1,16 +1,11 @@
 import {Observable, TeardownLogic} from 'rxjs';
-import {filter, first, mapTo, shareReplay, startWith, takeUntil} from 'rxjs/operators';
+import {first, shareReplay, takeUntil} from 'rxjs/operators';
 
 export const firstValueFrom = <V>(value$: Observable<V>) => {
   return new Promise<V>((resolve, reject) => {
     value$.pipe(first()).subscribe(resolve, reject);
   });
 };
-
-export const startWithVoid = <T>() => startWith<T, void>(undefined);
-export const mapToVoid = <T>() => mapTo<T, void>(undefined);
-
-export const filterNotNull = <T>() => filter((value: T): value is NonNullable<T> => value != null);
 
 export const cacheUntil = <T>(destroy$: Observable<void>) => {
   return (source: Observable<T>) => source.pipe(

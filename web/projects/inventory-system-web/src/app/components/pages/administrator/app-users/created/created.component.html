@@ -5,18 +5,14 @@
 } as vars">
   <ng-template #pageTitle>
     <span>User Created</span>
-    <span *ngIf="!vars.loading!">: <span class="header-email">{{vars.createdAppUser!.email}}</span></span>
+    <span *ngIf="!vars.loading!">: <strong>{{vars.createdAppUser!.email}}</strong></span>
   </ng-template>
-  <inventory-system-page [title]="pageTitle" backLink="../.." backText="Users">
+  <inventory-system-page [title]="pageTitle" backLink="../../create" backText="Create User">
     <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
-      <p>
-        <a routerLink="../edit">
-          Edit {{vars.createdAppUser!.email}}
-        </a>
-      </p>
+      <p><a routerLink="../edit">Edit {{vars.createdAppUser!.email}}</a></p>
 
       <p>
-        The new user <b>{{vars.createdAppUser!.email}}</b> has been created. They have been emailed a link to a page where they will confirm their email and create their password. If you wish to send this manually, you may copy the URL below.
+        The new user <b>{{vars.createdAppUser!.email}}</b> has been created. They have been emailed a link to the page where they will confirm their email and create their password. If you wish to send this link manually, copy it below.
       </p>
 
       <div class="email-confirmation-url-container">

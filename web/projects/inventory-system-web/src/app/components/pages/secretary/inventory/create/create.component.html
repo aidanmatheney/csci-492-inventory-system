@@ -1,3 +1,98 @@
-<inventory-system-page title="Create Item" backLink=".." backText="Inventory">
-  <p>create-inventory-item works!</p>
-</inventory-system-page>
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
+  itemWithInputtedBarcode: itemWithInputtedBarcode$ | async,
+  createState: createState$ | async
+} as vars">
+  <inventory-system-page title="Create Item" backLink=".." backText="Inventory">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
+      <div [formGroup]="form" class="fields">
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Barcode</mat-label>
+            <input matInput formControlName="barcode" required>
+            <mat-error *ngIf="form.controls.barcode.hasError('required')">Required</mat-error>
+            <mat-error *ngIf="form.controls.barcode.hasError('exists')">Item exists</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="vars.itemWithInputtedBarcode != null" class="row">
+          <a [routerLink]="['..', vars.itemWithInputtedBarcode.item.id]">
+            View {{vars.itemWithInputtedBarcode.item.barcode}}
+          </a>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required>
+            <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Category</mat-label>
+            <input matInput formControlName="category">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Cost</mat-label>
+            <input matInput type="number" formControlName="cost">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Building</mat-label>
+            <input matInput formControlName="building">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Floor</mat-label>
+            <input matInput formControlName="floor">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Room</mat-label>
+            <input matInput formControlName="room">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Acquired Date</mat-label>
+
+            <input matInput [matDatepicker]="acquiredDatePicker" formControlName="acquiredDate">
+            <mat-datepicker-toggle *ngIf="form.controls.acquiredDate.value != null" matSuffix (click)="form.controls.acquiredDate.setValue(null)">
+              <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker-toggle matSuffix [for]="acquiredDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #acquiredDatePicker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="field sm">
+            <mat-label>Surplussed Date</mat-label>
+            <input matInput [matDatepicker]="surplussedDatePicker" formControlName="surplussedDate">
+            <mat-datepicker-toggle *ngIf="form.controls.surplussedDate.value != null" matSuffix (click)="form.controls.surplussedDate.setValue(null)">
+              <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker-toggle matSuffix [for]="surplussedDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #surplussedDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <inventory-system-save-control
+        [dirty]="vars.formDirty!"
+        [valid]="vars.formValid!"
+        saveText="Create"
+        [saveState]="vars.createState!"
+        (save)="create()"
+      ></inventory-system-save-control>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

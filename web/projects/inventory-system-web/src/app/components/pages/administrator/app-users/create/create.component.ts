@@ -17,6 +17,7 @@ import {
 import {ProcessingState} from '../../../../../utils/processing';
 import {cacheUntil} from '../../../../../utils/observable';
 import {confirmUnsavedChangesBeforeUnload} from '../../../../../utils/confirm';
+import {isNotFalse} from '../../../../../utils/filter';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
 import {AppUsersService} from '../../../../../services/app-users.service';
@@ -63,7 +64,7 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
   public readonly formDirty$ = selectFormDirty(this.form, of(this.initialFormValue)).pipe(cacheUntil(this.destroyed$));
   public readonly formValid$ = selectFormValid(this.form);
 
-  public readonly dirty$ = this.formDirty$.pipe(cacheUntil(this.destroyed$));
+  public readonly dirty$ = this.formDirty$;
 
   public readonly appUserWithInputtedEmail$ = this.form.select(({email}) => email).pipe(
     switchMap(email => selectLoadedValue(this.appUsersService.selectAppUserByEmail(email)))
@@ -107,7 +108,7 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
         appRoles: [
           isSecretary && AppRole.secretary,
           isAdministrator && AppRole.administrator
-        ].filter((appRole): appRole is AppRole => appRole !== false)
+        ].filter(isNotFalse)
       });
       this.form.setValue(this.initialFormValue);
       await this.router.navigate(['..', newAppUserId, 'created'], {relativeTo: this.route});

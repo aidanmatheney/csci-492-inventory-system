@@ -1,8 +1,5 @@
-.buttons {
+:host {
     display: flex;
     flex-direction: row;
-
-    & > * + * {
-        margin-left: 1rem;
-    }
+    gap: 1rem;
 }

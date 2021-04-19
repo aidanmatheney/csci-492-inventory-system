@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {ActivationStart, NavigationCancel, NavigationEnd, NavigationError, Router, UrlTree} from '@angular/router';
 import {distinctUntilChanged, filter, map, startWith} from 'rxjs/operators';
 
-import {cacheUntil, startWithVoid} from '../utils/observable';
+import {cacheUntil} from '../utils/observable';
+import {VOID} from '../utils/type';
 
 import {Destroyed$} from './destroyed$.service';
 
@@ -33,7 +34,7 @@ export class RouteInfoService {
 
   public readonly url$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
-    startWithVoid(),
+    startWith(VOID),
     map(() => this.router.url),
     distinctUntilChanged(),
     cacheUntil(this.destroyed$)

@@ -11,7 +11,7 @@ export const startFromAndSaveToLocalStorage = <V, C>(
       const cachedValueString = localStorage.getItem(key);
       const cachedValue = cachedValueString == null ? undefined : JSON.parse(cachedValueString) as C;
       const initialValue$ = createInitialValue(cachedValue);
-      return initialValue$
+      return initialValue$;
     }).pipe(first()),
     source
   ).pipe(

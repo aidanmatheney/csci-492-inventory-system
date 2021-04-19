@@ -13,8 +13,6 @@ import {ProcessingState} from '../../utils/processing';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProcessingControlComponent implements OnInit {
-  public static ngAcceptInputType_forceDisable: BooleanInput;
-
   private readonly state$ = new BehaviorSubject<ProcessingState>(undefined!);
   @Input() public set state(value: ProcessingState) {
     this.state$.next(value);
@@ -24,6 +22,7 @@ export class ProcessingControlComponent implements OnInit {
   @Input() public color: ThemePalette = 'primary';
 
   private readonly forceDisable$ = new BehaviorSubject(false);
+  public static ngAcceptInputType_forceDisable: BooleanInput;
   @Input() public set forceDisable(value: boolean) {
     this.forceDisable$.next(coerceBooleanProperty(value));
   }

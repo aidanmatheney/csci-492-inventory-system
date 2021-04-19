@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, ActivationStart, NavigationCancel, Router} from '@angular/router';
-import {concat, EMPTY, from, merge, of, race} from 'rxjs';
+import {EMPTY, from, merge, of, race} from 'rxjs';
 import {
   catchError,
   delay,
@@ -118,12 +118,10 @@ export class AuthenticationService {
           switchMapTo(EMPTY)
         ),
         selectOidcAccessTokenExpired(oidcUserManager).pipe(
-          switchMap(() => concat(
-            of(Loadable.loading),
-            from(oidcUserManager.signinSilent()).pipe(
-              switchMapTo(EMPTY),
-              catchError(() => EMPTY)
-            )
+          switchMap(() => from(oidcUserManager.signinSilent()).pipe(
+            switchMapTo(EMPTY),
+            catchError(() => EMPTY),
+            startWith(Loadable.loading)
           ))
         )
       ))

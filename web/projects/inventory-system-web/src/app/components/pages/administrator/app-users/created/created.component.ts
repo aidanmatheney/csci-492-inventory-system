@@ -3,10 +3,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Clipboard as ClipboardService} from '@angular/cdk/clipboard';
 import {MatSnackBar as MatSnackBarService} from '@angular/material/snack-bar';
 import {combineLatest, Observable} from 'rxjs';
-import {map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
 
-import {filterNotNull, firstValueFrom} from '../../../../../utils/observable';
+import {firstValueFrom} from '../../../../../utils/observable';
 import {selectLoadedValue, selectLoading} from '../../../../../utils/loading';
+import {isNotNull} from '../../../../../utils/filter';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
 import {AppUsersService} from '../../../../../services/app-users.service';
@@ -53,7 +54,7 @@ export class AppUserCreatedComponent implements OnInit {
   public async ngOnInit() {
     this.pageTitleService.set('User Created');
     this.createdAppUser$.pipe(
-      filterNotNull(),
+      filter(isNotNull),
       takeUntil(this.destroyed$)
     ).subscribe(createdAppUser => this.pageTitleService.set(`User Created - ${createdAppUser.email}`));
 

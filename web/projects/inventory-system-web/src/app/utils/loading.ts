@@ -1,7 +1,8 @@
 import {Observable, of, OperatorFunction} from 'rxjs';
-import {distinctUntilChanged, endWith, filter, map, pluck, switchMap, takeWhile} from 'rxjs/operators';
+import {distinctUntilChanged, endWith, filter, map, mapTo, pluck, switchMap, takeWhile} from 'rxjs/operators';
 
-import {firstValueFrom, mapToVoid} from './observable';
+import {firstValueFrom} from './observable';
+import {VOID} from './type';
 
 export interface Loading {
   loading: true;
@@ -136,7 +137,7 @@ export const selectInitialLoading = <V>(source: Observable<Loadable<V>>) => sele
 
 export const selectLoadingBegan = <V>(source: Observable<Loadable<V>>) => selectLoading(source).pipe(
   filter(loading => loading),
-  mapToVoid()
+  mapTo(VOID)
 );
 
 export const selectLoadedValue = <V>(source: Observable<Loadable<V>>) => source.pipe(

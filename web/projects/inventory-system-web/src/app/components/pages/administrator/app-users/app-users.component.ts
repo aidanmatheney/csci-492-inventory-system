@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectionStrategy, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, AfterViewInit, ViewChildren, QueryList} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
@@ -7,6 +7,8 @@ import {takeUntil} from 'rxjs/operators';
 
 import {selectLoadedValue, selectLoading} from '../../../../utils/loading';
 import {stringRecordKeys} from '../../../../utils/record';
+import {wireUpTable} from '../../../../utils/table';
+import {ElementOf} from '../../../../utils/type';
 
 import {PageTitleService} from '../../../../services/page-title.service';
 import {AppUsersService} from '../../../../services/app-users.service';
@@ -27,8 +29,9 @@ type AppUsersForm = FormGroup<{
   providers: [Destroyed$]
 })
 export class AppUsersComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSort) private sort!: MatSort;
-  @ViewChild(MatPaginator) private paginator!: MatPaginator;
+  // Use ViewChildren since these are inside an ngIf
+  @ViewChildren(MatSort) private sort!: QueryList<MatSort>;
+  @ViewChildren(MatPaginator) private paginator!: QueryList<MatPaginator>;
 
   public readonly loading$ = selectLoading(this.appUsersService.appUsers$);
   public readonly appUsers$ = selectLoadedValue(this.appUsersService.appUsers$);
@@ -38,14 +41,14 @@ export class AppUsersComponent implements OnInit, AfterViewInit {
   });
 
   public readonly dataSource = new MatTableDataSource<OtherAppUser>();
-  public readonly columns: ReadonlyArray<keyof OtherAppUser> = [
+  public readonly columns = [
     'id',
     'email',
     'name',
     'emailConfirmed',
     'lockedOut',
-    'hasAppRoleByName'
-  ];
+    'roles'
+  ] as const;
 
   public constructor(
     private readonly formBuilder: FormBuilder,
@@ -54,8 +57,9 @@ export class AppUsersComponent implements OnInit, AfterViewInit {
     private readonly destroyed$: Destroyed$
   ) {
     this.dataSource.sortingDataAccessor = (appUser, sortHeaderId) => {
-      const prop = sortHeaderId as keyof OtherAppUser;
-      if (prop === 'hasAppRoleByName') {
+      const column = sortHeaderId as ElementOf<AppUsersComponent['columns']>;
+
+      if (column === 'roles') {
         const totalWeightedRanking = (stringRecordKeys(appUser.hasAppRoleByName)
           .map(appRole => Math.pow(2, appRoleRankingByName[appRole]))
           .reduce((a, c) => a + c, 0)
@@ -64,14 +68,13 @@ export class AppUsersComponent implements OnInit, AfterViewInit {
       }
 
       if (
-        prop === 'emailConfirmed'
-        || prop === 'hasPassword'
-        || prop === 'lockedOut'
+        column === 'emailConfirmed'
+        || column === 'lockedOut'
       ) {
-        return appUser[prop] ? 1 : 0;
+        return appUser[column] ? 1 : 0;
       }
 
-      return appUser[prop];
+      return appUser[column];
     };
 
     this.dataSource.filterPredicate = (appUser, filter) => {
@@ -101,8 +104,11 @@ export class AppUsersComponent implements OnInit, AfterViewInit {
   }
 
   public ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    wireUpTable({
+      dataSource: this.dataSource,
+      sort: this.sort,
+      paginator: this.paginator
+    });
   }
 
   public stringifyAppRoles(appUser: OtherAppUser) {

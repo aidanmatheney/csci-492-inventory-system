@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
+import {MatNativeDateModule} from '@angular/material/core';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -22,6 +23,7 @@ import {MatListModule} from '@angular/material/list';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {AppDirectivesModule} from '../directives/app-directives.module';
 import {AppPipesModule} from '../pipes/app-pipes.module';
@@ -87,6 +89,7 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
     FormsModule,
     ReactiveFormsModule,
 
+    MatNativeDateModule,
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,
@@ -104,6 +107,7 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
     MatRadioModule,
     MatDialogModule,
     MatSidenavModule,
+    MatDatepickerModule,
 
     AppDirectivesModule,
     AppPipesModule

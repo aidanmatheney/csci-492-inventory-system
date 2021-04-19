@@ -1,3 +1,71 @@
-<inventory-system-page title="View Item" backLink=".." backText="Inventory">
-  <p>view-inventory-item works!</p>
-</inventory-system-page>
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  viewItemHistory: viewItemHistory$ | async
+} as vars">
+  <ng-template #pageTitle>
+    <span>View Item</span>
+    <span *ngIf="!vars.loading!">: <strong>{{vars.viewItemHistory!.lastUndeletedSnapshot.name}}</strong></span>
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink=".." backText="Inventory">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
+      <div class="fields">
+        <div>
+          <span class="title">Barcode:</span>
+          <span class="value">{{vars.viewItemHistory!.item.barcode}}</span>
+        </div>
+
+        <div>
+          <span class="title">Name:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.name}}</span>
+        </div>
+
+        <div>
+          <span class="title">Category:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.category}}</span>
+        </div>
+
+        <div>
+          <span class="title">Cost:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.cost}}</span>
+        </div>
+
+        <div>
+          <span class="title">Building:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.building}}</span>
+        </div>
+
+        <div>
+          <span class="title">Floor:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.floor}}</span>
+        </div>
+
+        <div>
+          <span class="title">Room:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.room}}</span>
+        </div>
+
+        <div>
+          <span class="title">Acquired date:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.acquiredDate | date}}</span>
+        </div>
+
+        <div>
+          <span class="title">Surplussed date:</span>
+          <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.surplussedDate | date}}</span>
+        </div>
+
+        <div>
+          <span class="title">Flagged:</span>
+          <span class="value">
+            <span>{{vars.viewItemHistory!.lastUndeletedSnapshot.flaggedReason != null | boolean}}</span>
+            <span *ngIf="(vars.viewItemHistory!.lastUndeletedSnapshot.flaggedReason || '') !== ''">
+              ({{vars.viewItemHistory!.lastUndeletedSnapshot.flaggedReason}})
+            </span>
+          </span>
+        </div>
+      </div>
+
+      <div><a mat-raised-button color="primary" routerLink="edit">Edit</a></div>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

@@ -5,13 +5,14 @@ import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {Clipboard as ClipboardService} from '@angular/cdk/clipboard';
 import {MatSnackBar as MatSnackBarService} from '@angular/material/snack-bar';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
 
-import {cacheUntil, filterNotNull, firstValueFrom} from '../../../../../utils/observable';
+import {cacheUntil, firstValueFrom} from '../../../../../utils/observable';
 import {selectInitialLoading, selectLoadedValue} from '../../../../../utils/loading';
 import {AngularFormErrors, FormValue, selectFormDirty, selectFormValid} from '../../../../../utils/form';
 import {ProcessingState} from '../../../../../utils/processing';
 import {confirmUnsavedChangesBeforeUnload} from '../../../../../utils/confirm';
+import {isNotFalse, isNotNull} from '../../../../../utils/filter';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
 import {DialogService} from '../../../../../services/dialog.service';
@@ -69,7 +70,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
   });
   private formEditAppUserId?: string;
   public readonly initialFormValue$ = this.editAppUser$.pipe(
-    filterNotNull(),
+    filter(isNotNull),
     map(({name, lockedOut, hasAppRoleByName}): EditAppUserFormValue => ({
       name,
       lockedOut,
@@ -81,8 +82,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
   public readonly formValid$ = selectFormValid(this.form);
 
   public readonly dirty$ = this.editAppUser$.pipe(
-    switchMap(editAppUser => editAppUser == null ? of(false) : this.formDirty$),
-    cacheUntil(this.destroyed$)
+    switchMap(editAppUser => editAppUser == null ? of(false) : this.formDirty$)
   );
 
   public readonly saveState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);
@@ -106,7 +106,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
   public async ngOnInit() {
     this.pageTitleService.set('Edit User');
     this.editAppUser$.pipe(
-      filterNotNull(),
+      filter(isNotNull),
       takeUntil(this.destroyed$)
     ).subscribe(editAppUser => this.pageTitleService.set(`Edit User - ${editAppUser.email}`));
 
@@ -147,7 +147,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
         appRoles: [
           isSecretary && AppRole.secretary,
           isAdministrator && AppRole.administrator
-        ].filter((appRole): appRole is AppRole => appRole !== false)
+        ].filter(isNotFalse)
       });
       this.saveState$.next(ProcessingState.idle);
     } catch (error: unknown) {

@@ -43,13 +43,45 @@ textarea.mat-input-element.cdk-textarea-autosize {
 }
 
 @include inventory-system-theme-styles($global: true) using ($light) {
+  // Sidenav drawer
+  .mat-drawer {
+    background-color: if($light, #ededed, #424242);
+  }
+}
+
+@include inventory-system-theme-styles($global: true) using ($light) {
   $color: mat-color($inventory-system-primary, if($light, default, lighter));
 
+  // Regular button (used in dialogs)
   .mat-button.mat-primary {
     color: $color;
     &.cdk-keyboard-focused .mat-button-focus-overlay {
       background-color: $color;
     }
+  }
+
+  .mat-form-field.mat-primary {
+    // Date picker toggle button
+    .mat-datepicker-toggle.mat-datepicker-toggle-active {
+      color: $color;
+    }
+
+    &.mat-focused {
+      // Select dropdown toggle arrow
+      .mat-select-arrow {
+        color: $color;
+      }
+
+      // Text input underline
+      .mat-form-field-ripple {
+        background-color: $color;
+      }
+    }
+  }
+
+  // Selected option in select dropdown
+  .mat-select-panel.mat-primary .mat-option.mat-selected {
+    color: $color;
   }
 }
 
@@ -58,18 +90,22 @@ textarea.mat-input-element.cdk-textarea-autosize {
   $warn-color: mat-color($inventory-system-warn);
 
   .mat-form-field {
+    // Input label
     &.mat-focused .mat-form-field-label {
       color: $color;
     }
-    & .mat-input-element {
+    // Input caret
+    .mat-input-element {
       caret-color: $color;
     }
   }
 
   .mat-form-field.mat-form-field-invalid {
+    // Input label
     .mat-form-field-label {
       color: $warn-color;
     }
+    // Input caret
     .mat-input-element {
       caret-color: $warn-color;
     }

@@ -4,23 +4,21 @@
   deleteProcessing: deleteProcessing$ | async,
   deleteEnabled: deleteEnabled$ | async
 } as vars">
-  <div class="buttons">
-    <inventory-system-spinner-button-container *ngIf="showSave" [spin]="vars.saveProcessing!">
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="!vars.saveEnabled!"
-        (click)="save.emit()"
-      >{{saveText}}</button>
-    </inventory-system-spinner-button-container>
+  <inventory-system-spinner-button-container *ngIf="showSave" [spin]="vars.saveProcessing!">
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="!vars.saveEnabled!"
+      (click)="save.emit()"
+    >{{saveText}}</button>
+  </inventory-system-spinner-button-container>
 
-    <inventory-system-spinner-button-container *ngIf="showDelete" [spin]="vars.deleteProcessing!">
-      <button
-        mat-raised-button
-        color="warn"
-        [disabled]="!vars.deleteEnabled!"
-        (click)="delete.emit()"
-      >{{deleteText}}</button>
-    </inventory-system-spinner-button-container>
-  </div>
+  <inventory-system-spinner-button-container *ngIf="showDelete" [spin]="vars.deleteProcessing!">
+    <button
+      mat-raised-button
+      color="warn"
+      [disabled]="!vars.deleteEnabled!"
+      (click)="delete.emit()"
+    >{{deleteText}}</button>
+  </inventory-system-spinner-button-container>
 </ng-container>

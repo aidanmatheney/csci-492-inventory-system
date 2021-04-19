@@ -1,5 +1,7 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
+import {PageTitleService} from '../../../services/page-title.service';
+
 import {MatIconName} from '../../../models/mat-icon';
 
 @Component({
@@ -18,7 +20,11 @@ export class SettingsComponent implements OnInit {
     {title: 'Security', icon: 'security', link: 'security'}
   ];
 
-  public constructor() { }
+  public constructor(
+    private readonly pageTitleService: PageTitleService
+  ) { }
 
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.pageTitleService.set('Settings');
+  }
 }

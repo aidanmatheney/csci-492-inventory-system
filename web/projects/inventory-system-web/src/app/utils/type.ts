@@ -1,4 +1,9 @@
+export type ValueOf<T> = T[keyof T];
+export type ElementOf<T extends readonly any[]> = T[keyof T & number];
+
 export type SubType<T, S extends T> = S;
+
+export const VOID: void = undefined;
 
 export const typed = <T>(value: T) => value;
 

@@ -57,7 +57,8 @@ const routes: Routes = [
       },
       {
         path: 'create',
-        component: CreateInventoryItemComponent
+        component: CreateInventoryItemComponent,
+        canDeactivate: [UnsavedPageChangesGuard]
       },
       {
         path: ':id',
@@ -68,7 +69,8 @@ const routes: Routes = [
           },
           {
             path: 'edit',
-            component: EditInventoryItemComponent
+            component: EditInventoryItemComponent,
+            canDeactivate: [UnsavedPageChangesGuard]
           }
         ]
       }
