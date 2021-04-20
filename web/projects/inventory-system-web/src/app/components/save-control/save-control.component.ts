@@ -11,7 +11,7 @@ import {ProcessingState} from '../../utils/processing';
   styleUrls: ['./save-control.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SaveControlComponent<TFormControls extends object, TFormErrors extends object> implements OnInit {
+export class SaveControlComponent implements OnInit {
   private readonly dirty$ = new BehaviorSubject<boolean>(undefined!);
   @Input() public set dirty(value: boolean) {
     this.dirty$.next(value);

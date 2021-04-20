@@ -16,7 +16,12 @@ import {InventoryComponent} from './components/pages/secretary/inventory/invento
 import {CreateInventoryItemComponent} from './components/pages/secretary/inventory/create/create.component';
 import {ViewInventoryItemComponent} from './components/pages/secretary/inventory/view/view.component';
 import {EditInventoryItemComponent} from './components/pages/secretary/inventory/edit/edit.component';
-import { AssigneesComponent } from './components/pages/secretary/inventory/assignees/assignees.component';
+import {InventoryAssigneesComponent} from './components/pages/secretary/inventory/assignees/assignees.component';
+import {
+  CreateInventoryAssigneeComponent
+} from './components/pages/secretary/inventory/assignees/create/create.component';
+import {ViewInventoryAssigneeeComponent} from './components/pages/secretary/inventory/assignees/view/view.component';
+import {EditInventoryAssigneeComponent} from './components/pages/secretary/inventory/assignees/edit/edit.component';
 import {SettingsComponent} from './components/pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './components/pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './components/pages/settings/security/security.component';
@@ -63,7 +68,31 @@ const routes: Routes = [
       },
       {
         path: 'assignees',
-        component: AssigneesComponent
+        children: [
+          {
+            path: '',
+            component: InventoryAssigneesComponent
+          },
+          {
+            path: 'create',
+            component: CreateInventoryAssigneeComponent,
+            canDeactivate: [UnsavedPageChangesGuard]
+          },
+          {
+            path: ':id',
+            children: [
+              {
+                path: '',
+                component: ViewInventoryAssigneeeComponent
+              },
+              {
+                path: 'edit',
+                component: EditInventoryAssigneeComponent,
+                canDeactivate: [UnsavedPageChangesGuard]
+              }
+            ]
+          }
+        ]
       },
       {
         path: ':id',

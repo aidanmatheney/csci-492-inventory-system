@@ -27,7 +27,7 @@ export const ProcessingState: {
   idle: IdleProcessingState;
   started: StartedProcessingState;
   succeeded: SucceededProcessingState;
-  failed(firstError: string, ...otherErrors: string[]): FailedProcessingState;
+  failed(firstError: string, ...otherErrors: readonly string[]): FailedProcessingState;
 
   isIdle(processingState: ProcessingState): processingState is IdleProcessingState;
   isStarted(processingState: ProcessingState): processingState is StartedProcessingState;

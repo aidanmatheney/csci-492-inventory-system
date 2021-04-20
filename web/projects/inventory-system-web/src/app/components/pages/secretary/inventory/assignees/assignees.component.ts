@@ -1,18 +1,24 @@
-import {Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, AfterViewInit, ViewChildren, QueryList} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
-import {of} from 'rxjs';
-import {delay, startWith, takeUntil} from 'rxjs/operators';
+import {map, takeUntil} from 'rxjs/operators';
+
+import {selectLoadedValue, selectLoading} from '../../../../../utils/loading';
+import {isNotFalse} from '../../../../../utils/filter';
+import {wireUpTable} from '../../../../../utils/table';
+import {ElementOf} from '../../../../../utils/type';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
+import {InventoryService} from '../../../../../services/inventory.service';
 import {Destroyed$} from '../../../../../services/destroyed$.service';
 
-interface Assignee {
-  id: string;
-  name: string;
-  email: string;
-}
+import {InventoryAssigneeHistory} from '../../../../../models/inventory';
+
+type InventoryAssigneesForm = FormGroup<{
+  filter: FormControl<string, {}>;
+}, {}>;
 
 @Component({
   selector: 'inventory-system-assignees',
@@ -21,39 +27,73 @@ interface Assignee {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [Destroyed$]
 })
-export class AssigneesComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSort) private sort!: MatSort;
-  @ViewChild(MatPaginator) private paginator!: MatPaginator;
+export class InventoryAssigneesComponent implements OnInit, AfterViewInit {
+  // Use ViewChildren since these are inside an ngIf
+  @ViewChildren(MatSort) private sort!: QueryList<MatSort>;
+  @ViewChildren(MatPaginator) private paginator!: QueryList<MatPaginator>;
 
-  public readonly loading$ = of(false).pipe(delay(1000), startWith(true));
-  public readonly assignees$ = of<Assignee[]>([
-    {id: 'aaa', name: 'John Doe', email: 'john.doe@und.edu'},
-    {id: 'aab', name: 'Jane Smith', email: 'jane.smith@und.edu'},
-    {id: 'aac', name: 'Mike Johnson', email: 'mike.johnson@und.edu'}
-  ]);
+  public readonly loading$ = selectLoading(this.inventoryService.assigneeHistories$);
+  public readonly assigneeHistories$ = selectLoadedValue(this.inventoryService.assigneeHistories$).pipe(
+    map(assigneeHistories => assigneeHistories.filter(({currentSnapshot}) => currentSnapshot != null))
+  );
 
-  public readonly dataSource = new MatTableDataSource<Assignee>();
-  public readonly columns: ReadonlyArray<keyof Assignee> = [
+  public readonly form: InventoryAssigneesForm = this.formBuilder.group({
+    filter: this.formBuilder.control('')
+  });
+
+  public readonly dataSource = new MatTableDataSource<InventoryAssigneeHistory>();
+  public readonly columns = [
     'id',
     'name',
     'email'
-  ];
+  ] as const;
 
   public constructor(
+    private readonly formBuilder: FormBuilder,
     private readonly pageTitleService: PageTitleService,
+    private readonly inventoryService: InventoryService,
     private readonly destroyed$: Destroyed$
-  ) { }
+  ) {
+    this.dataSource.sortingDataAccessor = ({assignee, lastUndeletedSnapshot}, sortHeaderId) => {
+      const column = sortHeaderId as ElementOf<InventoryAssigneesComponent['columns']>;
+
+      if (column === 'id') {
+        return assignee.id;
+      }
+
+      return lastUndeletedSnapshot[column];
+    };
+
+    this.dataSource.filterPredicate = ({assignee, lastUndeletedSnapshot}, filter) => {
+      const lowercaseFields = [
+        String(assignee.id),
+        lastUndeletedSnapshot.name,
+        lastUndeletedSnapshot.email
+      ].filter(isNotFalse).map(field => field.toLowerCase());
+
+      const lowercaseFilter = filter.toLowerCase();
+
+      return lowercaseFields.some(field => field.includes(lowercaseFilter));
+    };
+  }
 
   public ngOnInit() {
     this.pageTitleService.set('Assignees');
 
-    this.assignees$.pipe(
+    this.assigneeHistories$.pipe(
       takeUntil(this.destroyed$)
-    ).subscribe(assignees => this.dataSource.data = assignees);
+    ).subscribe(assigneeHistories => this.dataSource.data = assigneeHistories);
+
+    this.form.select(({filter}) => filter).pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe(filter => this.dataSource.filter = filter);
   }
 
   public ngAfterViewInit() {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    wireUpTable({
+      dataSource: this.dataSource,
+      sort: this.sort,
+      paginator: this.paginator
+    });
   }
 }

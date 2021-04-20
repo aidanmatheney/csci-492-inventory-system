@@ -13,13 +13,13 @@ export class DeviceInfoService {
     private readonly destroyed$: Destroyed$
   ) { }
 
-  public readonly hasNarrowViewport$ = this.breakpointObserver.observe('(max-width: 720px)').pipe(
-    pluck('matches'),
-    cacheUntil(this.destroyed$)
-  );
+  public readonly hasNarrowViewport$ = this.selectMediaQueryMatches('(max-width: 720px)');
+  public readonly prefersLightColorScheme$ = this.selectMediaQueryMatches('(prefers-color-scheme: light)');
 
-  public readonly prefersLightColorScheme$ = this.breakpointObserver.observe('(prefers-color-scheme: light)').pipe(
-    pluck('matches'),
-    cacheUntil(this.destroyed$)
-  );
+  private selectMediaQueryMatches(...queries: readonly string[]) {
+    return this.breakpointObserver.observe(queries).pipe(
+      pluck('matches'),
+      cacheUntil(this.destroyed$)
+    );
+  }
 }

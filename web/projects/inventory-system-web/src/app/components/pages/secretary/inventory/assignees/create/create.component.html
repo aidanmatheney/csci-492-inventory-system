@@ -1,0 +1,37 @@
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
+  createState: createState$ | async
+} as vars">
+  <inventory-system-page title="Create Assignee" backLink=".." backText="Assignees">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
+      <div [formGroup]="form" class="fields">
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required>
+            <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" required>
+            <mat-error *ngIf="form.controls.email.hasError('required')">Required</mat-error>
+            <mat-error *ngIf="form.controls.email.hasError('email')">Invalid email</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <inventory-system-save-control
+        [dirty]="vars.formDirty!"
+        [valid]="vars.formValid!"
+        saveText="Create"
+        [saveState]="vars.createState!"
+        (save)="create()"
+      ></inventory-system-save-control>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

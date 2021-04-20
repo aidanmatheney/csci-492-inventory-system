@@ -20,43 +20,43 @@ header {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
     align-items: center;
-}
 
-.back-button {
-    grid-column: 1;
-    justify-self: start;
+    .back-button {
+        grid-column: 1;
+        justify-self: start;
 
-    padding-left: 6px;
-    padding-right: 6px;
+        padding-left: 6px;
+        padding-right: 6px;
 
-    .contents {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        .contents {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
 
-        .icon {
-            margin-right: 4px;
-            margin-bottom: 3px;
-        }
+            .icon {
+                margin-right: 4px;
+                margin-bottom: 3px;
+            }
 
-        .text {
-            line-height: 20px;
-            padding-top: 6px;
-            padding-bottom: 6px;
+            .text {
+                line-height: 20px;
+                padding-top: 6px;
+                padding-bottom: 6px;
 
-            text-align: start;
-            white-space: normal;
-            overflow-wrap: anywhere;
+                text-align: start;
+                white-space: normal;
+                overflow-wrap: anywhere;
+            }
         }
     }
-}
 
-.title {
-    grid-column: 2;
+    .title {
+        grid-column: 2;
 
-    text-align: center;
-    overflow-wrap: anywhere;
-    font-weight: 500;
+        text-align: center;
+        overflow-wrap: anywhere;
+        font-weight: 500;
+    }
 }
 
 main {

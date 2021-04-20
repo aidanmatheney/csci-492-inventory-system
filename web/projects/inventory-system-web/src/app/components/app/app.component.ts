@@ -84,19 +84,26 @@ export class AppComponent implements OnInit, AfterViewInit {
         {title: 'Dashboard', icon: typed<MatIconName>('home'), link: '/', exact: true},
         {title: 'Inventory', icon: typed<MatIconName>('keyboard'), link: '/inventory', children: [
           {title: 'Create Item', icon: typed<MatIconName>('add_circle'), link: '/inventory/create'},
-          ...(/^\/inventory\/(?!create|assignees|create)[^\/]+$/.test(url) ? [
+          ...(/^\/inventory\/(?!create|assignees)[^\/]+$/.test(url) ? [
             {title: 'View Item', icon: typed<MatIconName>('search'), link: url},
-            {title: 'Edit Item', icon: typed<MatIconName>('edit'), link: `${url}/edit`},
+            {title: 'Edit Item', icon: typed<MatIconName>('edit'), link: `${url}/edit`}
           ] : []),
           ...(/^\/inventory\/[^\/]+\/edit$/.test(url) ? [
             {title: 'View Item', icon: typed<MatIconName>('search'), link: `/inventory/${url.match(/^\/inventory\/([^\/]+)\/edit$/)![1]}`, exact: true},
             {title: 'Edit Item', icon: typed<MatIconName>('edit'), link: url}
           ] : []),
-          {
-            title: 'Assignees', icon: typed<MatIconName>('group'), link: 'inventory/assignees'
-            }
-        ]
-        }
+          {title: 'Assignees', icon: typed<MatIconName>('group'), link: '/inventory/assignees', children: [
+            {title: 'Create Assignee', icon: typed<MatIconName>('add_circle'), link: '/inventory/assignees/create'},
+            ...(/^\/inventory\/assignees\/(?!create)[^\/]+$/.test(url) ? [
+              {title: 'View Assignee', icon: typed<MatIconName>('search'), link: url},
+              {title: 'Edit Assignee', icon: typed<MatIconName>('edit'), link: `${url}/edit`}
+            ] : []),
+            ...(/^\/inventory\/assignees\/[^\/]+\/edit$/.test(url) ? [
+              {title: 'View Assignee', icon: typed<MatIconName>('search'), link: `/inventory/assignees/${url.match(/^\/inventory\/assignees\/([^\/]+)\/edit$/)![1]}`, exact: true},
+              {title: 'Edit Assignee', icon: typed<MatIconName>('edit'), link: url}
+            ] : [])
+          ]}
+        ]}
       ] : []),
 
       ...(isAdministrator ? [

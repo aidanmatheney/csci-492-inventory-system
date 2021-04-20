@@ -1,16 +1,16 @@
 import {GetNativeKeys, MultiKeyMap, MultiKeyMapConstructorArgs, NativeKey} from './multi-key-map';
 
 export const memoize: {
-  <K extends NativeKey[], V>(
+  <K extends readonly NativeKey[], V>(
     createValue: (...keys: K) => V,
     getNativeKeys?: GetNativeKeys<K>
   ): (...keys: K) => V;
 
-  <K extends any[], V>(
+  <K extends readonly any[], V>(
     createValue: (...keys: K) => V,
     getNativeKeys: GetNativeKeys<K>
   ): (...keys: K) => V;
-} = <K extends any[], V>(
+} = <K extends readonly any[], V>(
   createValue: (...keys: K) => V,
   getNativeKeys?: GetNativeKeys<K>
 ) => {

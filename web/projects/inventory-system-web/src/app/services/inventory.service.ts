@@ -14,6 +14,8 @@ import {Destroyed$} from './destroyed$.service';
 import {environment} from '../../environments/environment';
 import {
   InventoryAssignee,
+  InventoryAssigneeChange,
+  InventoryAssigneeHistory,
   InventoryAssigneeHistoryDto,
   InventoryAssigneeSnapshot,
   InventoryItem,
@@ -126,13 +128,81 @@ export class InventoryService {
     );
   });
 
-  public readonly assigneeHistories$ = this.httpGetAssigneeHistories().pipe(
-    map(Loadable.loaded),
+  public readonly assigneeHistories$ = this.ongoingModifications.none$.pipe(
+    switchMapTo(this.httpGetAssigneeHistories().pipe(
+      map(assigneeHistoryDtos => Loadable.loaded(assigneeHistoryDtos.map(({
+        assignee,
+        changes: changeDtos,
+        snapshots
+      }): InventoryAssigneeHistory => {
+        const changes = changeDtos.map((changeDto): InventoryAssigneeChange => ({
+          ...changeDto,
+          date: new Date(changeDto.date)
+        }));
+
+        const changeBySequence = recordBy(changes, change => change.sequence);
+        const snapshotBySequence = recordBy(snapshots, snapshot => snapshot.sequence);
+
+        const newestChangeSequence = Math.max(...changes.map(change => change.sequence));
+        const newestChange = changeBySequence[newestChangeSequence]!;
+
+        const currentSnapshot = (newestChange.newSnapshotSequence == null
+          ? undefined
+          : snapshotBySequence[newestChange.newSnapshotSequence]!
+        );
+
+        const lastNonDeletionChangeSequence = Math.max(...changes
+          .filter(change => change.newSnapshotSequence != null)
+          .map(change => change.sequence)
+        );
+        const lastNonDeletionChange = changeBySequence[lastNonDeletionChangeSequence]!;
+
+        const lastUndeletedSnapshot = snapshotBySequence[lastNonDeletionChange.newSnapshotSequence!]!;
+
+        const approvedChanges = changes.filter(change => change.approved === true);
+        const newestApprovedChangeSequence = (approvedChanges.length === 0
+          ? undefined
+          : Math.max(...approvedChanges.map(change => change.sequence))
+        );
+        const newestApprovedChange = (newestApprovedChangeSequence == null
+          ? undefined
+          : changeBySequence[newestApprovedChangeSequence]!
+        );
+
+        const currentApprovedSnapshot = (newestApprovedChange?.newSnapshotSequence == null
+          ? undefined
+          : snapshotBySequence[newestApprovedChange.newSnapshotSequence]!
+        );
+
+        return {
+          assignee,
+          changeBySequence,
+          snapshotBySequence,
+          newestChange,
+          currentSnapshot,
+          lastUndeletedSnapshot,
+          newestApprovedChange,
+          currentApprovedSnapshot
+        };
+      }))),
+      startWith(Loadable.loading)
+    )),
     startWith(Loadable.loading),
     distinctUntilLoadableChanged(),
     tapLog('InventoryService assigneeHistories$'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
+
+  private readonly assigneeHistoryById$ = this.assigneeHistories$.pipe(
+    mapLoaded(assigneeHistories => recordBy(assigneeHistories, assigneeHistory => assigneeHistory.assignee.id)),
+    cacheUntil(this.destroyed$)
+  );
+  public readonly selectAssigneeHistoryById = memoize((id: number) => {
+    return this.assigneeHistoryById$.pipe(
+      pluckLoaded(id),
+      distinctUntilLoadableChanged()
+    );
+  });
 
   public createItem({
     barcode,
@@ -226,6 +296,57 @@ export class InventoryService {
   }
 
   public approveItemChange() {
+
+  }
+
+  public createAssignee({
+    name,
+    email
+  }: {
+    name: string;
+    email: string;
+  }) {
+    return this.ongoingModifications.incrementWhile(async () => {
+      const {newAssigneeId} = await firstValueFrom(this.httpCreateAssignee({
+        assignee: {id: 0},
+        snapshot: {
+          assigneeId: 0,
+          sequence: 0,
+          name,
+          email
+        }
+      }));
+
+      return {newAssigneeId};
+    });
+  }
+
+  public updateAssignee({
+    assigneeId,
+    name,
+    email
+  }: {
+    assigneeId: number;
+    name: string;
+    email: string;
+  }) {
+    return this.ongoingModifications.incrementWhile(async () => {
+      await firstValueFrom(this.httpUpdateAssignee(assigneeId, {
+        snapshot: {
+          assigneeId,
+          sequence: 0,
+          name,
+          email
+        }
+      }));
+    });
+  }
+
+  public deleteAssignee(assigneeId: number) {
+    return this.ongoingModifications.incrementWhile(() => firstValueFrom(this.httpDeleteAssignee(assigneeId)));
+  }
+
+  public approveAssigneeChange() {
 
   }
 

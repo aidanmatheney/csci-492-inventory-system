@@ -106,12 +106,12 @@ export type NativeKey = (
   | Date
   | typeof nativeKeyVariadicSeparator
 );
-export type GetNativeKeys<K> = (keys: K) => NativeKey[];
+export type GetNativeKeys<K> = (keys: K) => readonly NativeKey[];
 
 export type MultiKeyMapConstructorArgs<K, V> = (
-  K extends NativeKey[] ? [
+  K extends readonly NativeKey[] ? readonly [
     getNativeKeys?: GetNativeKeys<K>
-  ] : [
+  ] : readonly [
     getNativeKeys: GetNativeKeys<K>
   ]
 );
@@ -196,7 +196,7 @@ export class MultiKeyMap<K, V> {
 
   private getRawKeys(keys: K) {
     const nativeKeys = this._getNativeKeys == null
-      ? keys as unknown as NativeKey[] // getNativeKeys is only optional if K extends NativeKey[]
+      ? keys as unknown as readonly NativeKey[] // getNativeKeys is only optional if K extends readonly NativeKey[]
       : this._getNativeKeys(keys);
 
     const rawKeys = nativeKeys.map((nativeKey): RawKey => {

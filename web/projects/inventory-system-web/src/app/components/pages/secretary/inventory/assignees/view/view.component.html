@@ -1,0 +1,26 @@
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  viewAssigneeeHistory: viewAssigneeeHistory$ | async
+} as vars">
+  <ng-template #pageTitle>
+    <span>View Assignee</span>
+    <span *ngIf="!vars.loading!">: <strong>{{vars.viewAssigneeeHistory!.lastUndeletedSnapshot.name}}</strong></span>
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink=".." backText="Assignees">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
+      <div class="fields">
+        <div>
+          <span class="title">Name:</span>
+          <span class="value">{{vars.viewAssigneeeHistory!.lastUndeletedSnapshot.name}}</span>
+        </div>
+
+        <div>
+          <span class="title">Email:</span>
+          <span class="value">{{vars.viewAssigneeeHistory!.lastUndeletedSnapshot.email}}</span>
+        </div>
+      </div>
+
+      <div><a mat-raised-button color="primary" routerLink="edit">Edit</a></div>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

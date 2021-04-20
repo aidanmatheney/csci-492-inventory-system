@@ -1,0 +1,47 @@
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  editAssigneeHistory: editAssigneeHistory$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
+  saveState: saveState$ | async,
+  deleteState: deleteState$ | async
+} as vars">
+  <ng-template #pageTitle>
+    <span>Edit Assignee</span>
+    <span *ngIf="!vars.loading!">: <strong>{{vars.editAssigneeHistory!.lastUndeletedSnapshot.name}}</strong></span>
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink=".." backText="View Assignee">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading!">
+      <div [formGroup]="form" class="fields">
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required>
+            <mat-error *ngIf="form.controls.name.hasError('required')">Required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" required>
+            <mat-error *ngIf="form.controls.email.hasError('required')">Required</mat-error>
+            <mat-error *ngIf="form.controls.email.hasError('email')">Invalid email</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <inventory-system-save-control
+        [dirty]="vars.formDirty!"
+        [valid]="vars.formValid!"
+
+        [saveState]="vars.saveState!"
+        (save)="save()"
+
+        [showDelete]="true"
+        [deleteState]="vars.deleteState!"
+        (delete)="delete()"
+      ></inventory-system-save-control>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

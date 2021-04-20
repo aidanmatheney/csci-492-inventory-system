@@ -1,4 +1,4 @@
-export const is = <A>(...allowedValues: A[]) => {
+export const is = <A>(...allowedValues: readonly A[]) => {
   return <V>(value: V | A): value is A => {
     for (const allowedValue of allowedValues) {
       if (Object.is(value, allowedValue)) {
@@ -10,7 +10,7 @@ export const is = <A>(...allowedValues: A[]) => {
   };
 };
 
-export const isNot = <D>(...disallowedValues: D[]) => {
+export const isNot = <D>(...disallowedValues: readonly D[]) => {
   return <V>(value: V | D): value is V => {
     for (const disallowedValue of disallowedValues) {
       if (Object.is(value, disallowedValue)) {
