@@ -3,3 +3,21 @@
     display: flex;
     flex-direction: column;
 }
+
+.section {
+    & + & {
+        margin-top: 1rem;
+    }
+}
+
+.shortcuts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.button-icon {
+    margin-right: 4px;
+    margin-bottom: 3px;
+}

@@ -33,8 +33,8 @@ export class AppUsersComponent implements OnInit, AfterViewInit {
   @ViewChildren(MatSort) private sort!: QueryList<MatSort>;
   @ViewChildren(MatPaginator) private paginator!: QueryList<MatPaginator>;
 
-  public readonly loading$ = selectLoading(this.appUsersService.appUsers$);
   public readonly appUsers$ = selectLoadedValue(this.appUsersService.appUsers$);
+  public readonly loading$ = selectLoading(this.appUsersService.appUsers$);
 
   public readonly form: AppUsersForm = this.formBuilder.group({
     filter: this.formBuilder.control('')

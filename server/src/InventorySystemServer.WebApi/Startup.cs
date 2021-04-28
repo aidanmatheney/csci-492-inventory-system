@@ -103,7 +103,9 @@ namespace InventorySystemServer.WebApi
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(AuthorizationPolicyName.RequireStudentRole, policy => policy.RequireRole(AppRoleName.Student));
                 options.AddPolicy(AuthorizationPolicyName.RequireSecretaryRole, policy => policy.RequireRole(AppRoleName.Secretary));
+                options.AddPolicy(AuthorizationPolicyName.RequireStudentOrSecretaryRole, policy => policy.RequireRole(AppRoleName.Student, AppRoleName.Secretary));
                 options.AddPolicy(AuthorizationPolicyName.RequireAdministratorRole, policy => policy.RequireRole(AppRoleName.Administrator));
             });
 

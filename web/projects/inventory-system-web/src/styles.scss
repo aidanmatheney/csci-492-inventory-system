@@ -89,6 +89,11 @@ textarea.mat-input-element.cdk-textarea-autosize {
   $color: mat-color($inventory-system-primary, if($light, darker, lighter));
   $warn-color: mat-color($inventory-system-warn);
 
+  // Input caret (outside form)
+  .mat-input-element {
+    caret-color: $color;
+  }
+
   .mat-form-field {
     // Input label
     &.mat-focused .mat-form-field-label {

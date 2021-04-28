@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map, startWith, switchMapTo} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
+import {filter, map, mapTo, skip, startWith, switchMapTo, takeUntil} from 'rxjs/operators';
 
 import {distinctUntilLoadableChanged, Loadable, mapLoaded, pluckLoaded} from '../utils/loading';
 import {tapLog} from '../utils/debug';
@@ -8,7 +9,9 @@ import {cacheUntil, firstValueFrom} from '../utils/observable';
 import {recordBy} from '../utils/array';
 import {OngoingOperations} from '../utils/processing';
 import {memoize} from '../utils/memo';
+import {VOID} from '../utils/type';
 
+import {BroadcastService} from './broadcast.service';
 import {Destroyed$} from './destroyed$.service';
 
 import {environment} from '../../environments/environment';
@@ -31,12 +34,26 @@ export class InventoryService {
 
   private readonly ongoingModifications = new OngoingOperations();
 
+  private readonly refreshInventory$ = combineLatest([
+    this.ongoingModifications.count$,
+    this.broadcastService.refreshInventory$.pipe(startWith(VOID))
+  ]).pipe(
+    filter(([ongoingModificationCount]) => ongoingModificationCount === 0),
+    mapTo(VOID)
+  );
+
   public constructor(
     private readonly http: HttpClient,
+    private readonly broadcastService: BroadcastService,
     private readonly destroyed$: Destroyed$
-  ) { }
+  ) {
+    this.ongoingModifications.none$.pipe(
+      skip(1),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => this.broadcastService.refreshInventory());
+  }
 
-  public readonly itemHistories$ = this.ongoingModifications.none$.pipe(
+  public readonly itemHistories$ = this.refreshInventory$.pipe(
     switchMapTo(this.httpGetItemHistories().pipe(
       map(itemHistoryDtos => Loadable.loaded(itemHistoryDtos.map(({
         item,
@@ -128,7 +145,7 @@ export class InventoryService {
     );
   });
 
-  public readonly assigneeHistories$ = this.ongoingModifications.none$.pipe(
+  public readonly assigneeHistories$ = this.refreshInventory$.pipe(
     switchMapTo(this.httpGetAssigneeHistories().pipe(
       map(assigneeHistoryDtos => Loadable.loaded(assigneeHistoryDtos.map(({
         assignee,
@@ -259,6 +276,7 @@ export class InventoryService {
     room,
     acquiredDate,
     surplussedDate,
+    assigneeId,
     flaggedReason
   }: {
     itemId: number;
@@ -270,6 +288,7 @@ export class InventoryService {
     room?: string
     acquiredDate?: Date;
     surplussedDate?: Date;
+    assigneeId?: number;
     flaggedReason?: string;
   }) {
     return this.ongoingModifications.incrementWhile(async () => {
@@ -285,6 +304,7 @@ export class InventoryService {
           room,
           acquiredDate,
           surplussedDate,
+          assigneeId,
           flaggedReason
         }
       }));

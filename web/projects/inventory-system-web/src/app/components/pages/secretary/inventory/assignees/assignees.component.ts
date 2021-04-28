@@ -6,7 +6,6 @@ import {MatPaginator} from '@angular/material/paginator';
 import {map, takeUntil} from 'rxjs/operators';
 
 import {selectLoadedValue, selectLoading} from '../../../../../utils/loading';
-import {isNotFalse} from '../../../../../utils/filter';
 import {wireUpTable} from '../../../../../utils/table';
 import {ElementOf} from '../../../../../utils/type';
 
@@ -32,10 +31,10 @@ export class InventoryAssigneesComponent implements OnInit, AfterViewInit {
   @ViewChildren(MatSort) private sort!: QueryList<MatSort>;
   @ViewChildren(MatPaginator) private paginator!: QueryList<MatPaginator>;
 
-  public readonly loading$ = selectLoading(this.inventoryService.assigneeHistories$);
   public readonly assigneeHistories$ = selectLoadedValue(this.inventoryService.assigneeHistories$).pipe(
     map(assigneeHistories => assigneeHistories.filter(({currentSnapshot}) => currentSnapshot != null))
   );
+  public readonly loading$ = selectLoading(this.inventoryService.assigneeHistories$);
 
   public readonly form: InventoryAssigneesForm = this.formBuilder.group({
     filter: this.formBuilder.control('')
@@ -69,7 +68,7 @@ export class InventoryAssigneesComponent implements OnInit, AfterViewInit {
         String(assignee.id),
         lastUndeletedSnapshot.name,
         lastUndeletedSnapshot.email
-      ].filter(isNotFalse).map(field => field.toLowerCase());
+      ].map(field => field.toLowerCase());
 
       const lowercaseFilter = filter.toLowerCase();
 

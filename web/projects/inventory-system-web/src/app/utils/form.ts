@@ -1,7 +1,8 @@
+import {AbstractControl as NgAbstractControl} from '@angular/forms';
 import {AbstractControl, FormArray, FormControl, FormGroup, NgValidatorsErrors} from '@ngneat/reactive-forms';
 import {ControlsValue, ControlValue} from '@ngneat/reactive-forms/lib/types';
-import {combineLatest, Observable} from 'rxjs';
-import {distinctUntilChanged, map} from 'rxjs/operators';
+import {combineLatest, interval, Observable} from 'rxjs';
+import {distinctUntilChanged, map, startWith, switchMap, take} from 'rxjs/operators';
 
 import {deepEquals} from './compare';
 import {PartialRecord} from './record';
@@ -35,31 +36,41 @@ export const selectFormDirty = <C extends object, E extends object>(
 
 export const selectFormValid = <C extends object, E extends object>(
   control: FormGroup<C, E>
-) => control.status$.pipe(map(status => status === 'VALID'));
+) => control.status$.pipe(
+  switchMap(status => interval(0).pipe(
+    take(1),
+    // Fix mat-datepicker bug where the control will fire a statusChanged event for INVALID but 0ms later switch to
+    // VALID without firing the event
+    map(() => control.status),
+    startWith(status)
+  )),
+  distinctUntilChanged(),
+  map(status => status === 'VALID')
+);
 
 export const fixValidatorType: {
   <T, E extends object>(
     validator: (control: FormControl<T, E>) => E | null
-  ): (control: AbstractControl<T>) => E | null;
+  ): (control: AbstractControl<T, E> | NgAbstractControl) => E | null;
 
   <T, E extends object>(
     validator: (control: FormArray<T, E>) => E | null
-  ): (control: AbstractControl<T[]>) => E | null;
+  ): (control: AbstractControl<T[], E> | NgAbstractControl) => E | null;
 
   <C extends object, E extends object>(
     validator: (control: FormGroup<C, E>) => E | null
-  ): (control: AbstractControl<C>) => E | null;
+  ): (control: AbstractControl<C, E> | NgAbstractControl) => E | null;
 
 
   <T, E extends object>(
     validator: (control: FormControl<T, E>) => Promise<E | null>
-  ): (control: AbstractControl<T>) => Promise<E | null>;
+  ): (control: AbstractControl<T, E> | NgAbstractControl) => Promise<E | null>;
 
   <T, E extends object>(
     validator: (control: FormArray<T, E>) => Promise<E | null>
-  ): (control: AbstractControl<T[]>) => Promise<E | null>;
+  ): (control: AbstractControl<T[], E> | NgAbstractControl) => Promise<E | null>;
 
   <C extends object, E extends object>(
     validator: (control: FormGroup<C, E>) => Promise<E | null>
-  ): (control: AbstractControl<E>) => Promise<E | null>;
+  ): (control: AbstractControl<E, E> | NgAbstractControl) => Promise<E | null>;
 } = (validator: any) => validator;

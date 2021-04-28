@@ -10,7 +10,7 @@ import {cacheUntil, firstValueFrom} from '../../../../../../utils/observable';
 import {selectInitialLoading, selectLoadedValue} from '../../../../../../utils/loading';
 import {ProcessingState} from '../../../../../../utils/processing';
 import {confirmUnsavedChangesBeforeUnload} from '../../../../../../utils/confirm';
-import {isNotNull} from '../../../../../../utils/filter';
+import {isNotNull, isNull, someTrue} from '../../../../../../utils/filter';
 import {stringToNumber} from '../../../../../../utils/number';
 
 import {PageTitleService} from '../../../../../../services/page-title.service';
@@ -40,7 +40,6 @@ export class EditInventoryAssigneeComponent implements OnInit, SaveablePage {
     pluck('id'),
     map(stringToNumber)
   );
-
   public readonly editAssigneeHistory$ = this.editAssigneeId$.pipe(
     switchMap(editAssigneeId => (editAssigneeId == null
       ? of(undefined)
@@ -48,13 +47,11 @@ export class EditInventoryAssigneeComponent implements OnInit, SaveablePage {
     )),
     cacheUntil(this.destroyed$)
   );
+
   public readonly loading$ = combineLatest([
     selectInitialLoading(this.inventoryService.assigneeHistories$),
-    this.editAssigneeHistory$.pipe(startWith(undefined))
-  ]).pipe(map(([assigneeHistoriesLoading, editAssigneeHistory]) => (
-    assigneeHistoriesLoading
-    || editAssigneeHistory == null
-  )));
+    this.editAssigneeHistory$.pipe(startWith(undefined), map(isNull))
+  ]).pipe(map(someTrue));
 
   public readonly form: EditInventoryAssigneeForm = this.formBuilder.group({
     name: this.formBuilder.control('', {

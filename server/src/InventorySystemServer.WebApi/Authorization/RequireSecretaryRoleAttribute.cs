@@ -4,6 +4,6 @@
 
     public sealed class RequireSecretaryRoleAttribute : AuthorizeAttribute
     {
-        public RequireSecretaryRoleAttribute() : base(AuthorizationPolicyName.RequireSecretaryRole) {  }
+        public RequireSecretaryRoleAttribute() : base(AuthorizationPolicyName.RequireSecretaryRole) { }
     }
 }

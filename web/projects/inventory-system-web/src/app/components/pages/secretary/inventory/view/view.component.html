@@ -1,6 +1,7 @@
 <ng-container *ngLet="{
   loading: loading$ | async,
-  viewItemHistory: viewItemHistory$ | async
+  viewItemHistory: viewItemHistory$ | async,
+  viewItemAssigneeHistory: viewItemAssigneeHistory$ | async
 } as vars">
   <ng-template #pageTitle>
     <span>View Item</span>
@@ -52,6 +53,15 @@
         <div>
           <span class="title">Surplussed date:</span>
           <span class="value">{{vars.viewItemHistory!.lastUndeletedSnapshot.surplussedDate | date}}</span>
+        </div>
+
+        <div>
+          <span class="title">Assignee:</span>
+          <span class="value">
+            <a *ngIf="vars.viewItemAssigneeHistory != null" [routerLink]="['../assignees', vars.viewItemAssigneeHistory.assignee.id]">
+              {{vars.viewItemAssigneeHistory.lastUndeletedSnapshot.name}} ({{vars.viewItemAssigneeHistory.lastUndeletedSnapshot.email}})
+            </a>
+          </span>
         </div>
 
         <div>

@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY, merge, Observable, of, Subject} from 'rxjs';
-import {catchError, delay, filter, first, map, retryWhen, startWith, switchMap, switchMapTo} from 'rxjs/operators';
+import {combineLatest, EMPTY, merge, Observable, of, Subject} from 'rxjs';
+import {catchError, delay, filter, first, map, retryWhen, startWith, switchMap, switchMapTo, tap} from 'rxjs/operators';
 
-import {partialRecordSet} from '../utils/array';
+import {partialRecordSetOf} from '../utils/array';
 import {cacheUntil} from '../utils/observable';
 import {tapLog} from '../utils/debug';
 import {
@@ -16,7 +16,9 @@ import {
 import {memoize} from '../utils/memo';
 import {startFromAndSaveToLocalStorage} from '../utils/storage';
 import {isNotNull} from '../utils/filter';
+import {VOID} from '../utils/type';
 
+import {BroadcastService} from './broadcast.service';
 import {AuthenticationService} from './authentication.service';
 import {Destroyed$} from './destroyed$.service';
 
@@ -32,6 +34,7 @@ export class CurrentAppUserService {
 
   public constructor(
     private readonly http: HttpClient,
+    private readonly broadcastService: BroadcastService,
     private readonly authenticationService: AuthenticationService,
     private readonly destroyed$: Destroyed$
   ) { }
@@ -47,7 +50,7 @@ export class CurrentAppUserService {
           id,
           email,
           name,
-          hasAppRoleByName: appRoles && partialRecordSet(appRoles)
+          hasAppRoleByName: appRoles && partialRecordSetOf(appRoles)
         })),
         startWith(Loadable.loading)
       );
@@ -68,12 +71,22 @@ export class CurrentAppUserService {
       distinctUntilLoadableChanged()
     );
   });
+  public readonly isStudent$ = this.selectHasAppRole(AppRole.student);
   public readonly isSecretary$ = this.selectHasAppRole(AppRole.secretary);
+  public readonly isStudentOrSecretary$ = combineLatest([
+    this.isStudent$,
+    this.isSecretary$
+  ]).pipe(map(([isStudent, isSecretary]) => ((isStudent.loading || isSecretary.loading)
+    ? Loadable.loading
+    : Loadable.loaded(isStudent.value || isSecretary.value)
+  )));
   public readonly isAdministrator$ = this.selectHasAppRole(AppRole.administrator);
 
   private readonly nextSettings$ = new Subject<CurrentAppUserSettings>();
   public readonly settings$ = merge(
-    selectLoadedValue(this.appUser$).pipe(
+    this.broadcastService.refreshSettings$.pipe(
+      startWith(VOID),
+      switchMapTo(selectLoadedValue(this.appUser$)),
       filter(isNotNull),
       switchMapTo(this.httpGetCurrentAppUserSettings()),
       map(({theme}): CurrentAppUserSettings => ({
@@ -87,6 +100,7 @@ export class CurrentAppUserService {
         switchMapTo(this.httpSetCurrentAppUserSettings({
           theme: nextSettings.theme ?? null
         })),
+        tap(() => this.broadcastService.refreshSettings()),
         switchMapTo(EMPTY),
         catchError(error => {
           console.error('Error saving app user settings', error);
@@ -103,7 +117,6 @@ export class CurrentAppUserService {
         theme: undefined
       })
     ),
-    tapLog('CurrentAppUserService settings$', 'warn'), // TODO: remove
     cacheUntil(this.destroyed$)
   );
 

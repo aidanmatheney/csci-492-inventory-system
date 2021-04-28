@@ -13,3 +13,6 @@ interface NominalTypeMarker<S extends symbol> {
 export type Nominal<T, S extends symbol> = T & NominalTypeMarker<S>;
 
 export const nominalValue = <T, S extends symbol>(value: T, nominalTypeSymbol: S) => value as Nominal<T, S>;
+
+const IsoDateString = Symbol();
+export type IsoDateString = Nominal<string, typeof IsoDateString>;

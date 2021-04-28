@@ -4,8 +4,8 @@ import {combineLatest, Observable, of} from 'rxjs';
 import {filter, map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operators';
 
 import {selectInitialLoading, selectLoadedValue} from '../../../../../../utils/loading';
-import {firstValueFrom} from '../../../../../../utils/observable';
-import {isNotNull} from '../../../../../../utils/filter';
+import {cacheUntil, firstValueFrom} from '../../../../../../utils/observable';
+import {isNotNull, isNull, someTrue} from '../../../../../../utils/filter';
 import {stringToNumber} from '../../../../../../utils/number';
 
 import {PageTitleService} from '../../../../../../services/page-title.service';
@@ -25,20 +25,18 @@ export class ViewInventoryAssigneeeComponent implements OnInit {
     pluck('id'),
     map(stringToNumber)
   );
-
   public readonly viewAssigneeeHistory$ = this.viewAssigneeeId$.pipe(
     switchMap(viewAssigneeeId => (viewAssigneeeId == null
       ? of(undefined)
       : selectLoadedValue(this.inventoryService.selectAssigneeHistoryById(viewAssigneeeId))
-    ))
+    )),
+    cacheUntil(this.destroyed$)
   );
+
   public readonly loading$ = combineLatest([
     selectInitialLoading(this.inventoryService.assigneeHistories$),
-    this.viewAssigneeeHistory$.pipe(startWith(undefined))
-  ]).pipe(map(([assigneeHistoriesLoading, viewAssigneeeHistory]) => (
-    assigneeHistoriesLoading
-    || viewAssigneeeHistory == null
-  )));
+    this.viewAssigneeeHistory$.pipe(startWith(undefined), map(isNull))
+  ]).pipe(map(someTrue));
 
   public constructor(
     private readonly router: Router,

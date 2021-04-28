@@ -1,18 +1,15 @@
 <inventory-system-page title="Admin Dashboard">
   <div class="section">
     <h1>Users</h1>
-
-    <div class="shortcuts-container">
-      <div class="shortcuts">
-        <a *ngFor="let shortcut of usersShortcuts"
-          mat-raised-button
-          color="primary"
-          [routerLink]="shortcut.link"
-        >
-          <mat-icon class="button-icon">{{shortcut.icon}}</mat-icon>
-          <span>{{shortcut.title}}</span>
-        </a>
-      </div>
+    <div class="shortcuts">
+      <a *ngFor="let shortcut of usersShortcuts"
+        mat-raised-button
+        color="primary"
+        [routerLink]="shortcut.link"
+      >
+        <mat-icon class="button-icon">{{shortcut.icon}}</mat-icon>
+        <span>{{shortcut.title}}</span>
+      </a>
     </div>
   </div>
 </inventory-system-page>

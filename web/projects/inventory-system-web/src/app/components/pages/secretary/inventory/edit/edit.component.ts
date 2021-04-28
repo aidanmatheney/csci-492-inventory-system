@@ -15,7 +15,7 @@ import {cacheUntil, firstValueFrom} from '../../../../../utils/observable';
 import {selectInitialLoading, selectLoadedValue} from '../../../../../utils/loading';
 import {ProcessingState} from '../../../../../utils/processing';
 import {confirmUnsavedChangesBeforeUnload} from '../../../../../utils/confirm';
-import {isFalse, isNotNull} from '../../../../../utils/filter';
+import {isFalse, isNotNull, isNull, someTrue} from '../../../../../utils/filter';
 import {stringToNumber} from '../../../../../utils/number';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
@@ -34,6 +34,7 @@ type EditInventoryItemForm = FormGroup<{
   room: FormControl<string, {}>;
   acquiredDate: FormControl<Date | null, {}>;
   surplussedDate: FormControl<Date | null, {}>;
+  assigneeId: FormControl<number | null, {}>;
   flagged: FormControl<boolean, {}>;
   flaggedReason: FormControl<string, {}>;
 }, {}>;
@@ -53,7 +54,6 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
     pluck('id'),
     map(stringToNumber)
   );
-
   public readonly editItemHistory$ = this.editItemId$.pipe(
     switchMap(editItemId => (editItemId == null
       ? of(undefined)
@@ -61,10 +61,17 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
     )),
     cacheUntil(this.destroyed$)
   );
+
+  public readonly assigneeHistories$ = selectLoadedValue(this.inventoryService.assigneeHistories$).pipe(
+    map(assigneeHistories => assigneeHistories.filter(({currentSnapshot}) => currentSnapshot != null)),
+    cacheUntil(this.destroyed$)
+  );
+
   public readonly loading$ = combineLatest([
     selectInitialLoading(this.inventoryService.itemHistories$),
-    this.editItemHistory$.pipe(startWith(undefined))
-  ]).pipe(map(([itemHistoriesLoading, editItemHistory]) => itemHistoriesLoading || editItemHistory == null));
+    this.editItemHistory$.pipe(startWith(undefined)).pipe(map(isNull)),
+    selectInitialLoading(this.inventoryService.assigneeHistories$)
+  ]).pipe(map(someTrue));
 
   public readonly form: EditInventoryItemForm = this.formBuilder.group({
     name: this.formBuilder.control('', {
@@ -77,6 +84,7 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
     room: this.formBuilder.control(''),
     acquiredDate: this.formBuilder.control(null as Date | null),
     surplussedDate: this.formBuilder.control(null as Date | null),
+    assigneeId: this.formBuilder.control(null as number | null),
     flagged: this.formBuilder.control(false),
     flaggedReason: this.formBuilder.control('')
   });
@@ -92,6 +100,7 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
       room,
       acquiredDate,
       surplussedDate,
+      assigneeId,
       flaggedReason
     }}): EditInventoryItemFormValue => ({
       name,
@@ -102,6 +111,7 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
       room: room ?? '',
       acquiredDate: acquiredDate ?? null,
       surplussedDate: surplussedDate ?? null,
+      assigneeId: assigneeId ?? null,
       flagged: flaggedReason != null,
       flaggedReason: flaggedReason ?? ''
     }))
@@ -111,6 +121,38 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
 
   public readonly dirty$ = this.editItemHistory$.pipe(
     switchMap(editItemHistory => editItemHistory == null ? of(false) : this.formDirty$)
+  );
+
+  public readonly assigneeFilterForm = this.formBuilder.control('');
+  public readonly filteredAssigneeHistories$ = combineLatest([
+    this.assigneeHistories$.pipe(map(assigneeHistories => {
+      return assigneeHistories.map(assigneeHistory => {
+        const lowercaseFields = [
+          assigneeHistory.lastUndeletedSnapshot.name,
+          assigneeHistory.lastUndeletedSnapshot.email
+        ].map(field => field.toLowerCase());
+        return {
+          assigneeHistory,
+          lowercaseFields
+        };
+      });
+    })),
+    this.assigneeFilterForm.value$
+  ]).pipe(
+    map(([assigneeHistoriesAndFields, assigneeFilter]) => {
+      const lowercaseFilter = assigneeFilter.toLowerCase();
+      return (assigneeHistoriesAndFields
+        .filter(({lowercaseFields}) => lowercaseFields.some(field => field.includes(lowercaseFilter)))
+        .map(({assigneeHistory}) => assigneeHistory)
+      );
+    })
+  );
+
+  public readonly selectedAssigneeHistory$ = this.form.select(({assigneeId}) => assigneeId).pipe(
+    switchMap(selectedAssigneeId => (selectedAssigneeId == null
+      ? of(undefined)
+      : selectLoadedValue(this.inventoryService.selectAssigneeHistoryById(selectedAssigneeId))
+    ))
   );
 
   public readonly saveState$ = new BehaviorSubject<ProcessingState>(ProcessingState.idle);
@@ -168,6 +210,7 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
       room,
       acquiredDate,
       surplussedDate,
+      assigneeId,
       flagged,
       flaggedReason
     } = this.form.getRawValue();
@@ -183,6 +226,7 @@ export class EditInventoryItemComponent implements OnInit, SaveablePage {
         room,
         acquiredDate: acquiredDate ?? undefined,
         surplussedDate: surplussedDate ?? undefined,
+        assigneeId: assigneeId ?? undefined,
         flaggedReason: flagged ? flaggedReason : undefined
       });
       this.saveState$.next(ProcessingState.idle);

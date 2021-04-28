@@ -29,6 +29,7 @@ import {SaveablePage} from '../../../../../guards/unsaved-page-changes.guard';
 type CreateAppUserForm = FormGroup<{
   email: FormControl<string, AngularAndCustomFormErrors<'required' | 'email', 'taken'>>;
   name: FormControl<string, AngularFormErrors<'required' | 'pattern'>>;
+  isStudent: FormControl<boolean, {}>;
   isSecretary: FormControl<boolean, {}>;
   isAdministrator: FormControl<boolean, {}>;
 }, {}>;
@@ -52,13 +53,15 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
     name: this.formBuilder.control('', {
       validators: [Validators.required, Validators.pattern(/^(?=\S).+(?<=\S)$/)]
     }),
-    isSecretary: this.formBuilder.control(true),
+    isStudent: this.formBuilder.control(true),
+    isSecretary: this.formBuilder.control(false),
     isAdministrator: this.formBuilder.control(false)
   });
   public readonly initialFormValue: CreateAppUserFormValue = {
     email: '',
     name: '',
-    isSecretary: true,
+    isStudent: true,
+    isSecretary: false,
     isAdministrator: false
   };
   public readonly formDirty$ = selectFormDirty(this.form, of(this.initialFormValue)).pipe(cacheUntil(this.destroyed$));
@@ -97,6 +100,7 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
     const {
       email,
       name,
+      isStudent,
       isSecretary,
       isAdministrator
     } = this.form.value;
@@ -106,6 +110,7 @@ export class CreateAppUserComponent implements OnInit, SaveablePage {
         email,
         name,
         appRoles: [
+          isStudent && AppRole.student,
           isSecretary && AppRole.secretary,
           isAdministrator && AppRole.administrator
         ].filter(isNotFalse)

@@ -10,21 +10,11 @@
     }
 }
 
-.shortcuts-container {
-    overflow: hidden;
-
-    .shortcuts {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-
-        &:not(:empty) {
-            margin: -.5rem;
-        }
-        & > * {
-            margin: .5rem;
-        }
-    }
+.shortcuts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .button-icon {

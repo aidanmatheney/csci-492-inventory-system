@@ -110,7 +110,7 @@ export const recordBy: RecordBy = <S, K extends keyof any, V>(
   }
 };
 
-export const partialRecordSet = <S extends keyof any>(source: readonly S[]) => {
+export const partialRecordSetOf = <S extends keyof any>(source: readonly S[]) => {
   return recordBy(
     source,
     element => element,

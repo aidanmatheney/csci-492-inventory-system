@@ -12,7 +12,7 @@ import {selectInitialLoading, selectLoadedValue} from '../../../../../utils/load
 import {AngularFormErrors, FormValue, selectFormDirty, selectFormValid} from '../../../../../utils/form';
 import {ProcessingState} from '../../../../../utils/processing';
 import {confirmUnsavedChangesBeforeUnload} from '../../../../../utils/confirm';
-import {isNotFalse, isNotNull} from '../../../../../utils/filter';
+import {isNotFalse, isNotNull, isNull, someTrue} from '../../../../../utils/filter';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
 import {DialogService} from '../../../../../services/dialog.service';
@@ -26,6 +26,7 @@ import {SaveablePage} from '../../../../../guards/unsaved-page-changes.guard';
 type EditAppUserForm = FormGroup<{
   name: FormControl<string, AngularFormErrors<'required' | 'pattern'>>;
   lockedOut: FormControl<boolean, {}>;
+  isStudent: FormControl<boolean, {}>;
   isSecretary: FormControl<boolean, {}>;
   isAdministrator: FormControl<boolean, {}>;
 }, {}>;
@@ -42,14 +43,16 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
   public readonly editAppUserId$ = (this.route.params as Observable<{
     id: string;
   }>).pipe(pluck('id'));
-
   public readonly editAppUser$ = this.editAppUserId$.pipe(
-    switchMap(editAppUserId => selectLoadedValue(this.appUsersService.selectAppUserById(editAppUserId)))
+    switchMap(editAppUserId => selectLoadedValue(this.appUsersService.selectAppUserById(editAppUserId))),
+    cacheUntil(this.destroyed$)
   );
+
   public readonly loading$ = combineLatest([
     selectInitialLoading(this.appUsersService.appUsers$),
-    this.editAppUser$.pipe(startWith(undefined))
-  ]).pipe(map(([appUsersLoading, editAppUser]) => appUsersLoading || editAppUser == null));
+    this.editAppUser$.pipe(startWith(undefined), map(isNull))
+  ]).pipe(map(someTrue));
+
   public readonly editingCurrentAppUser$ = combineLatest([
     this.editAppUser$,
     this.currentAppUserService.signedInAppUser$
@@ -65,6 +68,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
       validators: [Validators.required, Validators.pattern(/^(?=\S).+(?<=\S)$/)]
     }),
     lockedOut: this.formBuilder.control(false),
+    isStudent: this.formBuilder.control(false),
     isSecretary: this.formBuilder.control(false),
     isAdministrator: this.formBuilder.control(false)
   });
@@ -74,6 +78,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
     map(({name, lockedOut, hasAppRoleByName}): EditAppUserFormValue => ({
       name,
       lockedOut,
+      isStudent: hasAppRoleByName[AppRole.student] ?? false,
       isSecretary: hasAppRoleByName[AppRole.secretary] ?? false,
       isAdministrator: hasAppRoleByName[AppRole.administrator] ?? false
     }))
@@ -135,6 +140,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
     const {
       name,
       lockedOut,
+      isStudent,
       isSecretary,
       isAdministrator
     } = this.form.getRawValue();
@@ -145,6 +151,7 @@ export class EditAppUserComponent implements OnInit, SaveablePage {
         name,
         lockedOut,
         appRoles: [
+          isStudent && AppRole.student,
           isSecretary && AppRole.secretary,
           isAdministrator && AppRole.administrator
         ].filter(isNotFalse)

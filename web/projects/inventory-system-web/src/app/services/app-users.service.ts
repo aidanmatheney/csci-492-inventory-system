@@ -1,9 +1,21 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {BehaviorSubject} from 'rxjs';
-import {delay, distinctUntilChanged, map, pluck, retryWhen, startWith, switchMapTo} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest} from 'rxjs';
+import {
+  delay,
+  distinctUntilChanged,
+  filter,
+  map,
+  mapTo,
+  pluck,
+  retryWhen,
+  skip,
+  startWith,
+  switchMapTo,
+  takeUntil
+} from 'rxjs/operators';
 
-import {partialRecordSet, recordBy} from '../utils/array';
+import {partialRecordSetOf, recordBy} from '../utils/array';
 import {cacheUntil, firstValueFrom} from '../utils/observable';
 import {tapLog} from '../utils/debug';
 import {distinctUntilLoadableChanged, Loadable, mapLoaded, pluckLoaded} from '../utils/loading';
@@ -11,7 +23,9 @@ import {partialRecord} from '../utils/record';
 import {memoize} from '../utils/memo';
 import {produceBehaviorSubjectMutable} from '../utils/immutable';
 import {OngoingOperations} from '../utils/processing';
+import {VOID} from '../utils/type';
 
+import {BroadcastService} from './broadcast.service';
 import {Destroyed$} from './destroyed$.service';
 
 import {environment} from '../../environments/environment';
@@ -24,12 +38,26 @@ export class AppUsersService {
 
   private readonly ongoingModifications = new OngoingOperations();
 
+  private readonly refreshInventory$ = combineLatest([
+    this.ongoingModifications.count$,
+    this.broadcastService.refreshUsers$.pipe(startWith(VOID))
+  ]).pipe(
+    filter(([ongoingModificationCount]) => ongoingModificationCount === 0),
+    mapTo(VOID)
+  );
+
   public constructor(
     private readonly http: HttpClient,
+    private readonly broadcastService: BroadcastService,
     private readonly destroyed$: Destroyed$
-  ) { }
+  ) {
+    this.ongoingModifications.none$.pipe(
+      skip(1),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => this.broadcastService.refreshUsers());
+  }
 
-  public readonly appUsers$ = this.ongoingModifications.none$.pipe(
+  public readonly appUsers$ = this.refreshInventory$.pipe(
     switchMapTo(this.httpGetAll().pipe(
       map(otherAppUserDtos => Loadable.loaded(otherAppUserDtos.map(({
         id,
@@ -46,7 +74,7 @@ export class AppUsersService {
         emailConfirmed,
         hasPassword,
         lockedOut,
-        hasAppRoleByName: appRoles && partialRecordSet(appRoles)
+        hasAppRoleByName: appRoles && partialRecordSetOf(appRoles)
       })))),
       startWith(Loadable.loading)
     )),

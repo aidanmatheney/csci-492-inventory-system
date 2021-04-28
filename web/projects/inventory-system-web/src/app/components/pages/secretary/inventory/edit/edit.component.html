@@ -1,8 +1,10 @@
 <ng-container *ngLet="{
   loading: loading$ | async,
   editItemHistory: editItemHistory$ | async,
+  filteredAssigneeHistories: filteredAssigneeHistories$ | async,
   formDirty: formDirty$ | async,
   formValid: formValid$ | async,
+  selectedAssigneeHistory: selectedAssigneeHistory$ | async,
   saveState: saveState$ | async,
   deleteState: deleteState$ | async
 } as vars">
@@ -59,7 +61,6 @@
         <div class="row">
           <mat-form-field appearance="fill" class="field sm">
             <mat-label>Acquired Date</mat-label>
-
             <input matInput [matDatepicker]="acquiredDatePicker" formControlName="acquiredDate">
             <mat-datepicker-toggle *ngIf="form.controls.acquiredDate.value != null" matSuffix (click)="form.controls.acquiredDate.setValue(null)">
               <mat-icon matDatepickerToggleIcon>clear</mat-icon>
@@ -77,6 +78,35 @@
             <mat-datepicker-toggle matSuffix [for]="surplussedDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #surplussedDatePicker></mat-datepicker>
           </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Assignee</mat-label>
+            <mat-select formControlName="assigneeId">
+              <mat-option>
+                <ngx-mat-select-search
+                  [formControl]="assigneeFilterForm"
+                  placeholderLabel="Search assignees"
+                  noEntriesFoundLabel="No matching assignee found"
+                ></ngx-mat-select-search>
+              </mat-option>
+
+              <mat-option *ngIf="assigneeFilterForm.value === ''" [value]="null"></mat-option>
+              <mat-option *ngFor="let assigneeHistory of vars.filteredAssigneeHistories!" [value]="assigneeHistory.assignee.id">
+                {{assigneeHistory.lastUndeletedSnapshot.name}} ({{assigneeHistory.lastUndeletedSnapshot.email}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div *ngIf="vars.selectedAssigneeHistory != null">
+            <a
+              mat-icon-button
+              [routerLink]="['../../assignees', vars.selectedAssigneeHistory.assignee.id]"
+              target="_blank"
+              title="View {{vars.selectedAssigneeHistory.lastUndeletedSnapshot.name}} ({{vars.selectedAssigneeHistory.lastUndeletedSnapshot.email}})"
+            ><mat-icon>open_in_new</mat-icon></a>
+          </div>
         </div>
 
         <div class="row">

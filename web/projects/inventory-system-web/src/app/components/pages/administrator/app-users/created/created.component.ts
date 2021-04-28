@@ -7,7 +7,7 @@ import {filter, map, pluck, startWith, switchMap, takeUntil} from 'rxjs/operator
 
 import {firstValueFrom} from '../../../../../utils/observable';
 import {selectLoadedValue, selectLoading} from '../../../../../utils/loading';
-import {isNotNull} from '../../../../../utils/filter';
+import {isNotNull, isNull, someTrue} from '../../../../../utils/filter';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
 import {AppUsersService} from '../../../../../services/app-users.service';
@@ -24,22 +24,18 @@ export class AppUserCreatedComponent implements OnInit {
   public readonly createdAppUserId$ = (this.route.params as Observable<{
     id: string;
   }>).pipe(pluck('id'));
-
   public readonly createdAppUser$ = this.createdAppUserId$.pipe(
     switchMap(createdAppUserId => selectLoadedValue(this.appUsersService.selectAppUserById(createdAppUserId)))
   );
   public readonly createdAppUserEmailConfirmationUrl$ = this.createdAppUserId$.pipe(
     switchMap(createdAppUserId => this.appUsersService.selectSessionAppUserEmailConfirmationUrlById(createdAppUserId))
   );
+
   public readonly loading$ = combineLatest([
     selectLoading(this.appUsersService.appUsers$),
-    this.createdAppUser$.pipe(startWith(undefined)),
-    this.createdAppUserEmailConfirmationUrl$
-  ]).pipe(
-    map(([appUsersLoading, createdAppUser, createdAppUserEmailConfirmationUrl]) => (
-      appUsersLoading || createdAppUser == null || createdAppUserEmailConfirmationUrl == null
-    ))
-  );
+    this.createdAppUser$.pipe(startWith(undefined), map(isNull)),
+    this.createdAppUserEmailConfirmationUrl$.pipe(map(isNull))
+  ]).pipe(map(someTrue));
 
   public constructor(
     private readonly router: Router,

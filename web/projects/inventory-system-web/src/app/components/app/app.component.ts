@@ -75,7 +75,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.isAdministrator$,
     this.routeInfoService.url$
   ]).pipe(
-    map(([signedIn, isSecretary, isAdministrator, url]): ReadonlyArray<NavListShortcut> => [
+    map(([signedIn, isSecretary, isAdministrator, url]): readonly NavListShortcut[] => [
       ...(!signedIn ? [
         {title: 'Home', icon: typed<MatIconName>('home'), link: '/', exact: true}
       ] : []),

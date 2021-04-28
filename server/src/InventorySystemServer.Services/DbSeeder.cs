@@ -45,6 +45,7 @@
 
         private async Task EnsureAppRoles(CancellationToken cancellationToken)
         {
+            await EnsureAppRole(AppRoleName.Student, cancellationToken).ConfigureAwait(false);
             await EnsureAppRole(AppRoleName.Secretary, cancellationToken).ConfigureAwait(false);
             await EnsureAppRole(AppRoleName.Administrator, cancellationToken).ConfigureAwait(false);
         }
@@ -79,6 +80,7 @@
                 var admin = await EnsureAppUser(defaultAdmin.Email, defaultAdmin.InitialPassword, cancellationToken).ConfigureAwait(false);
                 await EnsureLockedOut(admin, false, cancellationToken).ConfigureAwait(false);
 
+                await EnsureAppUserRole(admin, AppRoleName.Student, cancellationToken).ConfigureAwait(false);
                 await EnsureAppUserRole(admin, AppRoleName.Secretary, cancellationToken).ConfigureAwait(false);
                 await EnsureAppUserRole(admin, AppRoleName.Administrator, cancellationToken).ConfigureAwait(false);
             }

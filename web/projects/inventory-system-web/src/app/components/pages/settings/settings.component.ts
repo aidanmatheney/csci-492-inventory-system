@@ -2,7 +2,7 @@ import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 
 import {PageTitleService} from '../../../services/page-title.service';
 
-import {MatIconName} from '../../../models/mat-icon';
+import {DashboardShortcut} from '../../../models/ui';
 
 @Component({
   selector: 'inventory-system-settings',
@@ -11,11 +11,7 @@ import {MatIconName} from '../../../models/mat-icon';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent implements OnInit {
-  public readonly shortcuts: ReadonlyArray<{
-    title: string;
-    icon: MatIconName;
-    link: string;
-  }> = [
+  public readonly shortcuts: readonly DashboardShortcut[] = [
     {title: 'Appearance', icon: 'color_lens', link: 'appearance'},
     {title: 'Security', icon: 'security', link: 'security'}
   ];

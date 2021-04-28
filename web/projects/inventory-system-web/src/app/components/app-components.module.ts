@@ -24,6 +24,8 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatSelectModule} from '@angular/material/select';
+import {NgxMatSelectSearchModule} from 'ngx-mat-select-search';
 
 import {AppDirectivesModule} from '../directives/app-directives.module';
 import {AppPipesModule} from '../pipes/app-pipes.module';
@@ -116,6 +118,8 @@ import {EditAppUserComponent} from './pages/administrator/app-users/edit/edit.co
     MatDialogModule,
     MatSidenavModule,
     MatDatepickerModule,
+    MatSelectModule,
+    NgxMatSelectSearchModule,
 
     AppDirectivesModule,
     AppPipesModule

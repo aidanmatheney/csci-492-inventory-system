@@ -32,10 +32,10 @@ export class InventoryComponent implements OnInit, AfterViewInit {
   @ViewChildren(MatSort) private sort!: QueryList<MatSort>;
   @ViewChildren(MatPaginator) private paginator!: QueryList<MatPaginator>;
 
-  public readonly loading$ = selectLoading(this.inventoryService.itemHistories$);
   public readonly itemHistories$ = selectLoadedValue(this.inventoryService.itemHistories$).pipe(
     map(itemHistories => itemHistories.filter(({currentSnapshot}) => currentSnapshot != null))
   );
+  public readonly loading$ = selectLoading(this.inventoryService.itemHistories$);
 
   public readonly form: InventoryForm = this.formBuilder.group({
     filter: this.formBuilder.control('')

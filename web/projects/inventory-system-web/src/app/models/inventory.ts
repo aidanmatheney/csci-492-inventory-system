@@ -1,4 +1,5 @@
 import {PartialRecord} from '../utils/record';
+import {IsoDateString} from '../utils/type';
 
 export interface InventoryItemHistoryDto {
   item: InventoryItem;
@@ -32,7 +33,7 @@ export interface InventoryItemChange {
   approved?: boolean;
 }
 export type InventoryItemChangeDto = Omit<InventoryItemChange, 'date'> & {
-  date: string;
+  date: IsoDateString;
 };
 
 export interface InventoryItemSnapshot {
@@ -51,8 +52,8 @@ export interface InventoryItemSnapshot {
   flaggedReason?: string;
 }
 export type InventoryItemSnapshotDto = Omit<InventoryItemSnapshot, 'acquiredDate' | 'surplussedDate'> & {
-  acquiredDate?: string;
-  surplussedDate?: string;
+  acquiredDate?: IsoDateString;
+  surplussedDate?: IsoDateString;
 };
 
 export interface InventoryAssigneeHistoryDto {
@@ -86,7 +87,7 @@ export interface InventoryAssigneeChange {
   approved?: boolean;
 }
 export type InventoryAssigneeChangeDto = Omit<InventoryAssigneeChange, 'date'> & {
-  date: string;
+  date: IsoDateString;
 };
 
 export interface InventoryAssigneeSnapshot {

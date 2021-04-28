@@ -1,3 +1,15 @@
 <inventory-system-page title="Dashboard">
-  <p>secretary-dashboard works!</p>
+  <div class="section">
+    <h1>Inventory</h1>
+    <div class="shortcuts">
+      <a *ngFor="let shortcut of inventoryShortcuts"
+        mat-raised-button
+        color="primary"
+        [routerLink]="shortcut.link"
+      >
+        <mat-icon class="button-icon">{{shortcut.icon}}</mat-icon>
+        <span>{{shortcut.title}}</span>
+      </a>
+    </div>
+  </div>
 </inventory-system-page>
