@@ -103,7 +103,9 @@ export class AppComponent implements OnInit, AfterViewInit {
               {title: 'Edit Assignee', icon: typed<MatIconName>('edit'), link: url}
             ] : [])
           ]}
-        ]}
+        ]
+        },
+        { title: 'Reports', icon: typed<MatIconName>('notes'), link: '/reports', exact: true }
       ] : []),
 
       ...(isAdministrator ? [
