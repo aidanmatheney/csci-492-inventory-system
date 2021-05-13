@@ -1,0 +1,41 @@
+<ng-container *ngLet="{
+  loading: loading$ | async,
+  formDirty: formDirty$ | async,
+  formValid: formValid$ | async,
+  createState: createState$ | async
+} as vars">
+  <inventory-system-page title="Reports" backLink=".." backText="Dashboard">
+    <ng-container>
+      <div [formGroup]="form" class="fields">
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Item Description</mat-label>
+            <input matInput formControlName="item">
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="fill" class="field md">
+            <mat-label>Assignee</mat-label>
+            <input matInput formControlName="assignee">
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <mat-checkbox formControlName="checkedOut">Checked Out</mat-checkbox>
+        </div>
+        <div class="field">
+          <mat-checkbox formControlName="notCheckedOut">Not Checked Out</mat-checkbox>
+        </div>
+      </div>
+
+      <inventory-system-save-control [dirty]="vars.formDirty!"
+                                     [valid]="vars.formValid!"
+                                     saveText="Generate Report"
+                                     [saveState]="vars.createState!"
+                                     (save)="create()"></inventory-system-save-control>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

@@ -29,7 +29,8 @@ import {AdministratorDashboardComponent} from './components/pages/administrator/
 import {AppUsersComponent} from './components/pages/administrator/app-users/app-users.component';
 import {CreateAppUserComponent} from './components/pages/administrator/app-users/create/create.component';
 import {AppUserCreatedComponent} from './components/pages/administrator/app-users/created/created.component';
-import {EditAppUserComponent} from './components/pages/administrator/app-users/edit/edit.component';
+import { EditAppUserComponent } from './components/pages/administrator/app-users/edit/edit.component';
+import { ReportsComponent } from './components/pages/secretary/reports/reports.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,10 @@ const routes: Routes = [
   {
     path: 'help',
     component: HelpComponent
+  },
+  {
+    path: 'reports',
+    component: ReportsComponent
   },
 
   {
