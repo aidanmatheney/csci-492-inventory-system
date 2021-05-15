@@ -62,6 +62,7 @@ import {InventoryAssigneesComponent} from './pages/secretary/inventory/assignees
 import {CreateInventoryAssigneeComponent} from './pages/secretary/inventory/assignees/create/create.component';
 import {ViewInventoryAssigneeeComponent} from './pages/secretary/inventory/assignees/view/view.component';
 import {EditInventoryAssigneeComponent} from './pages/secretary/inventory/assignees/edit/edit.component';
+import {ReportsComponent} from './pages/secretary/reports/reports.component';
 import {SettingsComponent} from './pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './pages/settings/security/security.component';
@@ -103,6 +104,7 @@ import {ViewServerLogEntryComponent} from './pages/administrator/logs/server/vie
     CreateInventoryAssigneeComponent,
     ViewInventoryAssigneeeComponent,
     EditInventoryAssigneeComponent,
+    ReportsComponent,
     SettingsComponent,
     AppearanceSettingsComponent,
     SecuritySettingsComponent,

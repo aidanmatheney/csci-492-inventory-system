@@ -9,8 +9,6 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing;
 
-//xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"-->
-
 namespace inventorySystem
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -44,9 +42,15 @@ namespace inventorySystem
             }
         }
 
-        /*public void Handle_OnScanResult(ZXing.Result result)
+        public void Handle_OnScanResult(ZXing.Result result)
         {
-                DisplayAlert("Scanned result", result.Text, "OK");
+                //DisplayAlert("Scanned result: " +scanResultText.Text, result.Text, "OK");
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    scanResultText.Text = "Barcode: " +result.Text;
+                });
+
                 //loop{
                     //if (result = barcodeinFile) {
                         //await Navigation.PushAsync(new DisplayPropertiesPage(array));
@@ -54,7 +58,7 @@ namespace inventorySystem
                         //await Navigation.PushAsync(new EditPropertiesPage(result));
                     //}
                 //
-        }*/
+        }
 
         public async Task<string[]> readFile(string bc)
         {

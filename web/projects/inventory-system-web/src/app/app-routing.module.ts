@@ -26,6 +26,7 @@ import {
 } from './components/pages/secretary/inventory/assignees/create/create.component';
 import {ViewInventoryAssigneeeComponent} from './components/pages/secretary/inventory/assignees/view/view.component';
 import {EditInventoryAssigneeComponent} from './components/pages/secretary/inventory/assignees/edit/edit.component';
+import {ReportsComponent} from './components/pages/secretary/reports/reports.component';
 import {SettingsComponent} from './components/pages/settings/settings.component';
 import {AppearanceSettingsComponent} from './components/pages/settings/appearance/appearance.component';
 import {SecuritySettingsComponent} from './components/pages/settings/security/security.component';
@@ -125,6 +126,12 @@ const routes: Routes = [
         ]
       }
     ]
+  },
+
+  {
+    path: 'reports',
+    canActivate: [SecretaryGuard],
+    component: ReportsComponent
   },
 
   {
