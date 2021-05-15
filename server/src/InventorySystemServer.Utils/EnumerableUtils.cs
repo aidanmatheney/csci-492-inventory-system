@@ -1,14 +1,15 @@
 ﻿namespace InventorySystemServer.Utils
 {
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
+    using Dawn;
+
     public static class EnumerableUtils
     {
-        public static IEnumerable<(T Element, int Index)> Index<T>(this IEnumerable<T> source)
+        public static IEnumerable<(T Value, int Index)> Index<T>(this IEnumerable<T> source)
         {
-            Guard.NotNull(source, nameof(source));
+            Guard.Argument(source, nameof(source)).NotNull();
 
             var index = 0;
             foreach (var element in source)
@@ -20,33 +21,27 @@
 
         public static IEnumerable<T> Repeat<T>(this IReadOnlyCollection<T> source, int count)
         {
-            Guard.NotNull(source, nameof(source));
-            Guard.True(count >= 0, nameof(count), $"{nameof(count)} must be >= 0");
+            Guard.Argument(source, nameof(source)).NotNull();
+            Guard.Argument(count, nameof(count)).NotNegative();
 
             for (var i = 0; i < count; i += 1)
             {
                 foreach (var element in source)
+                {
                     yield return element;
+                }
             }
         }
 
         public static IEnumerable<T> ConcatMany<T>(this IEnumerable<T> first, params IEnumerable<T>[] others)
         {
-            Guard.NotNull(first, nameof(first));
-            Guard.NotNull(others, nameof(others));
+            Guard.Argument(first, nameof(first)).NotNull();
+            Guard.Argument(others, nameof(others)).NotNull();
 
-            return others.Aggregate(first, (concatenated, current) => concatenated.Concat(current));
+            return others.Aggregate(first, Enumerable.Concat);
         }
 
-        public static IEnumerable<T> Dequeue<T>(T firstItem, ConcurrentQueue<T> nextItems)
-        {
-            Guard.NotNull(nextItems, nameof(nextItems));
-
-            yield return firstItem;
-            while (nextItems.TryDequeue(out var nextItem))
-            {
-                yield return nextItem;
-            }
-        }
+        public static string Join(this IEnumerable<string> source, string separator = "")
+            => string.Join(separator, source);
     }
 }

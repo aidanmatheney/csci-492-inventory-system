@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
-    using InventorySystemServer.Utils;
+    using Dawn;
 
     using Microsoft.AspNetCore.Identity;
 
@@ -11,8 +11,8 @@
     {
         public static async Task<IdentityResult?> LockOutAsync(this UserManager<AppUser> userManager, AppUser appUser, bool lockOut)
         {
-            Guard.NotNull(userManager, nameof(userManager));
-            Guard.NotNull(appUser, nameof(appUser));
+            Guard.Argument(userManager, nameof(userManager)).NotNull();
+            Guard.Argument(appUser, nameof(appUser)).NotNull();
 
             if (appUser.LockedOut == lockOut)
             {
@@ -38,9 +38,9 @@
 
         public static async Task<IdentityResult?> AssignRoleAsync(this UserManager<AppUser> userManager, AppUser appUser, string appRoleName, bool assign)
         {
-            Guard.NotNull(userManager, nameof(userManager));
-            Guard.NotNull(appUser, nameof(appUser));
-            Guard.NotNull(appRoleName, nameof(appRoleName));
+            Guard.Argument(userManager, nameof(userManager)).NotNull();
+            Guard.Argument(appUser, nameof(appUser)).NotNull();
+            Guard.Argument(appRoleName, nameof(appRoleName)).NotNull();
 
             var isInRole = await userManager.IsInRoleAsync(appUser, appRoleName).ConfigureAwait(false);
             if (isInRole == assign)
@@ -51,7 +51,7 @@
             if (assign)
             {
                 return await userManager.AddToRoleAsync(appUser, appRoleName).ConfigureAwait(false);
-            } 
+            }
             return await userManager.RemoveFromRoleAsync(appUser, appRoleName).ConfigureAwait(false);
         }
     }

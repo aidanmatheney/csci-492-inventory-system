@@ -1,0 +1,41 @@
+:host {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+    margin-bottom: 1rem;
+
+    > * {
+        display: flex;
+        flex-direction: row;
+        gap: .25em;
+
+        .title {
+            font-weight: bold;
+        }
+    }
+}
+
+.section {
+    margin-bottom: 1.5rem;
+}
+
+.table-container {
+    overflow: auto;
+    min-height: 6rem;
+}
+
+.table {
+    width: 100%;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}

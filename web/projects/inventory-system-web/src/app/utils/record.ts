@@ -11,7 +11,22 @@ export type RecordSet<K extends keyof any> = Record<K, true>;
 export type PartialRecordSet<K extends keyof any> = PartialRecord<K, true>;
 
 export const recordSet = <K extends keyof any>() => record<K, true>();
+export const recordSetOf = <S extends keyof any>(source: readonly S[]) => {
+  const set = recordSet<S>();
+  for (const element of source) {
+    set[element] = true;
+  }
+  return set;
+};
+
 export const partialRecordSet = <K extends keyof any>() => partialRecord<K, true>();
+export const partialRecordSetOf = <S extends keyof any>(source: readonly S[]) => {
+  const set = partialRecordSet<S>();
+  for (const element of source) {
+    set[element] = true;
+  }
+  return set;
+};
 
 export const getOrAdd = <K extends keyof any, V>(
   source: PartialRecord<K, V>,

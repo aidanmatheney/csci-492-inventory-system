@@ -5,8 +5,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@
 
         public async Task<InventoryItem?> FindItemByBarcodeAsync(string barcode, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(barcode, nameof(barcode));
+            Guard.Argument(barcode, nameof(barcode)).NotNull();
 
             return await DbContext.InventoryItems
                 .Where(item => item.Barcode == barcode)
@@ -59,9 +60,9 @@
 
         public async Task CreateItemAsync(InventoryItem item, InventoryItemChange change, InventoryItemSnapshot snapshot, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(item, nameof(item));
-            Guard.NotNull(change, nameof(change));
-            Guard.NotNull(snapshot, nameof(snapshot));
+            Guard.Argument(item, nameof(item)).NotNull();
+            Guard.Argument(change, nameof(change)).NotNull();
+            Guard.Argument(snapshot, nameof(snapshot)).NotNull();
 
             await using var transaction = await DbContext.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 
@@ -84,12 +85,18 @@
 
         public async Task UpdateItemAsync(InventoryItem item, InventoryItemChange change, InventoryItemSnapshot snapshot, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(item, nameof(item));
-            Guard.NotNull(change, nameof(change));
-            Guard.NotNull(snapshot, nameof(snapshot));
+            Guard.Argument(item, nameof(item)).NotNull();
+            Guard.Argument(change, nameof(change)).NotNull();
+            Guard.Argument(snapshot, nameof(snapshot)).NotNull();
 
-            var lastChange = await DbContext.InventoryItemChanges.OrderBy(someChange => someChange.Sequence).LastAsync(cancellationToken).ConfigureAwait(false);
-            var lastSnapshot = await DbContext.InventoryItemSnapshots.OrderBy(someSnapshot => someSnapshot.Sequence).LastAsync(cancellationToken).ConfigureAwait(false);
+            var lastChange = await DbContext.InventoryItemChanges
+                .Where(someChange => someChange.ItemId == item.Id)
+                .OrderBy(someChange => someChange.Sequence)
+                .LastAsync(cancellationToken).ConfigureAwait(false);
+            var lastSnapshot = await DbContext.InventoryItemSnapshots
+                .Where(someSnapshot => someSnapshot.ItemId == item.Id)
+                .OrderBy(someSnapshot => someSnapshot.Sequence)
+                .LastAsync(cancellationToken).ConfigureAwait(false);
 
             change.ItemId = item.Id;
             change.Sequence = lastChange.Sequence + 1;
@@ -105,10 +112,13 @@
 
         public async Task DeleteItemAsync(InventoryItem item, InventoryItemChange change, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(item, nameof(item));
-            Guard.NotNull(change, nameof(change));
+            Guard.Argument(item, nameof(item)).NotNull();
+            Guard.Argument(change, nameof(change)).NotNull();
 
-            var lastChange = await DbContext.InventoryItemChanges.OrderBy(someChange => someChange.Sequence).LastAsync(cancellationToken).ConfigureAwait(false);
+            var lastChange = await DbContext.InventoryItemChanges
+                .Where(someChange => someChange.ItemId == item.Id)
+                .OrderBy(someChange => someChange.Sequence)
+                .LastAsync(cancellationToken).ConfigureAwait(false);
 
             change.ItemId = item.Id;
             change.Sequence = lastChange.Sequence + 1;
@@ -119,7 +129,7 @@
 
         public async Task UpdateItemChangeAsync(InventoryItemChange change, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(change, nameof(change));
+            Guard.Argument(change, nameof(change)).NotNull();
             await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
@@ -158,9 +168,9 @@
 
         public async Task CreateAssigneeAsync(InventoryAssignee assignee, InventoryAssigneeChange change, InventoryAssigneeSnapshot snapshot, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(assignee, nameof(assignee));
-            Guard.NotNull(change, nameof(change));
-            Guard.NotNull(snapshot, nameof(snapshot));
+            Guard.Argument(assignee, nameof(assignee)).NotNull();
+            Guard.Argument(change, nameof(change)).NotNull();
+            Guard.Argument(snapshot, nameof(snapshot)).NotNull();
 
             await using var transaction = await DbContext.Database.BeginTransactionAsync(cancellationToken).ConfigureAwait(false);
 
@@ -183,12 +193,18 @@
 
         public async Task UpdateAssigneeAsync(InventoryAssignee assignee, InventoryAssigneeChange change, InventoryAssigneeSnapshot snapshot, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(assignee, nameof(assignee));
-            Guard.NotNull(change, nameof(change));
-            Guard.NotNull(snapshot, nameof(snapshot));
+            Guard.Argument(assignee, nameof(assignee)).NotNull();
+            Guard.Argument(change, nameof(change)).NotNull();
+            Guard.Argument(snapshot, nameof(snapshot)).NotNull();
 
-            var lastChange = await DbContext.InventoryAssigneeChanges.OrderBy(someChange => someChange.Sequence).LastAsync(cancellationToken).ConfigureAwait(false);
-            var lastSnapshot = await DbContext.InventoryAssigneeSnapshots.OrderBy(someSnapshot => someSnapshot.Sequence).LastAsync(cancellationToken).ConfigureAwait(false);
+            var lastChange = await DbContext.InventoryAssigneeChanges
+                .Where(someChange => someChange.AssigneeId == assignee.Id)
+                .OrderBy(someChange => someChange.Sequence)
+                .LastAsync(cancellationToken).ConfigureAwait(false);
+            var lastSnapshot = await DbContext.InventoryAssigneeSnapshots
+                .Where(someSnapshot => someSnapshot.AssigneeId == assignee.Id)
+                .OrderBy(someSnapshot => someSnapshot.Sequence)
+                .LastAsync(cancellationToken).ConfigureAwait(false);
 
             change.AssigneeId = assignee.Id;
             change.Sequence = lastChange.Sequence + 1;
@@ -204,10 +220,13 @@
 
         public async Task DeleteAssigneeAsync(InventoryAssignee assignee, InventoryAssigneeChange change, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(assignee, nameof(assignee));
-            Guard.NotNull(change, nameof(change));
+            Guard.Argument(assignee, nameof(assignee)).NotNull();
+            Guard.Argument(change, nameof(change)).NotNull();
 
-            var lastChange = await DbContext.InventoryAssigneeChanges.OrderBy(someChange => someChange.Sequence).LastAsync(cancellationToken).ConfigureAwait(false);
+            var lastChange = await DbContext.InventoryAssigneeChanges
+                .Where(someChange => someChange.AssigneeId == assignee.Id)
+                .OrderBy(someChange => someChange.Sequence)
+                .LastAsync(cancellationToken).ConfigureAwait(false);
 
             change.AssigneeId = assignee.Id;
             change.Sequence = lastChange.Sequence + 1;
@@ -218,7 +237,7 @@
 
         public async Task UpdateAssigneeChangeAsync(InventoryAssigneeChange change, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(change, nameof(change));
+            Guard.Argument(change, nameof(change)).NotNull();
             await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }

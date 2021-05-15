@@ -1,0 +1,10 @@
+<div class="arrow-up"></div>
+<div class="container">
+  <inventory-system-filter-picker #filterPicker
+    [filter]="filter"
+    [dataType]="dataType"
+    [args]="args"
+    [formControl]="form"
+    (submit)="submit.emit()"
+  ></inventory-system-filter-picker>
+</div>

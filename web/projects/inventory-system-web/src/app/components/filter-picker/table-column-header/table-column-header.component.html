@@ -1,0 +1,14 @@
+<div>{{columnTitle}}</div>
+<div class="filter-line" (click)="$event.stopPropagation()">
+  <button #button
+    class="a"
+    [title]="(externalFormValue$ | async) == null ? 'Add filter' : 'Modify filter'"
+    (click)="togglePicker()"
+  >{{filterText$ | async}}</button>
+
+  <button *ngIf="(externalFormValue$ | async) != null"
+    class="a clear-button"
+    title="Clear filter"
+    (click)="clear()"
+  ><mat-icon [inline]="true">clear</mat-icon></button>
+</div>

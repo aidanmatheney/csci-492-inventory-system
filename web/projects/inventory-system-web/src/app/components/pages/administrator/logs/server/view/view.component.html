@@ -1,0 +1,64 @@
+<ng-container *ngLet="{
+  loading: (loading$ | async)!,
+  viewEntry: viewEntry$ | async
+} as vars">
+  <ng-template #pageTitle>
+    <span>View Entry</span>
+    <span *ngIf="!vars.loading">: <strong>{{vars.viewEntry!.id}}</strong></span>
+  </ng-template>
+  <inventory-system-page [title]="pageTitle" backLink=".." backText="Server">
+    <ng-container *inventorySystemSpinWhileLoading="vars.loading">
+      <div class="fields">
+        <div>
+          <span class="title">ID:</span>
+          <span class="value">{{vars.viewEntry!.id}}</span>
+        </div>
+
+        <div>
+          <span class="title">Time written:</span>
+          <span class="value">{{vars.viewEntry!.timeWritten | date : 'M/d/yyyy h:mm:ss a'}}</span>
+        </div>
+
+        <div>
+          <span class="title">Server name:</span>
+          <span class="value">{{vars.viewEntry!.serverName}}</span>
+        </div>
+
+        <div>
+          <span class="title">Category:</span>
+          <span class="value">{{vars.viewEntry!.category}}</span>
+        </div>
+
+        <div>
+          <span class="title">Scope:</span>
+          <span class="value">{{vars.viewEntry!.scope}}</span>
+        </div>
+
+        <div>
+          <span class="title">Log level:</span>
+          <span class="value">{{vars.viewEntry!.logLevel}}</span>
+        </div>
+
+        <div>
+          <span class="title">Event ID:</span>
+          <span class="value">{{vars.viewEntry!.eventId}}</span>
+        </div>
+
+        <div>
+          <span class="title">Event name:</span>
+          <span class="value">{{vars.viewEntry!.eventName}}</span>
+        </div>
+
+        <div class="multi-line">
+          <span class="title">Message:</span>
+          <span class="value">{{vars.viewEntry!.message}}</span>
+        </div>
+
+        <div class="multi-line">
+          <span class="title">Exception:</span>
+          <span class="value">{{vars.viewEntry!.exception}}</span>
+        </div>
+      </div>
+    </ng-container>
+  </inventory-system-page>
+</ng-container>

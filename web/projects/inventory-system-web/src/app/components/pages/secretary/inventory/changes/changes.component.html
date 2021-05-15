@@ -1,0 +1,75 @@
+<inventory-system-page title="Changes" backLink=".." backText="Inventory">
+  <ng-container *inventorySystemSpinWhileLoading="(loading$ | async)!">
+    <div [formGroup]="form" class="controls">
+      <mat-form-field class="filter">
+        <mat-label>Filter</mat-label>
+        <input matInput formControlName="filter">
+      </mat-form-field>
+    </div>
+
+    <div class="table-container">
+      <table
+        mat-table
+        [dataSource]="dataSource"
+        matSort
+        matSortActive="date"
+        matSortDirection="desc"
+        class="table"
+      >
+        <ng-container matColumnDef="itemBarcode">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Item Barcode</th>
+          <td mat-cell *matCellDef="let row">
+            <a [routerLink]="['..', row.itemHistory.item.id]">{{row.itemHistory.item.barcode}}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="itemName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Item Name</th>
+          <td mat-cell *matCellDef="let row">{{row.itemHistory.lastUndeletedSnapshot.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="changeSequence">
+          <th mat-header-cell *matHeaderCellDef>Change #</th>
+          <td mat-cell *matCellDef="let row">
+            <a [routerLink]="['..', row.change.itemId, 'changes', row.change.sequence]">{{row.change.sequence}}</a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userEmail">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>User Email</th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngIf="(isAdministrator$ | async) && row.appUser != null">
+              <a [routerLink]="['../../admin/users', row.appUser.id, 'edit']">{{row.appUser.email}}</a>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+          <td mat-cell *matCellDef="let row">
+            <span [title]="row.change.date | date : 'M/d/y h:mm:ss a'">
+              {{row.change.date | date : 'M/d/yy h:mm a'}}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="approved">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Approved</th>
+          <td mat-cell *matCellDef="let row">{{row.change.approved | boolean}}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="columns.length">
+            <span>No changes</span>
+            <span *ngIf="form.value.filter !== ''"> matching the filter "{{form.value.filter}}"</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="pageSize$ | async" (page)="nextPageSize$.next($event.pageSize)"></mat-paginator>
+  </ng-container>
+</inventory-system-page>

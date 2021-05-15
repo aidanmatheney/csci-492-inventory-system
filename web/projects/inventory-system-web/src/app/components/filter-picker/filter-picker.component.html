@@ -1,0 +1,166 @@
+<!-- String -->
+<ng-template #stringFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input matInput [formControlName]="formControlName" (keydown.enter)="submit.emit()">
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- Enum -->
+<ng-template #enumFieldTemplate let-label="label" let-formControlName="formControlName" let-multiple="multiple">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <mat-select #matSelect [formControlName]="formControlName" [multiple]="multiple || false">
+        <mat-option *ngIf="multiple !== true" [value]="null"></mat-option>
+        <mat-option *ngFor="let option of $any(args).options" [value]="option.value">{{option.label}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- Bool -->
+<ng-template #boolFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+      <!-- TODO: bool field -->
+  </ng-container>
+</ng-template>
+
+<!-- Int -->
+<ng-template #intFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input
+        matInput
+        type="number"
+        [inventorySystemNumberInput]="{integral: true}"
+        [formControlName]="formControlName"
+        (keydown.enter)="submit.emit()"
+      >
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- UInt -->
+<ng-template #uintFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input
+        matInput
+        type="number"
+        [inventorySystemNumberInput]="{unsigned: true, integral: true}"
+        [formControlName]="formControlName"
+        (keydown.enter)="submit.emit()"
+      >
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- Float -->
+<ng-template #floatFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input
+        matInput
+        type="number"
+        [formControlName]="formControlName"
+        (keydown.enter)="submit.emit()"
+      >
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- UFloat -->
+<ng-template #ufloatFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input
+        matInput
+        type="number"
+        [inventorySystemNumberInput]="{unsigned: true}"
+        [formControlName]="formControlName"
+        (keydown.enter)="submit.emit()"
+      >
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- Money -->
+<ng-template #moneyFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input
+        matInput
+        type="number"
+        [inventorySystemNumberInput]="{unsigned: true}"
+        [formControlName]="formControlName"
+        (keydown.enter)="submit.emit()"
+      >
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+<!-- Date -->
+<ng-template #dateFieldTemplate let-label="label" let-formControlName="formControlName">
+  <ng-container [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>{{label}}</mat-label>
+      <input #input matInput [matDatepicker]="datePicker" [formControlName]="formControlName">
+      <mat-datepicker-toggle *ngIf="$any(form.controls)[formControlName].value != null" matSuffix (click)="$any(form.controls)[formControlName].setValue(null)">
+        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+      </mat-datepicker-toggle>
+      <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+  </ng-container>
+</ng-template>
+
+
+<ng-container *ngLet="$any({
+  string: stringFieldTemplate,
+  enum: enumFieldTemplate,
+  bool: boolFieldTemplate,
+  int: intFieldTemplate,
+  uint: uintFieldTemplate,
+  float: floatFieldTemplate,
+  ufloat: ufloatFieldTemplate,
+  money: moneyFieldTemplate,
+  date: dateFieldTemplate
+})[dataType] as fieldTemplate">
+  <ng-container [ngSwitch]="filter">
+    <ng-container *ngSwitchCase="'contains'">
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Contains', formControlName: 'value'}"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'equalsOne'">
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Equals', formControlName: 'value'}"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'equalsAny'">
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Equals', formControlName: 'value', multiple: true}"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'min'">
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Minimum', formControlName: 'min'}"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'max'">
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Maximum', formControlName: 'max'}"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'range'">
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Minimum', formControlName: 'min'}"></ng-container>
+      <ng-container *ngTemplateOutlet="fieldTemplate; context: {label: 'Maximum', formControlName: 'max'}"></ng-container>
+      <mat-error *ngIf="form.hasError('maxBelowMin')">Maximum must equal or exceed minimum</mat-error>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>Unknown filter {{filter}}</ng-container>
+  </ng-container>
+</ng-container>

@@ -1,0 +1,29 @@
+:host {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: .5em;
+
+    > * {
+        display: flex;
+        flex-direction: row;
+        gap: .25em;
+
+        &.multi-line {
+            flex-direction: column;
+
+            .value {
+                white-space: pre-wrap;
+            }
+        }
+
+        .title {
+            font-weight: bold;
+        }
+    }
+}

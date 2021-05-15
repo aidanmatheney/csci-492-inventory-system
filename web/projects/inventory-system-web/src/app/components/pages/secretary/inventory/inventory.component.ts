@@ -3,12 +3,14 @@ import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
+import {of, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
 import {selectLoadedValue, selectLoading} from '../../../../utils/loading';
 import {isNotFalse} from '../../../../utils/filter';
 import {wireUpTable} from '../../../../utils/table';
 import {ElementOf} from '../../../../utils/type';
+import {startFromAndSaveToLocalStorage} from '../../../../utils/storage';
 
 import {PageTitleService} from '../../../../services/page-title.service';
 import {InventoryService} from '../../../../services/inventory.service';
@@ -50,6 +52,13 @@ export class InventoryComponent implements OnInit, AfterViewInit {
     'cost',
     'flagged'
   ] as const;
+
+  public readonly nextPageSize$ = new Subject<number>();
+  public readonly pageSize$ = this.nextPageSize$.pipe(startFromAndSaveToLocalStorage(
+    'inventoryItemsTablePageSize',
+    pageSize => pageSize,
+    pageSize => of(pageSize ?? 10)
+  ));
 
   public constructor(
     private readonly formBuilder: FormBuilder,

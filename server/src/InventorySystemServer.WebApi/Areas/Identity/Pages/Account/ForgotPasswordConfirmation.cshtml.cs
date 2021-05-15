@@ -1,7 +1,8 @@
 ﻿namespace InventorySystemServer.WebApi.Areas.Identity.Pages.Account
 {
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
     using InventorySystemServer.WebApi.Settings;
 
@@ -26,7 +27,7 @@
             logger
         )
         {
-            Guard.NotNull(apiClientsSettings, nameof(apiClientsSettings));
+            Guard.Argument(apiClientsSettings, nameof(apiClientsSettings)).NotNull();
             _apiClientsSettings = apiClientsSettings;
         }
 

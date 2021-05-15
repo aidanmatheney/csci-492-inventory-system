@@ -421,7 +421,25 @@ namespace InventorySystemServer.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LogLevel");
+
                     b.ToTable("WebApiLogEntries");
+                });
+
+            modelBuilder.Entity("InventorySystemServer.Data.Models.WebApiLogLevel", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Ordinal")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Name");
+
+                    b.HasIndex("Ordinal")
+                        .IsUnique();
+
+                    b.ToTable("WebApiLogLevels");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -599,6 +617,15 @@ namespace InventorySystemServer.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("InventorySystemServer.Data.Models.WebApiLogEntry", b =>
+                {
+                    b.HasOne("InventorySystemServer.Data.Models.WebApiLogLevel", null)
+                        .WithMany()
+                        .HasForeignKey("LogLevel")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

@@ -5,8 +5,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -23,7 +24,7 @@
 
         public async Task<AppRole?> FindAppRoleByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(id, nameof(id));
+            Guard.Argument(id, nameof(id)).NotNull();
 
             return await DbContext.Roles
                 .Where(appRole => appRole.Id == id)
@@ -32,7 +33,7 @@
 
         public async Task<AppRole?> FindAppRoleByNameAsync(string name, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(name, nameof(name));
+            Guard.Argument(name, nameof(name)).NotNull();
 
             return await DbContext.Roles
                 .Where(appRole => appRole.Name == name)

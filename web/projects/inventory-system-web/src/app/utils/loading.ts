@@ -39,6 +39,17 @@ export const mapLoaded = <V, M>(
     return Loadable.loaded(mappedValue);
   });
 };
+export const mapLoadedTo = <V, M>(
+  mappedValue: M
+) => {
+  return map((loadable: Loadable<V>): Loadable<M> => {
+    if (loadable.loading) {
+      return Loadable.loading;
+    }
+
+    return Loadable.loaded(mappedValue);
+  });
+};
 export const pluckLoaded = <V, K extends keyof V>(
   key: K
 ) => {
@@ -71,25 +82,37 @@ export const mapLoadable: {
   loadingValue: V | M,
   project?: (value: V) => M
 ) => {
-    if (project == null) {
-      return map((loadable: Loadable<V>): V => {
-        if (loadable.loading) {
-          return loadingValue as V;
-        }
+  if (project == null) {
+    return map((loadable: Loadable<V>): V => {
+      if (loadable.loading) {
+        return loadingValue as V;
+      }
 
-        return loadable.value;
-      });
-    } else {
-      return map((loadable: Loadable<V>): M => {
-        if (loadable.loading) {
-          return loadingValue as M;
-        }
+      return loadable.value;
+    });
+  } else {
+    return map((loadable: Loadable<V>): M => {
+      if (loadable.loading) {
+        return loadingValue as M;
+      }
 
-        const mappedValue = project(loadable.value);
-        return mappedValue;
-      });
+      const mappedValue = project(loadable.value);
+      return mappedValue;
+    });
+  }
+};
+export const mapLoadableTo = <V, M>(
+  loadingValue: M,
+  mappedValue: M
+) => {
+  return map((loadable: Loadable<V>): M => {
+    if (loadable.loading) {
+      return loadingValue;
     }
-  };
+
+    return mappedValue;
+  });
+};
 export const pluckLoadable = <V, K extends keyof V>(
   loadingValue: V[K],
   key: K

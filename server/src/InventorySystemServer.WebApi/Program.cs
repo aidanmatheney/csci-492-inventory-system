@@ -1,16 +1,21 @@
 namespace InventorySystemServer.WebApi
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
+    using InventorySystemServer.Data;
     using InventorySystemServer.Services;
+    using InventorySystemServer.Utils;
 
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
+    // Categorized logger requires non-static class
     // ReSharper disable once ConvertToStaticClass
     internal sealed class Program
     {
@@ -27,6 +32,14 @@ namespace InventorySystemServer.WebApi
                 var logger = services.GetRequiredService<ILogger<Program>>();
 
                 logger.LogWarning("InventorySystemServer.WebApi starting on {machineName}", Environment.MachineName);
+
+                var dbContext = services.GetRequiredService<AppDbContext>();
+                var pendingDbMigrations = (await dbContext.Database.GetPendingMigrationsAsync().ConfigureAwait(false)).ToList();
+                if (pendingDbMigrations.Any())
+                {
+                    logger.LogCritical("Database has pending migrations: {names}. Run Update-Database in the Package Manager Console to update the database", pendingDbMigrations);
+                    throw new Exception($"Database has pending migrations: {pendingDbMigrations.Join(", ")}. Run Update-Database in the Package Manager Console to update the database");
+                }
 
                 var dbSeeder = services.GetRequiredService<DbSeeder>();
                 try

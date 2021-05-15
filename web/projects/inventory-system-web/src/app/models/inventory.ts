@@ -1,5 +1,5 @@
 import {PartialRecord} from '../utils/record';
-import {IsoDateString} from '../utils/type';
+import {IsoDateString} from './primitive';
 
 export interface InventoryItemHistoryDto {
   item: InventoryItem;

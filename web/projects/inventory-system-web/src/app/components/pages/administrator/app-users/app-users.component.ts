@@ -3,12 +3,14 @@ import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
+import {of, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {selectLoadedValue, selectLoading} from '../../../../utils/loading';
 import {stringRecordKeys} from '../../../../utils/record';
 import {wireUpTable} from '../../../../utils/table';
 import {ElementOf} from '../../../../utils/type';
+import {startFromAndSaveToLocalStorage} from '../../../../utils/storage';
 
 import {PageTitleService} from '../../../../services/page-title.service';
 import {AppUsersService} from '../../../../services/app-users.service';
@@ -49,6 +51,13 @@ export class AppUsersComponent implements OnInit, AfterViewInit {
     'lockedOut',
     'roles'
   ] as const;
+
+  public readonly nextPageSize$ = new Subject<number>();
+  public readonly pageSize$ = this.nextPageSize$.pipe(startFromAndSaveToLocalStorage(
+    'appUsersTablePageSize',
+    pageSize => pageSize,
+    pageSize => of(pageSize ?? 10)
+  ));
 
   public constructor(
     private readonly formBuilder: FormBuilder,

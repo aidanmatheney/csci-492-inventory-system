@@ -1,0 +1,17 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.filter-line {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    cursor: default;
+
+    .clear-button {
+        color: inherit;
+        font-size: 1.2em;
+    }
+}

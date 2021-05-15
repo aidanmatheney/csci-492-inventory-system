@@ -4,6 +4,8 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using IdentityModel;
 
     using InventorySystemServer.Data.Models;
@@ -26,10 +28,10 @@
             ILogger logger
         )
         {
-            Guard.NotNull(getClaimsUser, nameof(getClaimsUser));
-            Guard.NotNull(userManager, nameof(userManager));
-            Guard.NotNull(roleManager, nameof(roleManager));
-            Guard.NotNull(logger, nameof(logger));
+            Guard.Argument(getClaimsUser, nameof(getClaimsUser)).NotNull();
+            Guard.Argument(userManager, nameof(userManager)).NotNull();
+            Guard.Argument(roleManager, nameof(roleManager)).NotNull();
+            Guard.Argument(logger, nameof(logger)).NotNull();
 
             _getClaimsUser = getClaimsUser;
             _appUserId = new Lazy<string?>(LoadAppUserId);

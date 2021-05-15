@@ -6,6 +6,8 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Utils;
 
@@ -32,7 +34,7 @@
 
         public ILogger CreateLogger(string categoryName)
         {
-            Guard.NotNull(categoryName, nameof(categoryName));
+            Guard.Argument(categoryName, nameof(categoryName)).NotNull();
             return new ToQueueLogger(this, categoryName);
         }
 
@@ -65,7 +67,7 @@
 
                 var scope = _scopes.Count == 0
                     ? null
-                    : string.Join(" > ", _scopes);
+                    : _scopes.Join(" > ");
 
                 var entry = new WebApiLogEntry
                 {

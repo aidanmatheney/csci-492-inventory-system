@@ -2,13 +2,14 @@
 {
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using IdentityServer4.EntityFramework.Entities;
     using IdentityServer4.EntityFramework.Extensions;
     using IdentityServer4.EntityFramework.Interfaces;
     using IdentityServer4.EntityFramework.Options;
 
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@
 
         public AppDbContext(DbContextOptions dbContextOptions, IOptions<OperationalStoreOptions> operationalStoreOptions) : base(dbContextOptions)
         {
-            Guard.NotNull(operationalStoreOptions, nameof(operationalStoreOptions));
+            Guard.Argument(operationalStoreOptions, nameof(operationalStoreOptions)).NotNull();
             _operationalStoreOptions = operationalStoreOptions;
         }
 
@@ -37,6 +38,7 @@
         public DbSet<InventoryAssigneeSnapshot> InventoryAssigneeSnapshots { get; set; } = null!;
 
         public DbSet<WebApiLogEntry> WebApiLogEntries { get; set; } = null!;
+        public DbSet<WebApiLogLevel> WebApiLogLevels { get; set; } = null!;
 
         Task<int> IPersistedGrantDbContext.SaveChangesAsync() => SaveChangesAsync();
 

@@ -1,8 +1,8 @@
-<inventory-system-page title="Admin Dashboard">
+<ng-template #shortcutSectionTemplate let-title="title" let-shortcuts="shortcuts">
   <div class="section">
-    <h1>Users</h1>
+    <h1>{{title}}</h1>
     <div class="shortcuts">
-      <a *ngFor="let shortcut of usersShortcuts"
+      <a *ngFor="let shortcut of shortcuts"
         mat-raised-button
         color="primary"
         [routerLink]="shortcut.link"
@@ -12,4 +12,9 @@
       </a>
     </div>
   </div>
+</ng-template>
+
+<inventory-system-page title="Admin Dashboard">
+  <ng-container *ngTemplateOutlet="shortcutSectionTemplate; context: {title: 'Users', shortcuts: usersShortcuts}"></ng-container>
+  <ng-container *ngTemplateOutlet="shortcutSectionTemplate; context: {title: 'Logs', shortcuts: logsShortcuts}"></ng-container>
 </inventory-system-page>

@@ -15,7 +15,11 @@ import {HelpComponent} from './components/pages/help/help.component';
 import {InventoryComponent} from './components/pages/secretary/inventory/inventory.component';
 import {CreateInventoryItemComponent} from './components/pages/secretary/inventory/create/create.component';
 import {ViewInventoryItemComponent} from './components/pages/secretary/inventory/view/view.component';
-import {EditInventoryItemComponent} from './components/pages/secretary/inventory/edit/edit.component';
+import {
+  ReviewInventoryItemChangeComponent
+} from './components/pages/secretary/inventory/review-change/review-change.component';
+import {EditInventoryItemComponent} from './components/pages/secretary/inventory/edit/edit.component'
+import {InventoryChangesComponent} from './components/pages/secretary/inventory/changes/changes.component';
 import {InventoryAssigneesComponent} from './components/pages/secretary/inventory/assignees/assignees.component';
 import {
   CreateInventoryAssigneeComponent
@@ -30,6 +34,9 @@ import {AppUsersComponent} from './components/pages/administrator/app-users/app-
 import {CreateAppUserComponent} from './components/pages/administrator/app-users/create/create.component';
 import {AppUserCreatedComponent} from './components/pages/administrator/app-users/created/created.component';
 import {EditAppUserComponent} from './components/pages/administrator/app-users/edit/edit.component';
+import {LogsComponent} from './components/pages/administrator/logs/logs.component';
+import {ServerLogsComponent} from './components/pages/administrator/logs/server/server.component';
+import {ViewServerLogEntryComponent} from './components/pages/administrator/logs/server/view/view.component';
 
 const routes: Routes = [
   {
@@ -67,6 +74,10 @@ const routes: Routes = [
         canDeactivate: [UnsavedPageChangesGuard]
       },
       {
+        path: 'changes',
+        component: InventoryChangesComponent
+      },
+      {
         path: 'assignees',
         children: [
           {
@@ -100,6 +111,11 @@ const routes: Routes = [
           {
             path: '',
             component: ViewInventoryItemComponent
+          },
+          {
+            path: 'changes/:changeSequence',
+            component: ReviewInventoryItemChangeComponent,
+            canDeactivate: [UnsavedPageChangesGuard]
           },
           {
             path: 'edit',
@@ -161,6 +177,28 @@ const routes: Routes = [
                 path: 'edit',
                 component: EditAppUserComponent,
                 canDeactivate: [UnsavedPageChangesGuard]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'logs',
+        children: [
+          {
+            path: '',
+            component: LogsComponent
+          },
+          {
+            path: 'server',
+            children: [
+              {
+                path: '',
+                component: ServerLogsComponent
+              },
+              {
+                path: ':id',
+                component: ViewServerLogEntryComponent
               }
             ]
           }

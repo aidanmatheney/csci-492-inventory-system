@@ -4,15 +4,29 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
+    using InventorySystemServer.Data;
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
     public sealed class DbSeeder
     {
+        private static readonly WebApiLogLevel[] WebApiLogLevels =
+        {
+            new() { Name = nameof(LogLevel.Trace), Ordinal = 0 },
+            new() { Name = nameof(LogLevel.Debug), Ordinal = 1 },
+            new() { Name = nameof(LogLevel.Information), Ordinal = 2 },
+            new() { Name = nameof(LogLevel.Warning), Ordinal = 3 },
+            new() { Name = nameof(LogLevel.Error), Ordinal = 4 },
+            new() { Name = nameof(LogLevel.Critical), Ordinal = 5 }
+        };
+
         private readonly DbSeederSettings _settings;
+        private readonly AppDbContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly ILogger<DbSeeder> _logger;
@@ -20,18 +34,21 @@
         public DbSeeder
         (
             DbSeederSettings settings,
+            AppDbContext dbContext,
             UserManager<AppUser> userManager,
             RoleManager<AppRole> roleManager,
             ILogger<DbSeeder> logger
         )
         {
-            Guard.NotNull(settings, nameof(settings));
-            Guard.NotNull(settings.DefaultAdmins, $"{nameof(settings)}.{nameof(DbSeederSettings.DefaultAdmins)}");
-            Guard.NotNull(userManager, nameof(userManager));
-            Guard.NotNull(roleManager, nameof(roleManager));
-            Guard.NotNull(logger, nameof(logger));
+            Guard.Argument(settings, nameof(settings)).NotNull();
+            Guard.Argument(settings.DefaultAdmins, $"{nameof(settings)}.{nameof(DbSeederSettings.DefaultAdmins)}").NotNull();
+            Guard.Argument(dbContext, nameof(dbContext)).NotNull();
+            Guard.Argument(userManager, nameof(userManager)).NotNull();
+            Guard.Argument(roleManager, nameof(roleManager)).NotNull();
+            Guard.Argument(logger, nameof(logger)).NotNull();
 
             _settings = settings;
+            _dbContext = dbContext;
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
@@ -41,6 +58,7 @@
         {
             await EnsureAppRoles(cancellationToken).ConfigureAwait(false);
             await EnsureAdmins(cancellationToken).ConfigureAwait(false);
+            await EnsureWebApiLogLevels(cancellationToken).ConfigureAwait(false);
         }
 
         private async Task EnsureAppRoles(CancellationToken cancellationToken)
@@ -133,6 +151,22 @@
                 _logger.LogCritical("Failed to add app user {email} to {appRoleName} app role. Result: {result}", appUser.Email, appRoleName, addToAppRoleResult);
                 throw new Exception($"Failed to add app user {appUser.Email} to {appRoleName} app role. Result: {addToAppRoleResult}");
             }
+        }
+
+        private async Task EnsureWebApiLogLevels(CancellationToken cancellationToken)
+        {
+            foreach (var logLevel in WebApiLogLevels)
+            {
+                if (await _dbContext.WebApiLogLevels.AnyAsync(existingLogLevel => existingLogLevel.Name == logLevel.Name, cancellationToken).ConfigureAwait(false))
+                {
+                    continue;
+                }
+
+                _logger.LogDebug("Creating web API log level {name}", logLevel.Name);
+                _dbContext.WebApiLogLevels.Add(logLevel);
+            }
+
+            await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

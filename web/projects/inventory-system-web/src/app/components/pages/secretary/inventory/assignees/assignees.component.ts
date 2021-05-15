@@ -3,11 +3,13 @@ import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
+import {of, Subject} from 'rxjs';
 import {map, takeUntil} from 'rxjs/operators';
 
 import {selectLoadedValue, selectLoading} from '../../../../../utils/loading';
 import {wireUpTable} from '../../../../../utils/table';
 import {ElementOf} from '../../../../../utils/type';
+import {startFromAndSaveToLocalStorage} from '../../../../../utils/storage';
 
 import {PageTitleService} from '../../../../../services/page-title.service';
 import {InventoryService} from '../../../../../services/inventory.service';
@@ -20,7 +22,7 @@ type InventoryAssigneesForm = FormGroup<{
 }, {}>;
 
 @Component({
-  selector: 'inventory-system-assignees',
+  selector: 'inventory-system-inventory-assignees',
   templateUrl: './assignees.component.html',
   styleUrls: ['./assignees.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +48,13 @@ export class InventoryAssigneesComponent implements OnInit, AfterViewInit {
     'name',
     'email'
   ] as const;
+
+  public readonly nextPageSize$ = new Subject<number>();
+  public readonly pageSize$ = this.nextPageSize$.pipe(startFromAndSaveToLocalStorage(
+    'inventoryAssigneesTablePageSize',
+    pageSize => pageSize,
+    pageSize => of(pageSize ?? 10)
+  ));
 
   public constructor(
     private readonly formBuilder: FormBuilder,

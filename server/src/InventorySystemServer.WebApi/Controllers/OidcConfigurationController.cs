@@ -2,8 +2,9 @@
 {
     using System.Collections.Generic;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
     using Microsoft.AspNetCore.Identity;
@@ -27,7 +28,7 @@
             logger
         )
         {
-            Guard.NotNull(clientRequestParametersProvider, nameof(clientRequestParametersProvider));
+            Guard.Argument(clientRequestParametersProvider, nameof(clientRequestParametersProvider)).NotNull();
             _clientRequestParametersProvider = clientRequestParametersProvider;
         }
 

@@ -1,3 +1,5 @@
+import {WithNonNullableProperties} from './type';
+
 export const is = <A>(...allowedValues: readonly A[]) => {
   const allowedValueSet = new Set(allowedValues);
   return <V>(value: V | A): value is A => (allowedValueSet as Set<V | A>).has(value);
@@ -49,3 +51,17 @@ export const someNotFalse = someNot(false as const);
 
 export const someNull = some(null, undefined);
 export const someNotNull = someNot(null, undefined);
+
+export const hasNonNullableProperties = <T, K extends keyof T>(
+  ...keys: readonly K[]
+) => {
+  return (obj: T): obj is WithNonNullableProperties<T, K> => {
+    for (const key of keys) {
+      if (obj[key] == null) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+};

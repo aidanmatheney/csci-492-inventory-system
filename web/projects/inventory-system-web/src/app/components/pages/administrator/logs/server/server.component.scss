@@ -1,0 +1,39 @@
+@import '../../../../../../breakpoints.scss';
+
+:host {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.controls {
+    margin-bottom: .25rem;
+}
+
+.table-container {
+    overflow: auto;
+    min-height: 6rem;
+}
+
+.table {
+    width: 100%;
+}
+
+.truncate, .truncate-start {
+    max-width: 20em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: $wide-viewport-max-width) {
+        max-width: 10em;
+    }
+    @media (max-width: $medium-viewport-max-width) {
+        max-width: 5em;
+    }
+}
+.truncate-start {
+    direction: rtl;
+    text-align: left;
+}

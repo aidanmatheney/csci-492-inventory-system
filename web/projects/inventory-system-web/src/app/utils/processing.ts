@@ -58,12 +58,9 @@ export class OngoingOperations {
     this._count$.next(this._count$.value + 1);
 
     try {
-      const result = await operation();
+      return await operation();
+    } finally {
       this._count$.next(this._count$.value - 1);
-      return result;
-    } catch (error: unknown) {
-      this._count$.next(this._count$.value - 1);
-      throw error;
     }
   }
 }

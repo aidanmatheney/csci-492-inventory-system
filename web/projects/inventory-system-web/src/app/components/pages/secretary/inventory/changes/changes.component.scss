@@ -1,0 +1,26 @@
+:host {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: .25rem;
+
+    .filter {
+        flex-grow: 1;
+        max-width: 30em;
+    }
+}
+
+.table-container {
+    overflow: auto;
+    min-height: 6rem;
+}
+
+.table {
+    width: 100%;
+}

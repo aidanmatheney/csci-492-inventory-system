@@ -7,10 +7,11 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Data.Services;
     using InventorySystemServer.Services;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Authorization;
     using InventorySystemServer.WebApi.Dto;
 
@@ -41,9 +42,9 @@
             logger
         )
         {
-            Guard.NotNull(appUserService, nameof(appUserService));
-            Guard.NotNull(appRoleService, nameof(appRoleService));
-            Guard.NotNull(emailSender, nameof(emailSender));
+            Guard.Argument(appUserService, nameof(appUserService)).NotNull();
+            Guard.Argument(appRoleService, nameof(appRoleService)).NotNull();
+            Guard.Argument(emailSender, nameof(emailSender)).NotNull();
 
             _appUserService = appUserService;
             _appRoleService = appRoleService;

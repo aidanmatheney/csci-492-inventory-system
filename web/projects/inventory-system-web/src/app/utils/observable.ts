@@ -1,10 +1,20 @@
-import {Observable, TeardownLogic} from 'rxjs';
-import {first, shareReplay, takeUntil} from 'rxjs/operators';
+import {Observable, of, TeardownLogic} from 'rxjs';
+import {delay, first, shareReplay, startWith, switchMap, takeUntil} from 'rxjs/operators';
 
 export const firstValueFrom = <V>(value$: Observable<V>) => {
   return new Promise<V>((resolve, reject) => {
     value$.pipe(first()).subscribe(resolve, reject);
   });
+};
+
+export const selectEmittedThisInstant = <V>(value$: Observable<V>) => {
+  return value$.pipe(
+    switchMap(() => of(false).pipe(
+      delay(0),
+      startWith(true)
+    )),
+    startWith(false)
+  );
 };
 
 export const cacheUntil = <T>(destroy$: Observable<void>) => {

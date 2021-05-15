@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http';
 import {combineLatest, EMPTY, merge, Observable, of, Subject} from 'rxjs';
 import {catchError, delay, filter, first, map, retryWhen, startWith, switchMap, switchMapTo, tap} from 'rxjs/operators';
 
-import {partialRecordSetOf} from '../utils/array';
 import {cacheUntil} from '../utils/observable';
 import {tapLog} from '../utils/debug';
 import {
@@ -17,6 +16,7 @@ import {memoize} from '../utils/memo';
 import {startFromAndSaveToLocalStorage} from '../utils/storage';
 import {isNotNull} from '../utils/filter';
 import {VOID} from '../utils/type';
+import {partialRecordSetOf} from '../utils/record';
 
 import {BroadcastService} from './broadcast.service';
 import {AuthenticationService} from './authentication.service';

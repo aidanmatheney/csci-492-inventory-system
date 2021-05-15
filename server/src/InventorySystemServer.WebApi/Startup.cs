@@ -3,6 +3,9 @@ namespace InventorySystemServer.WebApi
     using System;
     using System.IO;
     using System.Reflection;
+    using System.Text.Json.Serialization;
+
+    using Dawn;
 
     using IdentityServer4.Services;
 
@@ -10,7 +13,6 @@ namespace InventorySystemServer.WebApi
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Data.Services;
     using InventorySystemServer.Services;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Authorization;
     using InventorySystemServer.WebApi.Settings;
 
@@ -38,7 +40,7 @@ namespace InventorySystemServer.WebApi
 
         public Startup(IConfiguration configuration)
         {
-            Guard.NotNull(configuration, nameof(configuration));
+            Guard.Argument(configuration, nameof(configuration)).NotNull();
             Configuration = configuration;
         }
 
@@ -133,7 +135,12 @@ namespace InventorySystemServer.WebApi
 
             services.AddScoped<IProfileService, AppClaimsProfileService>();
 
-            services.AddControllersWithViews();
+            services
+                .AddControllersWithViews()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             services.AddRazorPages();
 
             services.ConfigureApplicationCookie(options =>

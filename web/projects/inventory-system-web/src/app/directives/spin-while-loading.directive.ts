@@ -6,7 +6,10 @@ import {Destroyed$} from '../services/destroyed$.service';
 
 import {LoadingSpinnerComponent} from '../components/loading-spinner/loading-spinner.component';
 
-@Directive({selector: '[inventorySystemSpinWhileLoading]'})
+@Directive({
+  selector: '[inventorySystemSpinWhileLoading]',
+  providers: [Destroyed$]
+})
 export class SpinWhileLoadingDirective implements OnInit {
   private readonly loading$ = new BehaviorSubject<boolean>(undefined!);
   @Input('inventorySystemSpinWhileLoading') public set loading(value: boolean) {

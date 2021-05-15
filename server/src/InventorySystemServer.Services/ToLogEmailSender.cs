@@ -4,7 +4,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    using InventorySystemServer.Utils;
+    using Dawn;
 
     using Microsoft.Extensions.Logging;
 
@@ -14,7 +14,7 @@
 
         public ToLogEmailSender(ILogger<ToLogEmailSender> logger)
         {
-            Guard.NotNull(logger, nameof(logger));
+            Guard.Argument(logger, nameof(logger)).NotNull();
             _logger = logger;
         }
 

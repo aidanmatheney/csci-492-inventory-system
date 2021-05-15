@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+    flex-direction: column;
+}
+
+mat-form-field:last-child {
+    margin-bottom: -1.23em;
+}
+
+mat-datepicker-toggle {
+    display: inline-block;
+}

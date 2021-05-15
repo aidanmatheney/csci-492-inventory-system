@@ -1,6 +1,6 @@
 ﻿namespace InventorySystemServer.Data.Services
 {
-    using InventorySystemServer.Utils;
+    using Dawn;
 
     using Microsoft.Extensions.Logging;
 
@@ -8,8 +8,8 @@
     {
         protected DbServiceBase(AppDbContext dbContext, ILogger logger)
         {
-            Guard.NotNull(dbContext, nameof(dbContext));
-            Guard.NotNull(logger, nameof(logger));
+            Guard.Argument(dbContext, nameof(dbContext)).NotNull();
+            Guard.Argument(logger, nameof(logger)).NotNull();
 
             DbContext = dbContext;
             Logger = logger;

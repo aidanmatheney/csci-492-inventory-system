@@ -47,6 +47,6 @@
       </table>
     </div>
 
-    <mat-paginator [pageSizeOptions]="[10, 25, 50]"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="pageSize$ | async" (page)="nextPageSize$.next($event.pageSize)"></mat-paginator>
   </ng-container>
 </inventory-system-page>

@@ -16,7 +16,8 @@ import {Destroyed$} from '../../../../../../services/destroyed$.service';
   selector: 'inventory-system-view-inventory-assignee',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [Destroyed$]
 })
 export class ViewInventoryAssigneeeComponent implements OnInit {
   public readonly viewAssigneeeId$ = (this.route.params as Observable<{

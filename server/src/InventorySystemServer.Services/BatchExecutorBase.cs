@@ -4,9 +4,10 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Dawn;
 
     using InventorySystemServer.Utils;
 
@@ -16,12 +17,12 @@
     {
         private const int ConsecutiveLoggingExceptionMaxCount = 3;
 
-        private readonly ConcurrentQueue<T> _queue = new ConcurrentQueue<T>();
-        private readonly CancellationTokenSource _disposeCts = new CancellationTokenSource();
+        private readonly ConcurrentQueue<T> _queue = new();
+        private readonly CancellationTokenSource _disposeCts = new();
 
         protected BatchExecutorBase(TimeSpan interval, IServiceProvider serviceProvider)
         {
-            Guard.NotNull(serviceProvider, nameof(serviceProvider));
+            Guard.Argument(serviceProvider, nameof(serviceProvider)).NotNull();
 
             Interval = interval;
             ServiceProvider = serviceProvider;
@@ -52,7 +53,7 @@
 
                 if (_queue.TryDequeue(out var firstItem))
                 {
-                    var items = EnumerableUtils.Dequeue(firstItem, _queue).ToList();
+                    var items = CollectionUtils.Dequeue(firstItem, _queue);
 
                     using var serviceScope = ServiceProvider.CreateScope();
                     try

@@ -2,8 +2,9 @@
 {
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@
             ILogger logger
         )
         {
-            Guard.NotNull(logger, nameof(logger));
+            Guard.Argument(logger, nameof(logger)).NotNull();
 
             UserManager = userManager;
             RoleManager = roleManager;

@@ -1,0 +1,4 @@
+<div *ngIf="(loading$ | async)!" class="overlay">
+  <inventory-system-loading-spinner></inventory-system-loading-spinner>
+</div>
+<ng-content></ng-content>

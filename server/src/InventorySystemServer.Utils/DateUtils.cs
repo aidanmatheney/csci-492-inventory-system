@@ -2,7 +2,7 @@
 {
     using System;
 
-    public static class DateTimeOffsetExtensions
+    public static class DateUtils
     {
         public static bool ApproximatelyEquals(this DateTimeOffset date1, DateTimeOffset date2, long ticksEpsilon = 100)
         {

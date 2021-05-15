@@ -5,8 +5,9 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -23,7 +24,7 @@
 
         public async Task<AppUser?> FindAppUserByIdAsync(string id, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(id, nameof(id));
+            Guard.Argument(id, nameof(id)).NotNull();
 
             return await DbContext.Users
                 .Where(appUser => appUser.Id == id)
@@ -32,7 +33,7 @@
 
         public async Task DeleteAppUserAsync(AppUser appUser, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(appUser, nameof(appUser));
+            Guard.Argument(appUser, nameof(appUser)).NotNull();
 
             DbContext.Users.Remove(appUser);
             await DbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
@@ -40,7 +41,7 @@
 
         public async Task<IReadOnlyList<AppRole>> GetAppUserRolesAsync(AppUser appUser, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(appUser, nameof(appUser));
+            Guard.Argument(appUser, nameof(appUser)).NotNull();
 
             return await DbContext.UserRoles
                 .Where(appUserRole => appUserRole.UserId == appUser.Id)
@@ -56,7 +57,7 @@
 
         public async Task<AppUserSettings?> GetAppUserSettingsAsync(AppUser appUser, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(appUser, nameof(appUser));
+            Guard.Argument(appUser, nameof(appUser)).NotNull();
 
             return await DbContext.AppUserSettings
                 .Where(s => s.UserId == appUser.Id)
@@ -65,7 +66,7 @@
 
         public async Task SaveAppUserSettingsAsync(AppUserSettings settings, CancellationToken cancellationToken = default)
         {
-            Guard.NotNull(settings, nameof(settings));
+            Guard.Argument(settings, nameof(settings)).NotNull();
 
             if (await DbContext.AppUserSettings.AnyAsync(s => s.UserId == settings.UserId, cancellationToken).ConfigureAwait(false))
             {

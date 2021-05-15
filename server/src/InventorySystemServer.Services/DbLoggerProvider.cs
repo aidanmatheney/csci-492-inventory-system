@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using InventorySystemServer.Data.Services;
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
+    using InventorySystemServer.Data.Services;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -25,8 +26,8 @@
 
         protected override async Task ExecuteAsync(IEnumerable<WebApiLogEntry> entries, IServiceProvider scopedServiceProvider)
         {
-            Guard.NotNull(entries, nameof(entries));
-            Guard.NotNull(scopedServiceProvider, nameof(scopedServiceProvider));
+            Guard.Argument(entries, nameof(entries)).NotNull();
+            Guard.Argument(scopedServiceProvider, nameof(scopedServiceProvider)).NotNull();
 
             var logService = scopedServiceProvider.GetRequiredService<ILogService>();
             await logService.InsertWebApiEntriesAsync(entries).ConfigureAwait(false);

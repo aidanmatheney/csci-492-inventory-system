@@ -3,8 +3,9 @@
     using System.ComponentModel.DataAnnotations;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
 
     using Microsoft.AspNetCore.Authorization;
@@ -30,7 +31,7 @@
             logger
         )
         {
-            Guard.NotNull(signInManager, nameof(signInManager));
+            Guard.Argument(signInManager, nameof(signInManager)).NotNull();
             _signInManager = signInManager;
         }
 

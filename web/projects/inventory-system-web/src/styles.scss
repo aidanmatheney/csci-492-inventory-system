@@ -31,9 +31,25 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-a {
-  @include inventory-system-theme-styles($global: true) using ($light) {
-    color: color.scale(rgb(138, 180, 248), $lightness: if($light, -15%, 0%));
+@include inventory-system-theme-styles($global: true) using ($light) {
+  $color: color.scale(rgb(138, 180, 248), $lightness: if($light, -15%, 0%));
+
+  a {
+    color: $color;
+  }
+
+  button.a {
+    font: 400 14px/20px Roboto, "Helvetica Neue", sans-serif;
+    font-size: inherit;
+    font-weight: inherit;
+    text-align: inherit;
+    user-select: text;
+
+    color: $color;
+    background: none;
+    padding: 0;
+    border: none;
+    cursor: pointer;
   }
 }
 
@@ -43,8 +59,9 @@ textarea.mat-input-element.cdk-textarea-autosize {
 }
 
 @include inventory-system-theme-styles($global: true) using ($light) {
-  // Sidenav drawer
-  .mat-drawer {
+  .mat-drawer, // Sidenav drawer
+  .mat-table,
+  .mat-paginator {
     background-color: if($light, #ededed, #424242);
   }
 }

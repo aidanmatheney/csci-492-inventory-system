@@ -1,0 +1,12 @@
+<inventory-system-page title="Logs" backLink=".." backText="Admin Dashboard">
+  <div class="shortcuts">
+    <a *ngFor="let shortcut of shortcuts"
+      mat-raised-button
+      color="primary"
+      [routerLink]="shortcut.link"
+    >
+      <mat-icon class="button-icon">{{shortcut.icon}}</mat-icon>
+      <span>{{shortcut.title}}</span>
+    </a>
+  </div>
+</inventory-system-page>

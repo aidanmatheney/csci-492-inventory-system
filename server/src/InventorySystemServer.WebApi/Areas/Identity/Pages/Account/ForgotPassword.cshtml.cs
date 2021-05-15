@@ -6,9 +6,10 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Services;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
     using InventorySystemServer.WebApi.Settings;
 
@@ -36,8 +37,8 @@
             logger
         )
         {
-            Guard.NotNull(emailSender, nameof(emailSender));
-            Guard.NotNull(apiClientsSettings, nameof(apiClientsSettings));
+            Guard.Argument(emailSender, nameof(emailSender)).NotNull();
+            Guard.Argument(apiClientsSettings, nameof(apiClientsSettings)).NotNull();
 
             _emailSender = emailSender;
             _apiClientsSettings = apiClientsSettings;

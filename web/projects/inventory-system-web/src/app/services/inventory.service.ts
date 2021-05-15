@@ -123,13 +123,22 @@ export class InventoryService {
     cacheUntil(this.destroyed$)
   );
 
-  private readonly itemHistoryById$ = this.itemHistories$.pipe(
+  public readonly itemHistoryById$ = this.itemHistories$.pipe(
     mapLoaded(itemHistories => recordBy(itemHistories, itemHistory => itemHistory.item.id)),
     cacheUntil(this.destroyed$)
   );
   public readonly selectItemHistoryById = memoize((id: number) => {
     return this.itemHistoryById$.pipe(
       pluckLoaded(id),
+      distinctUntilLoadableChanged()
+    );
+  });
+  public readonly selectItemChangeBySequence = memoize((itemId: number, changeSequence: number) => {
+    return this.selectItemHistoryById(itemId).pipe(
+      mapLoaded(itemHistory => (itemHistory == null
+        ? undefined
+        : itemHistory.changeBySequence[changeSequence]
+      )),
       distinctUntilLoadableChanged()
     );
   });
@@ -210,7 +219,7 @@ export class InventoryService {
     cacheUntil(this.destroyed$)
   );
 
-  private readonly assigneeHistoryById$ = this.assigneeHistories$.pipe(
+  public readonly assigneeHistoryById$ = this.assigneeHistories$.pipe(
     mapLoaded(assigneeHistories => recordBy(assigneeHistories, assigneeHistory => assigneeHistory.assignee.id)),
     cacheUntil(this.destroyed$)
   );
@@ -315,8 +324,12 @@ export class InventoryService {
     return this.ongoingModifications.incrementWhile(() => firstValueFrom(this.httpDeleteItem(itemId)));
   }
 
-  public approveItemChange() {
-
+  public approveItemChange(itemId: number, changeSequence: number, approved: boolean | undefined) {
+    return this.ongoingModifications.incrementWhile(() => firstValueFrom(this.httpApproveItemChange(
+      itemId,
+      changeSequence,
+      {approved}
+    )));
   }
 
   public createAssignee({

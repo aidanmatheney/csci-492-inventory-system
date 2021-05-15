@@ -16,6 +16,10 @@ export class AdministratorDashboardComponent implements OnInit {
     {title: 'Create User', icon: 'person_add', link: 'users/create'}
   ];
 
+  public readonly logsShortcuts: readonly DashboardShortcut[] = [
+    {title: 'Server Logs', icon: 'dns', link: 'logs/server'}
+  ];
+
   public constructor(
     private readonly pageTitleService: PageTitleService
   ) { }

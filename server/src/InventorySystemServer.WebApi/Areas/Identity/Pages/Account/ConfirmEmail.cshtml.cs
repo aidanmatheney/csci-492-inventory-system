@@ -5,8 +5,9 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Mvc;
     using InventorySystemServer.WebApi.Settings;
 
@@ -34,8 +35,8 @@
             logger
         )
         {
-            Guard.NotNull(signInManager, nameof(signInManager));
-            Guard.NotNull(apiClientsSettings, nameof(apiClientsSettings));
+            Guard.Argument(signInManager, nameof(signInManager)).NotNull();
+            Guard.Argument(apiClientsSettings, nameof(apiClientsSettings)).NotNull();
 
             _signInManager = signInManager;
             _apiClientsSettings = apiClientsSettings;

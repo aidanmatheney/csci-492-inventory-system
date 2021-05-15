@@ -6,9 +6,10 @@
     using System.Threading;
     using System.Threading.Tasks;
 
+    using Dawn;
+
     using InventorySystemServer.Data.Models;
     using InventorySystemServer.Data.Services;
-    using InventorySystemServer.Utils;
     using InventorySystemServer.WebApi.Authorization;
     using InventorySystemServer.WebApi.Dto;
 
@@ -34,7 +35,7 @@
             logger
         )
         {
-            Guard.NotNull(inventoryService, nameof(inventoryService));
+            Guard.Argument(inventoryService, nameof(inventoryService)).NotNull();
             _inventoryService = inventoryService;
         }
 

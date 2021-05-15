@@ -34,8 +34,8 @@ export const selectFormDirty = <C extends object, E extends object>(
   );
 };
 
-export const selectFormValid = <C extends object, E extends object>(
-  control: FormGroup<C, E>
+export const selectFormStatus = (
+  control: FormControl | FormArray | FormGroup
 ) => control.status$.pipe(
   switchMap(status => interval(0).pipe(
     take(1),
@@ -44,9 +44,11 @@ export const selectFormValid = <C extends object, E extends object>(
     map(() => control.status),
     startWith(status)
   )),
-  distinctUntilChanged(),
-  map(status => status === 'VALID')
+  distinctUntilChanged()
 );
+export const selectFormValid = (
+  control: FormControl | FormArray | FormGroup
+) => selectFormStatus(control).pipe(map(status => status === 'VALID'));
 
 export const fixValidatorType: {
   <T, E extends object>(
@@ -72,5 +74,5 @@ export const fixValidatorType: {
 
   <C extends object, E extends object>(
     validator: (control: FormGroup<C, E>) => Promise<E | null>
-  ): (control: AbstractControl<E, E> | NgAbstractControl) => Promise<E | null>;
+  ): (control: AbstractControl<C, E> | NgAbstractControl) => Promise<E | null>;
 } = (validator: any) => validator;
