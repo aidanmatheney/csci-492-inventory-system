@@ -19,6 +19,10 @@ export class SecretaryDashboardComponent implements OnInit {
     {title: 'Create Inventory Assignee', icon: 'add_circle', link: 'inventory/assignees/create'}
   ];
 
+  public readonly reportsShortcuts: readonly DashboardShortcut[] = [
+    {title: 'Reports', icon: 'notes', link: 'reports'}
+  ];
+
   public constructor(
     private readonly pageTitleService: PageTitleService
   ) { }

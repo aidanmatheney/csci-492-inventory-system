@@ -1,26 +1,25 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Validators } from '@angular/forms';
-import { FormBuilder, FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { BehaviorSubject, of } from 'rxjs';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FormBuilder, FormControl, FormGroup} from '@ngneat/reactive-forms';
+import {BehaviorSubject, of} from 'rxjs';
 
-import { AngularFormErrors, FormValue, selectFormDirty, selectFormValid } from '../../../../utils/form';
-import { ProcessingState } from '../../../../utils/processing';
-import { cacheUntil } from '../../../../utils/observable';
-import { confirmUnsavedChangesBeforeUnload } from '../../../../utils/confirm';
-import { selectLoading } from '../../../../utils/loading';
+import {FormValue, selectFormDirty, selectFormValid} from '../../../../utils/form';
+import {ProcessingState} from '../../../../utils/processing';
+import {cacheUntil} from '../../../../utils/observable';
+import {confirmUnsavedChangesBeforeUnload} from '../../../../utils/confirm';
+import {selectLoading} from '../../../../utils/loading';
 
-import { PageTitleService } from '../../../../services/page-title.service';
-import { InventoryService } from '../../../../services/inventory.service';
-import { Destroyed$ } from '../../../../services/destroyed$.service';
+import {PageTitleService} from '../../../../services/page-title.service';
+import {InventoryService} from '../../../../services/inventory.service';
+import {Destroyed$} from '../../../../services/destroyed$.service';
 
-import { SaveablePage } from '../../../../guards/unsaved-page-changes.guard';
-
+import {SaveablePage} from '../../../../guards/unsaved-page-changes.guard';
 
 type GenerateReportForm = FormGroup<{
   item: FormControl<string>;
   assignee: FormControl<string>;
-  checkedOut: FormControl<string>;
+  checkedOut: FormControl<boolean>;
+  notCheckedOut: FormControl<boolean>;
 }, {}>;
 type GenerateReportFormValue = FormValue<GenerateReportForm>;
 
@@ -36,12 +35,14 @@ export class ReportsComponent implements OnInit, SaveablePage {
   public readonly form: GenerateReportForm = this.formBuilder.group({
     item: this.formBuilder.control(''),
     assignee: this.formBuilder.control(''),
-    checkedOut: this.formBuilder.control('')
+    checkedOut: this.formBuilder.control(false),
+    notCheckedOut: this.formBuilder.control(false),
   });
   public readonly initialFormValue: GenerateReportFormValue = {
     item: '',
     assignee: '',
-    checkedOut: ''
+    checkedOut: false,
+    notCheckedOut: false
   };
   public readonly formDirty$ = selectFormDirty(this.form, of(this.initialFormValue)).pipe(cacheUntil(this.destroyed$));
   public readonly formValid$ = selectFormValid(this.form);
@@ -73,6 +74,6 @@ export class ReportsComponent implements OnInit, SaveablePage {
       assignee
     } = this.form.value;
 
-    
+
   }
 }
